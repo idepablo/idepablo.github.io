@@ -111,8 +111,10 @@
     .project-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
     .project-bullets li { font-size: 0.85rem; color: var(--ink-2); padding-left: 1.1rem; position: relative; line-height: 1.55; }
     .project-bullets li::before { content: '▸'; position: absolute; left: 0; color: var(--accent); font-size: 0.7rem; top: 3px; }
-    .project-coming { padding: 1.5rem; text-align: center; }
-    .project-coming-text { font-size: 0.85rem; color: var(--ink-3); font-style: italic; }
+    .project-bullets li strong { color: var(--accent); font-weight: 500; }
+    .project-coming { padding: 1rem 1.5rem; flex: 1; }
+    .project-coming-text { font-size: 0.88rem; color: var(--ink-2); line-height: 1.65; }
+    .project-coming-text strong { color: var(--accent); font-weight: 500; }
     .project-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--paper-3); display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; min-height: 52px; }
     .project-tags { display: flex; gap: 0.4rem; flex-wrap: wrap; }
     .project-link { font-size: 0.8rem; font-weight: 500; color: var(--accent); text-decoration: none; display: flex; align-items: center; gap: 0.3rem; white-space: nowrap; }
@@ -203,7 +205,7 @@
           </div>
         </div>
         <p class="hero-bio fade-up" style="transition-delay:0.1s">
-          Turning raw data into clear, actionable insights. With 7+ years of experience in fintech operations and a growing toolkit in SQL, Excel, Power BI, Tableau, and Python — I bridge the gap between data and business decisions.
+          Data analyst focused on financial and operational data — turning complex datasets into clear insights that drive business decisions. With 7+ years in fintech and a growing toolkit in SQL, Excel, Power BI, Tableau, and Python, I bring both the analytical skills and the business context to make data actually useful.
         </p>
         <div class="hero-cta fade-up" style="transition-delay:0.2s">
           <a href="#projects" class="btn-primary">View Projects →</a>
@@ -239,13 +241,13 @@
       <div class="about-grid">
         <div class="about-text fade-up">
           <p>
-            I'm Ignacio, a data analyst based in Seattle with 7+ years of experience in fintech operations. I've spent those years working closely with transactional data, building reports that informed leadership decisions, and identifying patterns that drove real operational change.
+            I'm Ignacio, a data analyst based in Seattle. For 7+ years I worked inside fintech operations at a payment processing company — managing a portfolio of 12,000+ merchants, building financial reports that informed leadership decisions, and analyzing transactional data to identify revenue leakage and operational risk across $50M+ in monthly settlement volume.
           </p>
           <p>
-            That experience taught me something important: the value of data isn't in the numbers themselves — it's in communicating what those numbers mean to the people who need to act on them. I'm now channeling that foundation into a full transition into data analytics, completing both a B.S. in IT and a hands-on Data Analytics bootcamp.
+            That work taught me the most valuable skill in data: understanding what decision a stakeholder needs to make, and building the analysis backwards from there. I'm now transitioning fully into data analytics, completing both a B.S. in IT and a hands-on Data Analytics Bootcamp while building a project portfolio across Excel, SQL, Tableau, Power BI, and Python.
           </p>
           <div class="highlight-box">
-            <p>🎯 Actively seeking Data Analyst and Business Intelligence roles where I can combine deep fintech domain knowledge with a growing technical toolkit to drive data-informed decisions.</p>
+            <p>🎯 Actively seeking Data Analyst and Business Intelligence roles where I can apply both fintech domain expertise and growing technical skills to drive data-informed decisions.</p>
           </div>
           <p>
             Outside of work, I love practicing fencing, watching good cinema, being an amateur space nerd, and spending time with my family.
@@ -346,8 +348,8 @@
   <section id="projects">
     <div class="section-inner">
       <div class="section-label">Projects</div>
-      <h2 class="section-title">Real-world analytics work</h2>
-      <p class="section-sub">Real-world projects spanning Excel, SQL, Tableau, Python, and R.</p>
+      <h2 class="section-title">Turning data into decisions</h2>
+      <p class="section-sub">Real-world projects spanning Excel, SQL, Tableau, Python, and R — each built around a business question, not just a dataset.</p>
       <div class="projects-grid">
 
         <!-- 1. Food Delivery -->
@@ -361,10 +363,10 @@
           </div>
           <div class="project-card-body">
             <ul class="project-bullets">
-              <li>Cleaned and analyzed 2,021 real customer records; engineered 4 new columns for deeper segmentation</li>
-              <li>Income explains 67% of spending variation (R² = 0.67); wine &amp; meat drive the majority of revenue</li>
-              <li>Campaign 6 had widest reach (311 buyers); Campaign 5 attracted the highest spenders ($1,537 avg)</li>
-              <li>Top customers convert 23% more than average without needing discounts</li>
+              <li><strong>Problem:</strong> What drives customer spending, and which marketing campaigns actually work?</li>
+              <li><strong>Analysis:</strong> Cleaned 2,021 records, engineered 4 new columns, ran correlation and segmentation analysis in Excel</li>
+              <li><strong>Insight:</strong> Income explains 67% of spend variation (R² = 0.67); top customers convert 23% more without needing discounts</li>
+              <li><strong>Decision:</strong> Shift campaign strategy toward high-income segments with reduced discount reliance to improve marketing ROI</li>
             </ul>
           </div>
           <div class="project-footer">
@@ -391,9 +393,12 @@
             <span class="project-badge-coming">Video walkthrough coming soon</span>
           </div>
           <div class="project-card-body">
-            <div class="project-coming">
-              <div class="project-coming-text">Dashboard live on Tableau Public. Video walkthrough coming soon.</div>
-            </div>
+            <ul class="project-bullets">
+              <li><strong>Problem:</strong> Which schools are underperforming, and across what metrics?</li>
+              <li><strong>Analysis:</strong> Built an interactive Tableau dashboard evaluating 1,800+ schools across hundreds of performance metrics</li>
+              <li><strong>Insight:</strong> Used scatter plots, KPIs, bar charts, and area charts to surface performance differences at a glance</li>
+              <li><strong>Decision:</strong> Enables data-driven resource allocation and targeted performance improvement strategies</li>
+            </ul>
           </div>
           <div class="project-footer">
             <div class="project-tags"><span class="tag">Tableau</span><span class="tag">Data Visualization</span><span class="tag">KPI Reporting</span></div>
@@ -423,7 +428,7 @@
           </div>
           <div class="project-card-body">
             <div class="project-coming">
-              <div class="project-coming-text">Data-mining 1.2M real bank transactions to surface financial outliers, patterns, and trends using MySQL.</div>
+              <div class="project-coming-text"><strong>Business question:</strong> Where is the World Bank lending money, to whom, and are there patterns in how loans are structured or repaid? Analysis of 1.2M real transactions using MySQL — JOINs, aggregations, CTEs, and window functions.</div>
             </div>
           </div>
           <div class="project-footer">
@@ -452,7 +457,7 @@
           </div>
           <div class="project-card-body">
             <div class="project-coming">
-              <div class="project-coming-text">Analyzing readmission factors across 101,000+ real patient records using JOINs, CTEs, window functions, and histograms.</div>
+              <div class="project-coming-text"><strong>Business question:</strong> Are we treating patients equitably, and what drives length of stay? Analysis of 101,000+ real patient records using advanced SQL — JOINs, CASE WHEN, CTEs, window functions, and histograms.</div>
             </div>
           </div>
           <div class="project-footer">
@@ -480,7 +485,7 @@
           </div>
           <div class="project-card-body">
             <div class="project-coming">
-              <div class="project-coming-text">Visualizing player and team performance across a full NBA season — stacked bar charts, heatmaps, treemaps, and bubble charts.</div>
+              <div class="project-coming-text"><strong>Business question:</strong> Which players deliver the most value relative to their role, and how do team strategies differ across the league? Full season dataset visualized using stacked bar charts, heatmaps, treemaps, and bubble charts in Tableau.</div>
             </div>
           </div>
           <div class="project-footer">
@@ -507,7 +512,7 @@
           </div>
           <div class="project-card-body">
             <div class="project-coming">
-              <div class="project-coming-text">Analyzing iron concentrate purity from a real flotation plant dataset — 6 months of process data using Pandas and data visualization.</div>
+              <div class="project-coming-text"><strong>Business question:</strong> What process variables most affect iron concentrate purity, and can we predict quality from operational inputs? Real plant data across 6 months analyzed with Pandas, NumPy, and Matplotlib.</div>
             </div>
           </div>
           <div class="project-footer">
@@ -536,7 +541,7 @@
           </div>
           <div class="project-card-body">
             <div class="project-coming">
-              <div class="project-coming-text">Exploring why employees leave using a 1,470-record HR dataset — correlations, scatterplots, hypothesis testing, and linear regression in R.</div>
+              <div class="project-coming-text"><strong>Business question:</strong> Why are employees leaving, and which factors most predict attrition? Analysis of 1,470 employee records using R — correlations, scatterplots, boxplots, hypothesis testing, and linear regression.</div>
             </div>
           </div>
           <div class="project-footer">
@@ -584,23 +589,23 @@
             <div class="timeline-role">Bilingual Financial Support Analyst</div>
             <div class="timeline-org">FinTech · Seattle, WA</div>
             <ul class="timeline-bullets">
-              <li>Analyzed transactional, billing, and chargeback data to identify revenue leakage, financial discrepancies, and operational risks across a large merchant portfolio</li>
-              <li>Built recurring reports and dashboards that gave leadership clear visibility into portfolio health and settlement trends</li>
-              <li>Led structured root cause analysis on support patterns, directly informing process improvements adopted across the team</li>
-              <li>Grew and retained a Spanish-language merchant portfolio through proactive, data-driven account management</li>
+              <li>Analyzed transactional, billing, and settlement data using Excel across a 12,000+ merchant portfolio representing $50M+ in monthly settlement volume</li>
+              <li>Built recurring KPI dashboards and financial reports in Excel and Tableau, giving leadership data-driven visibility into portfolio health and trends</li>
+              <li>Reduced average case resolution time by 25% through structured root cause analysis and workflow optimization</li>
+              <li>Served as primary success partner for 900+ Spanish-speaking merchants, driving retention and satisfaction</li>
             </ul>
           </div>
 
           <div class="timeline-item fade-up" style="transition-delay:0.1s">
             <div class="timeline-dot"></div>
             <div class="timeline-period">Dec 2016 – Mar 2023</div>
-            <div class="timeline-role">Bilingual Customer Success & Data Operations</div>
+            <div class="timeline-role">Bilingual Customer Success Engineer</div>
             <div class="timeline-org">FinTech · Seattle, WA</div>
             <ul class="timeline-bullets">
-              <li>Founded and built a Spanish-language merchant success program from the ground up, growing the portfolio from ~250 to 900+ accounts</li>
-              <li>Analyzed support metrics and trends to identify improvement opportunities, contributing to measurable reductions in churn</li>
-              <li>Trained and mentored 4 bilingual agents, creating onboarding materials and quality standards</li>
-              <li>Partnered cross-functionally with Finance, Risk, and Engineering to resolve escalations and improve merchant operations</li>
+              <li>Founded and scaled the Spanish-language merchant program from ~250 to 900+ accounts, contributing to a 20% reduction in churn</li>
+              <li>Analyzed support metrics and trends using Excel to identify performance gaps and drive continuous improvement</li>
+              <li>Managed ~30 complex merchant interactions per day across POS systems, billing disputes, and PCI compliance</li>
+              <li>Trained and mentored 4 bilingual agents, developing onboarding materials and quality frameworks</li>
             </ul>
           </div>
 
