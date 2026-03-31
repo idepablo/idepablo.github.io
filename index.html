@@ -687,23 +687,26 @@
   </footer>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Fade-in observer for all .fade-up elements
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.1 });
-
-      document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
-
-      // Immediately trigger hero elements (already in viewport on load)
-      document.querySelectorAll('#home .fade-up').forEach(el => {
-        setTimeout(() => el.classList.add('visible'), 200);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
       });
+    }, { threshold: 0.1 });
 
-      // Make entire project card clickable (not just the link)
-      document.querySelectorAll('.project-card
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    document.querySelectorAll('#home .fade-up').forEach(el => {
+      setTimeout(() => el.classList.add('visible'), 200);
+    });
+
+    document.querySelectorAll('.project-card[data-href]').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (!e.target.closest('a')) window.open(card.dataset.href, '_blank');
+      });
+    });
+  </script>
+</body>
+</html>
