@@ -130,8 +130,6 @@
     .coming-soon { font-size: 0.78rem; color: var(--ink-3); font-style: italic; }
 
     /* PLACEHOLDER SVG GRAPHICS */
-    .ph-education { background: linear-gradient(135deg, #e8f2ec 0%, #d4e8da 100%); }
-    .ph-finance { background: linear-gradient(135deg, #fef3e2 0%, #fde8c0 100%); }
     .ph-hospital { background: linear-gradient(135deg, #e8f0fe 0%, #d2e3fc 100%); }
 
     /* EXPERIENCE */
@@ -389,17 +387,10 @@
           </div>
         </div>
 
-        <!-- 2. Massachusetts Education -->
+        <!-- 2. Massachusetts Education — now with real cover image -->
         <div class="project-card fade-up" style="transition-delay:0.05s" data-href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes">
-          <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" class="project-thumb-placeholder ph-education">
-            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="32" width="56" height="32" rx="4" fill="#2a6b4a" opacity="0.15"/>
-              <rect x="16" y="24" width="40" height="8" rx="2" fill="#2a6b4a" opacity="0.25"/>
-              <polygon points="36,8 56,24 16,24" fill="#2a6b4a" opacity="0.35"/>
-              <rect x="28" y="44" width="16" height="20" rx="2" fill="#2a6b4a" opacity="0.4"/>
-              <rect x="18" y="38" width="10" height="10" rx="1" fill="#2a6b4a" opacity="0.3"/>
-              <rect x="44" y="38" width="10" height="10" rx="1" fill="#2a6b4a" opacity="0.3"/>
-            </svg>
+          <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" class="project-thumb">
+            <img src="massachusetts_schools.png" alt="Massachusetts Public Schools Dropout Analysis" />
           </a>
           <div class="project-card-header">
             <div class="project-type">Tableau · Data Visualization</div>
@@ -425,34 +416,33 @@
           </div>
         </div>
 
-        <!-- 3. World Bank -->
-        <div class="project-card fade-up" style="transition-delay:0.1s">
-          <div class="project-thumb-placeholder ph-finance">
-            <svg width="72" height="72" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="8" y="48" width="10" height="16" rx="2" fill="#ba7517" opacity="0.5"/>
-              <rect x="22" y="36" width="10" height="28" rx="2" fill="#ba7517" opacity="0.6"/>
-              <rect x="36" y="28" width="10" height="36" rx="2" fill="#ba7517" opacity="0.7"/>
-              <rect x="50" y="18" width="10" height="46" rx="2" fill="#ba7517" opacity="0.85"/>
-              <path d="M8 44 L27 32 L41 24 L55 14" stroke="#ba7517" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.6"/>
-              <circle cx="8" cy="44" r="3" fill="#ba7517" opacity="0.8"/>
-              <circle cx="27" cy="32" r="3" fill="#ba7517" opacity="0.8"/>
-              <circle cx="41" cy="24" r="3" fill="#ba7517" opacity="0.8"/>
-              <circle cx="55" cy="14" r="3" fill="#ba7517" opacity="0.8"/>
-            </svg>
-          </div>
+        <!-- 3. World Bank — now a live article with real cover image -->
+        <div class="project-card fade-up" style="transition-delay:0.1s" data-href="https://www.linkedin.com/pulse/what-happened-176-billion-world-bank-funding-sql-myanmar-de-pablo-v9e0c">
+          <a href="https://www.linkedin.com/pulse/what-happened-176-billion-world-bank-funding-sql-myanmar-de-pablo-v9e0c" target="_blank" class="project-thumb">
+            <img src="Cover_Picture.png" alt="What Happened to $1.76 Billion in World Bank Funding?" />
+          </a>
           <div class="project-card-header">
             <div class="project-type">SQL · Financial Analysis</div>
-            <div class="project-title">World Bank Loan Portfolio Analysis</div>
-            <span class="project-badge-coming">Coming soon</span>
+            <a href="https://www.linkedin.com/pulse/what-happened-176-billion-world-bank-funding-sql-myanmar-de-pablo-v9e0c" target="_blank" class="project-title">What Happened to $1.76 Billion in World Bank Funding?</a>
           </div>
           <div class="project-card-body">
-            <div class="project-coming">
-              <div class="project-coming-text"><strong>Business question:</strong> Where is the World Bank lending money, to whom, and are there patterns in how loans are structured or repaid? Analysis of 1.2M real transactions using MySQL — JOINs, aggregations, CTEs, and window functions.</div>
-            </div>
+            <ul class="project-bullets">
+              <li><strong>Problem:</strong> After Myanmar's 2021 military coup, 200+ civil society organizations called for a loan freeze — this analysis traces what happened to the portfolio in the data</li>
+              <li><strong>Tools:</strong> MySQL — aggregations, filtering, and period analysis on 55 Myanmar records from the World Bank IDA global dataset (11,171 records, March 2026)</li>
+              <li><strong>Questions explored:</strong>
+                <ul style="list-style:none; margin-top:0.35rem; display:flex; flex-direction:column; gap:0.25rem;">
+                  <li style="font-size:0.83rem; color:var(--ink-2); padding-left:1rem;">→ How much was committed, and what is the current state?</li>
+                  <li style="font-size:0.83rem; color:var(--ink-2); padding-left:1rem;">→ How did lending shift across Myanmar's key political periods?</li>
+                  <li style="font-size:0.83rem; color:var(--ink-2); padding-left:1rem;">→ Which projects were cancelled, and how much had already been disbursed?</li>
+                  <li style="font-size:0.83rem; color:var(--ink-2); padding-left:1rem;">→ Did cancellations target specific priorities, or was the withdrawal broad?</li>
+                </ul>
+              </li>
+              <li><strong>Approach:</strong> Framed as 5 business questions before writing a single query — showing how to use open public data to trace accountability in international lending</li>
+            </ul>
           </div>
           <div class="project-footer">
-            <div class="project-tags"><span class="tag">SQL</span><span class="tag">Financial Analysis</span><span class="tag">Data Mining</span></div>
-            <span class="coming-soon">Coming soon</span>
+            <div class="project-tags"><span class="tag">SQL</span><span class="tag">World Bank IDA</span><span class="tag">Myanmar</span><span class="tag">Financial Analysis</span></div>
+            <a href="https://www.linkedin.com/pulse/what-happened-176-billion-world-bank-funding-sql-myanmar-de-pablo-v9e0c" target="_blank" class="project-link">Read Write-up ↗</a>
           </div>
         </div>
 
