@@ -113,6 +113,12 @@
 
     /* PLACEHOLDER SVG GRAPHICS */
     .ph-hospital { background: linear-gradient(135deg, #e8f0fe 0%, #d2e3fc 100%); }
+    .ph-azimuth { background: linear-gradient(135deg, #edf0fb 0%, #d9dff7 100%); }
+
+    /* INLINE ICONS (replace emoji) */
+    .stat-icon svg, .skill-card-icon svg, .edu-card-icon svg { width: 22px; height: 22px; stroke: var(--accent); fill: none; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+    .resume-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .project-badge-featured { display: inline-block; font-size: 0.68rem; font-weight: 500; background: var(--accent); color: #fff; padding: 2px 10px; border-radius: 20px; margin-top: 0.4rem; letter-spacing: 0.04em; }
 
     /* EXPERIENCE */
     #experience { background: var(--paper-2); }
