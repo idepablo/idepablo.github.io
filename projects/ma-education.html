@@ -147,10 +147,11 @@
       <span class="meta-pill">🗄️ Massachusetts public schools data</span>
       <a class="meta-pill" href="https://public.tableau.com/app/profile/ignacio.de.pablo/viz/MASchoolsDropoutAnalysis/Dashboard" target="_blank" rel="noopener" style="color:var(--accent)">Open on Tableau Public ↗</a>
     </div>
-    <div class="stat-band">
-      <div class="cell reveal"><div class="num">1,800+</div><div class="cap">Schools evaluated</div></div>
-      <div class="cell reveal"><div class="num">100+</div><div class="cap">Performance metrics</div></div>
-      <div class="cell reveal"><div class="num">4</div><div class="cap">Chart types working together</div></div>
+    <div class="stat-band" style="grid-template-columns:repeat(4,1fr)">
+      <div class="cell reveal"><div class="num">1,861</div><div class="cap">Schools evaluated</div></div>
+      <div class="cell reveal"><div class="num">953K</div><div class="cap">Students enrolled</div></div>
+      <div class="cell reveal"><div class="num">7.1%</div><div class="cap">Average dropout rate</div></div>
+      <div class="cell reveal"><div class="num">37</div><div class="cap">Critical schools · ≥20% dropout</div></div>
     </div>
   </div>
 </header>
@@ -189,14 +190,17 @@
 
   <div class="wrap">
 
-    <!-- KEY FINDINGS — fill in with your real conclusions from the analysis, then remove this comment.
     <h2 class="reveal">Key findings</h2>
+    <p>Of the 1,861 schools in the dataset, 376 report graduation-cohort data, and that is where the dropout story lives.</p>
     <ul>
-      <li>Finding 1</li>
-      <li>Finding 2</li>
-      <li>Finding 3</li>
+      <li><strong>Dropout is concentrated, not widespread.</strong> The median school loses just 2.9% of its cohort, and 48 schools report zero dropouts. But the average is 7.1% because a small group of schools pulls it up: 37 "critical" schools sit at or above a 20% dropout rate, topping out at 71.4% at Frederick Douglass Academy in Brockton.</li>
+      <li><strong>Economic disadvantage is the strongest signal in the data.</strong> The share of economically disadvantaged students correlates with dropout rate at r = 0.66, the strongest relationship of any metric tested. Schools in the top quartile of economic disadvantage average a 17.8% dropout rate; schools in the bottom quartile average 1.2%. That is roughly a 15x gap.</li>
+      <li><strong>Smaller class sizes correlate with <em>higher</em> dropout, and that's not what it looks like.</strong> Class size shows a negative correlation with dropout (r = −0.42): critical schools average 10.7 students per class and 277 enrolled, versus 15.9 and 882 elsewhere. My interpretation is that this reflects school type rather than cause and effect. Many of the highest-dropout schools are small alternative and academy programs that exist specifically to serve at-risk students, so small classes are a marker of the population served, not a policy failure.</li>
+      <li><strong>Teacher salary barely moves the needle.</strong> Average teacher salary shows almost no relationship with dropout at the school level (r = −0.06), a reminder that spending metrics alone don't explain student outcomes in this dataset.</li>
+      <li><strong>The problem has a geography.</strong> High-dropout schools cluster in Massachusetts's Gateway Cities: Springfield's ten cohort schools average a 22.8% dropout rate, with Lawrence (31.2%), New Bedford (30.4%), Chicopee (26.3%), Brockton (23.5%), and Fall River (22.4%) close behind.</li>
     </ul>
-    -->
+    <p><strong>What a stakeholder should do with this:</strong> the data argues for targeted intervention over blanket policy. The 37 critical schools are a named, finite list concentrated in a handful of districts, and the strongest lever the data points to is support tied to economic disadvantage, not class size or salary adjustments.</p>
+    <p style="color:var(--text-3);font-size:.86rem">Figures computed directly from the dashboard's packaged dataset (Massachusetts public schools, 2017 report year; 1,861 schools, 376 with graduation-cohort data).</p>
 
     <h2 class="reveal">Why this matters</h2>
     <p>Dashboards like this one are how analytics earns its keep in an organization: leadership shouldn't need to file a request and wait for a report to know where the problems are. The same design principles — KPIs for orientation, scatter plots for outlier detection, ranked bars for comparison — carry directly into the operational and financial dashboards I built during seven years in fintech, where the "schools" were 12,000+ merchants and the metrics were fees, chargebacks, and settlement volume.</p>
