@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>What Happened to $1.76 Billion in World Bank Funding? A SQL Analysis of Myanmar | Ignacio de Pablo</title>
+<meta name="description" content="A SQL analysis of how $4.31B in World Bank IDA lending to Myanmar shifted across political periods — and where $1.76B in cancelled funding landed. By Ignacio de Pablo." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#ffffff; --bg-2:#f5f5f7; --bg-3:#fbfbfd;
+    --text:#1d1d1f; --text-2:#6e6e73; --text-3:#86868b;
+    --line:rgba(0,0,0,.10); --card:#ffffff; --card-line:rgba(0,0,0,.08);
+    --accent:#0071e3; --accent-2:#0059b3; --accent-soft:rgba(0,113,227,.10);
+    --grad-a:#0071e3; --grad-b:#22a0e8;
+    --shadow:0 4px 24px rgba(0,0,0,.06); --shadow-lg:0 18px 60px rgba(0,0,0,.10);
+    --nav-bg:rgba(255,255,255,.72);
+    --code-bg:#f5f5f7; --code-line:rgba(0,0,0,.08);
+    --font-display:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+    --maxw:820px;
+  }
+  html[data-theme="dark"]{
+    --bg:#000000; --bg-2:#0a0a0c; --bg-3:#101014;
+    --text:#f5f5f7; --text-2:#a1a1a6; --text-3:#86868b;
+    --line:rgba(255,255,255,.12); --card:#141416; --card-line:rgba(255,255,255,.09);
+    --accent:#2997ff; --accent-2:#0a84ff; --accent-soft:rgba(41,151,255,.15);
+    --grad-a:#2997ff; --grad-b:#38bdf8;
+    --shadow:0 4px 24px rgba(0,0,0,.4); --shadow-lg:0 24px 70px rgba(0,0,0,.6);
+    --nav-bg:rgba(10,10,12,.68);
+    --code-bg:#101014; --code-line:rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:-.005em;background:var(--bg);color:var(--text);line-height:1.65;
+    transition:background .5s ease,color .5s ease;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+    background:linear-gradient(90deg,var(--grad-a),var(--grad-b));transition:width .08s linear}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+    background:var(--nav-bg);border-bottom:1px solid transparent;transition:border-color .4s ease,background .5s ease}
+  nav.scrolled{border-bottom-color:var(--line)}
+  .navbar{max-width:1120px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:600;letter-spacing:-.01em;font-size:1.02rem;font-family:var(--font-display)}
+  .navlinks{display:flex;gap:30px;align-items:center}
+  .navlinks a{color:var(--text-2);font-size:.9rem;font-weight:450;transition:color .25s}
+  .navlinks a:hover{color:var(--text)}
+  .theme-toggle{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--text);
+    cursor:pointer;display:grid;place-items:center;transition:transform .3s,background .3s,border-color .3s}
+  .theme-toggle:hover{background:var(--bg-2);transform:scale(1.06)}
+  .theme-toggle svg{width:17px;height:17px}
+  @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
+
+  /* ARTICLE HERO */
+  .article-hero{padding:150px 0 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:18px}
+  .byline{color:var(--text-3);font-size:.92rem;margin-bottom:8px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .meta-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border:1px solid var(--card-line);border-radius:980px;
+    background:var(--card);font-size:.82rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow)}
+
+  /* HEADLINE STATS */
+  .stat-band{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:48px 0 0}
+  @media(max-width:720px){.stat-band{grid-template-columns:repeat(2,1fr)}}
+  .stat-band .cell{background:var(--card);border:1px solid var(--card-line);border-radius:18px;padding:20px 18px;box-shadow:var(--shadow)}
+  .stat-band .num{font-family:var(--font-display);font-size:clamp(1.4rem,2.6vw,1.9rem);font-weight:700;letter-spacing:-.02em;
+    background:linear-gradient(90deg,var(--grad-a),var(--grad-b));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat-band .cap{color:var(--text-3);font-size:.82rem;margin-top:4px}
+
+  /* ARTICLE BODY */
+  article{padding:64px 0 90px}
+  article h2{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,1.85rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:60px 0 6px}
+  article h2:first-child{margin-top:0}
+  article .qsub{color:var(--text-3);font-size:.95rem;font-style:italic;margin-bottom:18px}
+  article p{color:var(--text-2);margin-bottom:18px;max-width:70ch}
+  article strong{color:var(--text);font-weight:600}
+  article ul,article ol{margin:0 0 18px 22px;color:var(--text-2)}
+  article li{margin-bottom:8px}
+  hr{border:none;border-top:1px solid var(--line);margin:44px 0}
+
+  /* CODE BLOCKS */
+  pre{background:var(--code-bg);border:1px solid var(--code-line);border-radius:16px;padding:20px 22px;overflow-x:auto;
+    margin:22px 0;box-shadow:var(--shadow)}
+  code{font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:.83rem;line-height:1.6;color:var(--text)}
+  pre .kw{color:var(--accent);font-weight:600}
+  pre .cm{color:var(--text-3)}
+  pre .st{color:#bf5af2}
+  html[data-theme="light"] pre .st{color:#8944ab}
+
+  /* RESULT TABLES */
+  .tbl-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--card-line);border-radius:16px;box-shadow:var(--shadow);max-height:480px;overflow-y:auto}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;background:var(--card)}
+  th{font-family:var(--font-display);text-align:left;font-weight:600;color:var(--text);padding:11px 14px;
+    border-bottom:1px solid var(--line);background:var(--bg-2);white-space:nowrap;position:sticky;top:0}
+  td{padding:9px 14px;border-bottom:1px solid var(--card-line);color:var(--text-2);white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td.hi{color:var(--accent);font-weight:600}
+
+  /* CTA */
+  .article-cta{border-top:1px solid var(--line);padding:56px 0 20px;margin-top:60px;text-align:center}
+  .article-cta h3{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+  .article-cta p{color:var(--text-2);max-width:560px;margin:0 auto 26px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{padding:12px 26px;border-radius:980px;font-size:.95rem;font-weight:500;transition:transform .25s,background .25s,box-shadow .25s;cursor:pointer;border:none;display:inline-block}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 26px var(--accent-soft)}
+  .btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--accent-soft);transform:scale(1.04)}
+
+  footer{border-top:1px solid var(--line);padding:40px 24px;text-align:center;color:var(--text-3);font-size:.86rem}
+  footer a{color:var(--text-2)}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav id="nav">
+  <div class="navbar">
+    <a href="/" class="brand">Ignacio <span>de Pablo</span></a>
+    <div class="navlinks">
+      <a href="/#about">About</a>
+      <a href="/#skills">Skills</a>
+      <a href="/#work">Work</a>
+      <a href="/#certs">Certifications</a>
+      <a href="/#contact">Contact</a>
+      <a href="/#work" class="nav-back">← Portfolio</a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode"></button>
+    </div>
+  </div>
+</nav>
+
+<header class="article-hero">
+  <div class="wrap">
+    <div class="eyebrow">Case Study · SQL · Financial Analysis</div>
+    <h1>What Happened to $1.76 Billion in World Bank Funding? A SQL Analysis of Myanmar</h1>
+    <div class="byline">Ignacio de Pablo · March 31, 2026</div>
+    <div class="meta-row">
+      <span class="meta-pill">🛠️ MySQL</span>
+      <span class="meta-pill">🗄️ World Bank IDA · 11,171 records</span>
+      <span class="meta-pill">📅 Snapshot: March 2026</span>
+      <a class="meta-pill" href="https://www.linkedin.com/pulse/what-happened-176-billion-world-bank-funding-sql-myanmar-de-pablo-v9e0c" target="_blank" rel="noopener" style="color:var(--accent)">Also published on LinkedIn ↗</a>
+    </div>
+    <div class="stat-band">
+      <div class="cell reveal"><div class="num">$4.31B</div><div class="cap">Committed across 55 projects</div></div>
+      <div class="cell reveal"><div class="num">$1.76B</div><div class="cap">Cancelled · 41% of all funding</div></div>
+      <div class="cell reveal"><div class="num">$2.45B</div><div class="cap">Actually disbursed</div></div>
+      <div class="cell reveal"><div class="num">$1.43B</div><div class="cap">Still owed today</div></div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="wrap">
+
+    <p>The World Bank's International Development Association (IDA) is the lending arm that finances development in the world's poorest countries. Since its founding in 1960, it has committed hundreds of billions of dollars across thousands of projects, from building roads in Sub-Saharan Africa to funding healthcare systems in South Asia.</p>
+    <p>When I started exploring the IDA dataset, I had 11,171 loan records spanning dozens of countries and six decades. While reviewing the data, I came across Myanmar. The country's lending history immediately reminded me of the 2021 military coup, an event widely covered at the time. I found myself wondering: what did that political disruption actually look like in the financial data? That question became the focus of this project.</p>
+    <p>Myanmar received $4.31 billion in World Bank financing across 55 projects spanning five decades.</p>
+    <p>Then, on February 1st, 2021, a military coup disrupted that trajectory.</p>
+    <p>At the time of the coup, over 200 Myanmar civil society organizations called for a freeze on World Bank loans. The data shows what happened next.</p>
+    <p>I wanted to understand what that moment looked like in the data, not in headlines, but in dollars, projects, and cancelled commitments. So I loaded the World Bank's IDA lending dataset into MySQL and started asking questions.</p>
+    <p>Here's what I found.</p>
+
+    <hr />
+
+    <h2 class="reveal">About the Dataset &amp; Tools</h2>
+    <p>The dataset contains the latest available snapshot of IDA lending data, with 11,171 records covering loans globally as of March 2026. I filtered Myanmar's 55 records and analyzed them using MySQL.</p>
+    <p>Tools: MySQL · Data: World Bank IDA Statement of Credits, Grants and Guarantees — Latest Available Snapshot (11,171 records, March 2026)</p>
+
+    <hr />
+
+    <h2 class="reveal">Business Questions I Explored</h2>
+    <p>Before writing a single query, I framed five questions:</p>
+    <ol>
+      <li>How much did the World Bank commit to Myanmar, and what is the current state of that investment?</li>
+      <li>How did lending change across Myanmar's key political periods?</li>
+      <li>Which projects were cancelled, and how much had already been disbursed before cancellation?</li>
+      <li>Which projects survived the disruption?</li>
+      <li>Did the cancellations target specific development priorities, or was the withdrawal broad?</li>
+    </ol>
+
+    <hr />
+
+    <h2 class="reveal">Q1 - Portfolio Overview</h2>
+    <p class="qsub">How much did the World Bank commit to Myanmar, and what is the current state of that investment?</p>
+<pre><code><span class="cm">-- Q1: Portfolio Overview</span>
+<span class="cm">-- Question: How much did the World Bank commit to Myanmar, and what is the current</span>
+<span class="cm">-- state of that investment?</span>
+
+<span class="kw">SELECT</span>
+    <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_loans,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Original_Principal_Amount_US) / 1000000000, 2) <span class="kw">AS</span> committed_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Cancelled_Amount_US) / 1000000000, 2) <span class="kw">AS</span> cancelled_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Disbursed_Amount_US) / 1000000000, 2) <span class="kw">AS</span> disbursed_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Repaid_to_IDA_US) / 1000000000, 2) <span class="kw">AS</span> repaid_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Due_to_IDA_US) / 1000000000, 2) <span class="kw">AS</span> still_owed_billions
+<span class="kw">FROM</span> ida_latest
+<span class="kw">WHERE</span> Country_Economy = <span class="st">'Myanmar'</span>
+;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>total_loans</th><th>committed_billions</th><th>cancelled_billions</th><th>disbursed_billions</th><th>repaid_billions</th><th>still_owed_billions</th></tr>
+      <tr><td>55</td><td>4.31</td><td class="hi">1.76</td><td>2.45</td><td>0.89</td><td>1.43</td></tr>
+    </table></div>
+    <p>The numbers tell a clear story: of $4.31 billion committed, nearly 41% ($1.76 billion) was cancelled. Only $2.45 billion actually reached Myanmar. The country has repaid $890 million and still owes $1.43 billion today.</p>
+    <p>This is not a portfolio winding down cleanly. It's a portfolio interrupted.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q2 - Lending by Era</h2>
+    <p class="qsub">How did World Bank lending change across Myanmar's key political periods?</p>
+<pre><code><span class="cm">-- Q2: Lending by Era</span>
+<span class="cm">-- Question: How did World Bank lending change across Myanmar's key political periods?</span>
+
+<span class="kw">SELECT</span>
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> <span class="kw">YEAR</span>(<span class="kw">STR_TO_DATE</span>(Board_Approval_Date, <span class="st">'%m/%d/%Y'</span>)) &lt; 2011
+            <span class="kw">THEN</span> <span class="st">'1. Before 2011 - Isolation'</span>
+        <span class="kw">WHEN</span> <span class="kw">YEAR</span>(<span class="kw">STR_TO_DATE</span>(Board_Approval_Date, <span class="st">'%m/%d/%Y'</span>)) <span class="kw">BETWEEN</span> 2011 <span class="kw">AND</span> 2020
+            <span class="kw">THEN</span> <span class="st">'2. 2011-2020 - Reform &amp; Opening'</span>
+        <span class="kw">ELSE</span> <span class="st">'3. 2025 - New Approvals After the Gap'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> era,
+    <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_loans,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Original_Principal_Amount_US) / 1000000000, 2) <span class="kw">AS</span> committed_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Cancelled_Amount_US) / 1000000000, 2) <span class="kw">AS</span> cancelled_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Disbursed_Amount_US) / 1000000000, 2) <span class="kw">AS</span> disbursed_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Repaid_to_IDA_US) / 1000000000, 2) <span class="kw">AS</span> repaid_billions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Due_to_IDA_US) / 1000000000, 2) <span class="kw">AS</span> still_owed_billions,
+    <span class="kw">ROUND</span>(<span class="kw">AVG</span>(Original_Principal_Amount_US) / 1000000, 2) <span class="kw">AS</span> avg_loan_size_millions
+<span class="kw">FROM</span> ida_latest
+<span class="kw">WHERE</span> Country_Economy = <span class="st">'Myanmar'</span>
+<span class="kw">GROUP BY</span> era
+<span class="kw">ORDER BY</span> era
+;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>era</th><th>total_loans</th><th>committed_billions</th><th>cancelled_billions</th><th>disbursed_billions</th><th>repaid_billions</th><th>still_owed_billions</th><th>avg_loan_size_millions</th></tr>
+      <tr><td>1. Before 2011 - Isolation</td><td>30</td><td>0.8</td><td>0.09</td><td>0.75</td><td>0.7</td><td>0.11</td><td>26.8</td></tr>
+      <tr><td>2. 2011-2020 - Reform &amp; Opening</td><td>21</td><td class="hi">3.42</td><td class="hi">1.67</td><td>1.65</td><td>0.19</td><td>1.32</td><td class="hi">162.74</td></tr>
+      <tr><td>3. 2025 - New Approvals After the Gap</td><td>4</td><td>0.09</td><td>0</td><td>0.04</td><td>0</td><td>0</td><td>23.12</td></tr>
+    </table></div>
+    <p>Three distinct eras emerge from the data:</p>
+    <p><strong>Before 2011: Isolation.</strong> 30 loans totaling $800 million over decades. Average loan size: $26.8 million. Small, cautious commitments. Myanmar was largely cut off from international finance, and the World Bank lent accordingly, carefully, modestly, with most of it eventually repaid.</p>
+    <p><strong>2011–2020: Reform and Opening.</strong> When Myanmar's political environment opened during this period, World Bank lending increased significantly. Just 21 loans, but $3.42 billion committed. Average loan size exploded to $162.7 million, six times larger than the isolation era.</p>
+    <p>These were not cautious bets. They were nation-building investments.</p>
+    <p><strong>2025: New Approvals After the Gap.</strong> A small number of new approvals appear in 2025, suggesting a cautious re-engagement. Four loans totaling $92 million, averaging $23 million each, back to isolation-era scale.</p>
+    <p>The data shows the World Bank doesn't just respond to political change. It mirrors it.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q3 - Where Did $1.76 Billion Go?</h2>
+    <p class="qsub">Which projects were cancelled, and how much had already been disbursed before cancellation?</p>
+<pre><code><span class="cm">-- Q3: Where Did $1.76 Billion Go?</span>
+<span class="cm">-- Question: Which projects were cancelled, how much was disbursed before cancellation,</span>
+<span class="cm">-- and what does that reveal about interrupted development?</span>
+
+<span class="kw">SELECT</span>
+    Project_Name,
+    Board_Approval_Date,
+    <span class="kw">ROUND</span>(Original_Principal_Amount_US / 1000000, 2) <span class="kw">AS</span> committed_millions,
+    <span class="kw">ROUND</span>(Disbursed_Amount_US / 1000000, 2) <span class="kw">AS</span> disbursed_millions,
+    <span class="kw">ROUND</span>(Cancelled_Amount_US / 1000000, 2) <span class="kw">AS</span> cancelled_millions,
+    <span class="kw">ROUND</span>(Cancelled_Amount_US / <span class="kw">NULLIF</span>(Original_Principal_Amount_US, 0) * 100, 1) <span class="kw">AS</span> pct_cancelled,
+    Credit_Status
+<span class="kw">FROM</span> ida_latest
+<span class="kw">WHERE</span> Country_Economy = <span class="st">'Myanmar'</span>
+<span class="kw">AND</span> Cancelled_Amount_US &gt; 0
+<span class="kw">ORDER BY</span> Cancelled_Amount_US <span class="kw">DESC</span>, Credit_Status;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Project_Name</th><th>Board_Approval_Date</th><th>committed_millions</th><th>disbursed_millions</th><th>cancelled_millions</th><th>pct_cancelled</th><th>Credit_Status</th></tr>
+      <tr><td>Power System Efficiency and Resilience</td><td>05/29/2020</td><td>350</td><td>0</td><td class="hi">350</td><td>100</td><td>Fully Cancelled</td></tr>
+      <tr><td>National Food and Agriculture System</td><td>06/26/2020</td><td>200</td><td>0</td><td class="hi">200</td><td>100</td><td>Fully Cancelled</td></tr>
+      <tr><td>Myanmar Development Policy Operation</td><td>04/27/2017</td><td>200</td><td>0</td><td class="hi">200</td><td>100</td><td>Signed</td></tr>
+      <tr><td>Flood and Landslide Emergency Recovery C</td><td>07/14/2016</td><td>200</td><td>37.15</td><td>163.42</td><td>81.7</td><td>Repaying</td></tr>
+      <tr><td>Myanmar SEA DRM Project</td><td>06/15/2017</td><td>116</td><td>2.11</td><td>113.94</td><td>98.2</td><td>Repaying</td></tr>
+      <tr><td>Essential Health Services Access Project</td><td>05/29/2020</td><td>100</td><td>0</td><td class="hi">100</td><td>100</td><td>Fully Cancelled</td></tr>
+      <tr><td>IAQE project</td><td>03/03/2020</td><td>100</td><td>0</td><td class="hi">100</td><td>100</td><td>Fully Cancelled</td></tr>
+      <tr><td>Myanmar National Electrification Project</td><td>09/16/2015</td><td>400</td><td>303.37</td><td>97.73</td><td>24.4</td><td>Repaying</td></tr>
+      <tr><td>MCCT for improved nutrition</td><td>09/26/2019</td><td>100</td><td>9.9</td><td>90.27</td><td>90.3</td><td>Disbursing&amp;Repaying</td></tr>
+      <tr><td>Myanmar Financial Sector Development</td><td>12/20/2016</td><td>100</td><td>18.27</td><td>82.06</td><td>82.1</td><td>Repaying</td></tr>
+      <tr><td>Myanmar COVID-19 Response</td><td>04/14/2020</td><td>50</td><td>7.57</td><td>44.47</td><td>88.9</td><td>Repaying</td></tr>
+      <tr><td>GAS DEVT &amp; UTILIZATI</td><td>07/21/1987</td><td>63</td><td>21.06</td><td>42.33</td><td>67.2</td><td>Repaying</td></tr>
+      <tr><td>Ayeyarwady Integrated River Basin Mgmt</td><td>12/09/2014</td><td>100</td><td>66.31</td><td>27.45</td><td>27.4</td><td>Repaying</td></tr>
+      <tr><td>Agricultural Development Support Project</td><td>04/23/2015</td><td>100</td><td>73</td><td>26.66</td><td>26.7</td><td>Repaying</td></tr>
+      <tr><td>Reengagement and Reform Support Program</td><td>01/22/2013</td><td>440</td><td>419.6</td><td>22.32</td><td>5.1</td><td>Repaying</td></tr>
+      <tr><td>GRAIN STORAGE II</td><td>05/29/1986</td><td>30</td><td>10.24</td><td>21.5</td><td>71.7</td><td>Repaying</td></tr>
+      <tr><td>Essential Health Services Access Project</td><td>10/14/2014</td><td>100</td><td>74.87</td><td>17.65</td><td>17.7</td><td>Repaying</td></tr>
+      <tr><td>Myanmar-Electric Power Project</td><td>09/24/2013</td><td>140</td><td>114.31</td><td>17.17</td><td>12.3</td><td>Repaying</td></tr>
+      <tr><td>FORESTRY II</td><td>08/09/1979</td><td>35</td><td>24.91</td><td>10.09</td><td>28.8</td><td>Repaying</td></tr>
+      <tr><td>MM: Telecommunications Sector Reform</td><td>02/06/2014</td><td>31.5</td><td>21.9</td><td>7.43</td><td>23.6</td><td>Repaying</td></tr>
+      <tr><td>Modernization of Public Finance Mgmt</td><td>04/02/2014</td><td>30</td><td>21.2</td><td>6.81</td><td>22.7</td><td>Repaying</td></tr>
+      <tr><td>IRRIG. II NYAUNGGYAT</td><td>05/29/1980</td><td>90</td><td>86.96</td><td>3.04</td><td>3.4</td><td>Repaying</td></tr>
+      <tr><td>TANK IRRIG.</td><td>12/21/1982</td><td>19</td><td>17.66</td><td>3</td><td>15.8</td><td>Repaying</td></tr>
+      <tr><td>GRAIN STORAGE</td><td>01/06/1981</td><td>23</td><td>17.23</td><td>2.24</td><td>9.7</td><td>Repaying</td></tr>
+      <tr><td>LOWER BURMA PADDY DE</td><td>06/15/1978</td><td>30</td><td>28.08</td><td>1.92</td><td>6.4</td><td>Repaying</td></tr>
+      <tr><td>WOOD INDUSTRIES I</td><td>03/17/1981</td><td>32</td><td>26.34</td><td>1.66</td><td>5.2</td><td>Repaying</td></tr>
+      <tr><td>TIMBER DISTRIBUTION</td><td>06/22/1985</td><td>17.75</td><td>21.83</td><td>1.39</td><td>7.8</td><td>Repaying</td></tr>
+      <tr><td>LOWER BURMA PADDY DE</td><td>07/06/1978</td><td>34.5</td><td>33.77</td><td>0.73</td><td>2.1</td><td>Repaying</td></tr>
+      <tr><td>PORTS III</td><td>05/24/1983</td><td>50</td><td>60.61</td><td>0.73</td><td>1.5</td><td>Repaying</td></tr>
+      <tr><td>RAILWAYS III</td><td>06/26/1973</td><td>16.7</td><td>16.03</td><td>0.67</td><td>4</td><td>Fully Repaid</td></tr>
+      <tr><td>FORESTRY</td><td>07/11/1974</td><td>24</td><td>23.49</td><td>0.51</td><td>2.1</td><td>Fully Repaid</td></tr>
+      <tr><td>SEEDS</td><td>06/22/1985</td><td>14.5</td><td>19.71</td><td>0.5</td><td>3.4</td><td>Repaying</td></tr>
+      <tr><td>RUBBER REHAB II</td><td>06/14/1983</td><td>9</td><td>10.48</td><td>0.41</td><td>4.6</td><td>Repaying</td></tr>
+      <tr><td>RUBBER REHABILITATION</td><td>02/06/1979</td><td>4.5</td><td>4.13</td><td>0.37</td><td>8.1</td><td>Repaying</td></tr>
+      <tr><td>POWER I</td><td>05/13/1982</td><td>80</td><td>82.03</td><td>0.36</td><td>0.5</td><td>Repaying</td></tr>
+      <tr><td>LIVESTOCK I</td><td>12/23/1975</td><td>7.5</td><td>7.25</td><td>0.25</td><td>3.3</td><td>Fully Repaid</td></tr>
+      <tr><td>IRRIGATION I</td><td>06/13/1974</td><td>17</td><td>16.76</td><td>0.22</td><td>1.3</td><td>Fully Repaid</td></tr>
+      <tr><td>WOOD IND. II</td><td>03/06/1984</td><td>25</td><td>30.82</td><td>0.21</td><td>0.8</td><td>Repaying</td></tr>
+      <tr><td>INDUSTRY MINING</td><td>03/08/1977</td><td>16</td><td>15.8</td><td>0.2</td><td>1.2</td><td>Repaying</td></tr>
+      <tr><td>TEXTILES</td><td>12/13/1983</td><td>29.7</td><td>36.76</td><td>0.18</td><td>0.6</td><td>Repaying</td></tr>
+      <tr><td>SEED DEVELOPMENT</td><td>11/01/1977</td><td>5.5</td><td>5.38</td><td>0.12</td><td>2.1</td><td>Repaying</td></tr>
+      <tr><td>CONSTRUCTION IND. I</td><td>05/25/1982</td><td>20</td><td>19.82</td><td>0.02</td><td>0.1</td><td>Repaying</td></tr>
+      <tr><td>INLAND WATER TRANSPO</td><td>06/26/1973</td><td>16.3</td><td>16.28</td><td>0.02</td><td>0.1</td><td>Fully Repaid</td></tr>
+      <tr><td>PORTS II</td><td>12/21/1976</td><td>10</td><td>10</td><td>0</td><td>0</td><td>Repaying</td></tr>
+      <tr><td>IRRIG REHAB</td><td>08/28/1986</td><td>14</td><td>16.76</td><td>0</td><td>0</td><td>Repaying</td></tr>
+    </table></div>
+    <p>This is where the data becomes uncomfortable.</p>
+    <p>Five projects were cancelled at 100%, meaning the money was approved, the projects were designed, and then nothing arrived:</p>
+    <ul>
+      <li>Power System Efficiency and Resilience: $350M committed, $0 disbursed</li>
+      <li>National Food and Agriculture System: $200M committed, $0 disbursed</li>
+      <li>Myanmar Development Policy Operation: $200M committed, $0 disbursed</li>
+      <li>Essential Health Services Access Project: $100M committed, $0 disbursed</li>
+      <li>IAQE Project: $100M committed, $0 disbursed</li>
+    </ul>
+    <p>That's $950 million that never reached the people it was meant for.</p>
+    <p>But some projects were already mid-stream when the cancellations hit, making the interruption even more striking:</p>
+    <ul>
+      <li>Myanmar COVID-19 Response: $50M approved during a global pandemic, $44.47M cancelled after only $7.37M had been deployed</li>
+      <li>MCCT for Improved Nutrition: $100M committed, $90.27M cancelled after only $9.9M reached its recipients</li>
+      <li>Myanmar Financial Sector Development: $100M committed, $82M cancelled after $18M had already gone in</li>
+    </ul>
+    <p>Work had started. Money was flowing. Then it stopped.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q4 - What Survived?</h2>
+    <p class="qsub">Which projects remain active or are still being repaid despite the disruption?</p>
+<pre><code><span class="cm">-- Q4: What Survived?</span>
+<span class="cm">-- Question: Which projects remain active or are still being repaid despite the</span>
+<span class="cm">-- political disruption?</span>
+
+<span class="kw">SELECT</span>
+    Project_Name,
+    Board_Approval_Date,
+    <span class="kw">ROUND</span>(Original_Principal_Amount_US / 1000000, 2) <span class="kw">AS</span> committed_millions,
+    <span class="kw">ROUND</span>(Disbursed_Amount_US / 1000000, 2) <span class="kw">AS</span> disbursed_millions,
+    <span class="kw">ROUND</span>(Due_to_IDA_US / 1000000, 2) <span class="kw">AS</span> still_owed_millions,
+    Credit_Status
+<span class="kw">FROM</span> ida_latest
+<span class="kw">WHERE</span> Country_Economy = <span class="st">'Myanmar'</span>
+<span class="kw">AND</span> Credit_Status <span class="kw">NOT IN</span> (<span class="st">'Fully Cancelled'</span>, <span class="st">'Fully Repaid'</span>)
+<span class="kw">ORDER BY</span> Due_to_IDA_US <span class="kw">DESC</span>
+;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>Project_Name</th><th>Board_Approval_Date</th><th>committed_millions</th><th>disbursed_millions</th><th>still_owed_millions</th><th>Credit_Status</th></tr>
+      <tr><td>Reengagement and Reform Support Program</td><td>01/22/2013</td><td>440</td><td>419.6</td><td class="hi">352.99</td><td>Repaying</td></tr>
+      <tr><td>Myanmar NCCDP</td><td>06/30/2015</td><td>400</td><td>335.57</td><td>276.23</td><td>Disbursing&amp;Repaying</td></tr>
+      <tr><td>Myanmar National Electrification Project</td><td>09/16/2015</td><td>400</td><td>303.37</td><td>252.07</td><td>Repaying</td></tr>
+      <tr><td>Myanmar-Electric Power Project</td><td>09/24/2013</td><td>140</td><td>114.31</td><td>106.11</td><td>Repaying</td></tr>
+      <tr><td>Myanmar Decentralizing Funding to School</td><td>05/20/2014</td><td>80</td><td>73.32</td><td>69.08</td><td>Repaying</td></tr>
+      <tr><td>Essential Health Services Access Project</td><td>10/14/2014</td><td>100</td><td>74.67</td><td>59.43</td><td>Repaying</td></tr>
+      <tr><td>Agricultural Development Support Project</td><td>04/23/2015</td><td>100</td><td>73</td><td>57.26</td><td>Repaying</td></tr>
+      <tr><td>Ayeyarwady Integrated River Basin Mgmt</td><td>12/09/2014</td><td>100</td><td>68.31</td><td>55.75</td><td>Repaying</td></tr>
+      <tr><td>Flood and Landslide Emergency Recovery C</td><td>07/14/2016</td><td>200</td><td>37.15</td><td>31.94</td><td>Repaying</td></tr>
+      <tr><td>MM: Telecommunications Sector Reform</td><td>02/06/2014</td><td>31.5</td><td>21.9</td><td>19.99</td><td>Repaying</td></tr>
+      <tr><td>Modernization of Public Finance Mgmt</td><td>04/02/2014</td><td>30</td><td>21.2</td><td>19.99</td><td>Repaying</td></tr>
+      <tr><td>POWER I</td><td>05/13/1982</td><td>80</td><td>82.02</td><td>17.27</td><td>Repaying</td></tr>
+      <tr><td>PORTS III</td><td>05/24/1983</td><td>50</td><td>60.61</td><td>14.14</td><td>Repaying</td></tr>
+      <tr><td>IRRIG. II NYAUNGGYAT</td><td>05/29/1980</td><td>90</td><td>86.96</td><td>10.43</td><td>Repaying</td></tr>
+      <tr><td>TEXTILES</td><td>12/13/1983</td><td>29.7</td><td>36.76</td><td>9.25</td><td>Repaying</td></tr>
+      <tr><td>MCCT for improved nutrition</td><td>09/26/2019</td><td>100</td><td>9.9</td><td>9.07</td><td>Disbursing&amp;Repaying</td></tr>
+      <tr><td>WOOD IND. II</td><td>03/06/1984</td><td>25</td><td>30.82</td><td>7.76</td><td>Repaying</td></tr>
+      <tr><td>TIMBER DISTRIBUTION</td><td>06/22/1985</td><td>17.75</td><td>21.83</td><td>6.5</td><td>Repaying</td></tr>
+      <tr><td>SEEDS</td><td>06/22/1985</td><td>14.5</td><td>19.71</td><td>5.53</td><td>Repaying</td></tr>
+      <tr><td>Myanmar COVID-19 Response</td><td>04/14/2020</td><td>50</td><td>7.37</td><td>5.4</td><td>Repaying</td></tr>
+      <tr><td>IRRIG REHAB</td><td>08/28/1986</td><td>14</td><td>16.78</td><td>5.33</td><td>Repaying</td></tr>
+      <tr><td>WOOD INDUSTRIES I</td><td>03/17/1981</td><td>32</td><td>26.34</td><td>5.04</td><td>Repaying</td></tr>
+      <tr><td>CONSTRUCTION IND. I</td><td>05/25/1982</td><td>20</td><td>19.82</td><td>4.45</td><td>Repaying</td></tr>
+      <tr><td>TANK IRRIG.</td><td>12/21/1982</td><td>19</td><td>17.68</td><td>4.04</td><td>Repaying</td></tr>
+      <tr><td>GROUNDWATER IRRIG. I</td><td>06/07/1983</td><td>14</td><td>16.55</td><td>4.02</td><td>Repaying</td></tr>
+      <tr><td>Myanmar Financial Sector Development</td><td>12/20/2016</td><td>100</td><td>18.27</td><td>3.83</td><td>Repaying</td></tr>
+      <tr><td>TELECOMMUNICATIONS I</td><td>11/27/1979</td><td>35</td><td>35</td><td>3.68</td><td>Repaying</td></tr>
+      <tr><td>GRAIN STORAGE</td><td>01/06/1981</td><td>23</td><td>17.23</td><td>3.33</td><td>Repaying</td></tr>
+      <tr><td>GRAIN STORAGE II</td><td>05/29/1986</td><td>30</td><td>10.24</td><td>3.24</td><td>Repaying</td></tr>
+      <tr><td>FORESTRY II</td><td>08/09/1979</td><td>35</td><td>24.91</td><td>2.62</td><td>Repaying</td></tr>
+      <tr><td>LOWER BURMA PADDY DE</td><td>07/06/1978</td><td>34.5</td><td>33.77</td><td>2.53</td><td>Repaying</td></tr>
+      <tr><td>RUBBER REHAB II</td><td>06/14/1983</td><td>9</td><td>10.48</td><td>2.31</td><td>Repaying</td></tr>
+      <tr><td>GAS DEVT &amp; UTILIZATI</td><td>07/21/1987</td><td>63</td><td>21.06</td><td>1.31</td><td>Repaying</td></tr>
+      <tr><td>INDUSTRY MINING</td><td>03/08/1977</td><td>16</td><td>15.8</td><td>0.47</td><td>Repaying</td></tr>
+      <tr><td>LOWER BURMA PADDY DE</td><td>06/15/1978</td><td>30</td><td>28.08</td><td>0.42</td><td>Repaying</td></tr>
+      <tr><td>RUBBER REHABILITATION</td><td>02/06/1979</td><td>4.5</td><td>4.13</td><td>0.37</td><td>Repaying</td></tr>
+      <tr><td>SEED DEVELOPMENT</td><td>11/01/1977</td><td>5.5</td><td>5.38</td><td>0.24</td><td>Repaying</td></tr>
+      <tr><td>Myanmar SEA DRM Project</td><td>06/15/2017</td><td>116</td><td>2.11</td><td>0.24</td><td>Repaying</td></tr>
+      <tr><td>PORTS II</td><td>12/21/1976</td><td>10</td><td>10</td><td>0.15</td><td>Repaying</td></tr>
+      <tr><td>Myanmar Development Policy Operation</td><td>04/27/2017</td><td>200</td><td>0</td><td>0</td><td>Signed</td></tr>
+      <tr><td>SCORE</td><td>05/29/2025</td><td>9</td><td>0</td><td>0</td><td>Effective</td></tr>
+      <tr><td>SCORE</td><td>05/29/2025</td><td>43.5</td><td>13.35</td><td>0</td><td>Disbursing</td></tr>
+      <tr><td>Myanmar HANS</td><td>05/29/2025</td><td>24.4</td><td>14.61</td><td>0</td><td>Disbursing</td></tr>
+      <tr><td>Myanmar HANS</td><td>05/29/2025</td><td>19.6</td><td>11</td><td>0</td><td>Disbursing</td></tr>
+      <tr><td>Myanmar NCCDP</td><td>11/01/2012</td><td>80</td><td>73.98</td><td>0</td><td>Disbursing</td></tr>
+    </table></div>
+    <p>Not everything collapsed, and it's worth understanding what survived.</p>
+    <p>The largest surviving loan is the Reengagement and Reform Support Program: $440M committed, $419M disbursed, $353M still owed. Large infrastructure projects like the National Electrification Project ($400M) and the Electric Power Project ($140M) continued because they were too embedded to stop.</p>
+    <p>Perhaps the most surprising finding: loans from the 1970s and 1980s, Wood Industries, Irrigation projects, Ports, are still being repaid today. Myanmar is simultaneously repaying Cold War era debt while having its 21st century development investments cancelled.</p>
+    <p>And in May 2025, three new loans quietly appeared, SCORE and Myanmar HANS, small humanitarian commitments totaling $92 million. The data suggests the relationship has reset to a much more cautious baseline.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q5 - Which Sectors Were Hit Hardest?</h2>
+    <p class="qsub">Did the cancellations target specific development priorities, or was the withdrawal broad?</p>
+<pre><code><span class="cm">-- Q5: Which Sectors Were Hit Hardest?</span>
+<span class="cm">-- Question: Did the cancellations target specific development priorities, or was the</span>
+<span class="cm">-- withdrawal broad?</span>
+
+<span class="kw">SELECT</span>
+    <span class="kw">CASE</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Power%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Energy%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Electric%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Gas%'</span>
+            <span class="kw">THEN</span> <span class="st">'Energy &amp; Power'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Health%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Nutrition%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Medical%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%COVID%'</span>
+            <span class="kw">THEN</span> <span class="st">'Health'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Road%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Transport%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Railway%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Port%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Telecom%'</span>
+            <span class="kw">THEN</span> <span class="st">'Transport &amp; Infrastructure'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Agriculture%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Food%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Farm%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Seed%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Irrigation%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Irrig%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Rubber%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Timber%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Forestry%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Wood%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Grain%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Paddy%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Livestock%'</span>
+            <span class="kw">THEN</span> <span class="st">'Agriculture &amp; Natural Resources'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Education%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%School%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Learning%'</span>
+            <span class="kw">THEN</span> <span class="st">'Education'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Finance%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Financial%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Reform%'</span>
+            <span class="kw">THEN</span> <span class="st">'Finance &amp; Reform'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Community%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Rural%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%NCCDP%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%MCCT%'</span>
+            <span class="kw">THEN</span> <span class="st">'Community Development'</span>
+        <span class="kw">WHEN</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Flood%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Disaster%'</span>
+            <span class="kw">OR</span> Project_Name <span class="kw">LIKE</span> <span class="st">'%Emergency%'</span>
+            <span class="kw">THEN</span> <span class="st">'Emergency &amp; Disaster'</span>
+        <span class="kw">ELSE</span> <span class="st">'Other'</span>
+    <span class="kw">END</span> <span class="kw">AS</span> sector,
+    <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_loans,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Original_Principal_Amount_US) / 1000000, 2) <span class="kw">AS</span> committed_millions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Disbursed_Amount_US) / 1000000, 2) <span class="kw">AS</span> disbursed_millions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Cancelled_Amount_US) / 1000000, 2) <span class="kw">AS</span> cancelled_millions,
+    <span class="kw">ROUND</span>(<span class="kw">SUM</span>(Cancelled_Amount_US) / <span class="kw">NULLIF</span>(<span class="kw">SUM</span>(Original_Principal_Amount_US), 0) * 100, 1) <span class="kw">AS</span> cancellation_rate_pct
+<span class="kw">FROM</span> ida_latest
+<span class="kw">WHERE</span> Country_Economy = <span class="st">'Myanmar'</span>
+<span class="kw">GROUP BY</span> sector
+<span class="kw">ORDER BY</span> cancelled_millions <span class="kw">DESC</span>;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>sector</th><th>total_loans</th><th>committed_millions</th><th>disbursed_millions</th><th>cancelled_millions</th><th>cancellation_rate_pct</th></tr>
+      <tr><td>Other</td><td>13</td><td>1090.5</td><td>501.4</td><td>539.53</td><td>49.5</td></tr>
+      <tr><td>Energy &amp; Power</td><td>4</td><td>633</td><td>217.4</td><td>409.85</td><td>64.7</td></tr>
+      <tr><td>Health</td><td>4</td><td>350</td><td>91.95</td><td>252.39</td><td class="hi">72.1</td></tr>
+      <tr><td>Agriculture &amp; Natural Resources</td><td>20</td><td>646.25</td><td>418.42</td><td>248.15</td><td>38.4</td></tr>
+      <tr><td>Emergency &amp; Disaster</td><td>1</td><td>200</td><td>37.15</td><td>163.42</td><td class="hi">81.7</td></tr>
+      <tr><td>Finance &amp; Reform</td><td>2</td><td>130</td><td>39.47</td><td>88.87</td><td>68.4</td></tr>
+      <tr><td>Transport &amp; Infrastructure</td><td>8</td><td>704.2</td><td>657.15</td><td>57.81</td><td>8.2</td></tr>
+      <tr><td>Education</td><td>1</td><td>80</td><td>73.32</td><td>0</td><td>0</td></tr>
+      <tr><td>Community Development</td><td>2</td><td>480</td><td>409.55</td><td>0</td><td>0</td></tr>
+    </table></div>
+    <p>The withdrawal was not random.</p>
+    <p>Health projects faced a 72.1% cancellation rate, with $252 million cancelled out of $350 million committed. This includes the COVID-19 response fund, pulled back during a global health crisis. Emergency and Disaster response was cancelled at 81.7%. Finance and Reform projects lost 68.4% of their committed funding. Energy and Power lost 64.7%.</p>
+    <p>By contrast, Transport and Infrastructure survived almost entirely, with only 8.2% cancelled. Community Development and Education saw zero cancellations.</p>
+    <p>The pattern suggests the World Bank pulled back on forward-looking investments, the ones designed to transform Myanmar's systems and institutions, while allowing already-embedded physical infrastructure to continue. Projects that had already poured concrete were harder to stop than projects that existed only in agreements.</p>
+
+    <hr />
+
+    <h2 class="reveal">Key Findings</h2>
+    <ul>
+      <li>Myanmar received <strong>$4.31B</strong> in World Bank commitments across 55 projects</li>
+      <li><strong>41%</strong> of all committed funding ($1.76B) was cancelled</li>
+      <li>Average loan size increased <strong>6x</strong> during the reform era</li>
+      <li><strong>$950M</strong> across five projects was cancelled at 100%. The money never arrived.</li>
+      <li>Health and emergency sectors saw cancellation rates <strong>above 70%</strong></li>
+      <li>Transport and infrastructure saw only <strong>8.2%</strong> cancelled</li>
+      <li>Loans from the 1970s are still being repaid today</li>
+      <li>In 2025, small humanitarian approvals reappear in the data</li>
+    </ul>
+
+    <hr />
+
+    <h2 class="reveal">Closing Thoughts</h2>
+    <p>Data doesn't take sides. But it does keep records.</p>
+    <p>The World Bank's IDA dataset for Myanmar isn't just a financial ledger. It's a timeline of ambition, disruption, and cautious return. The $1.76 billion in cancellations represents more than withdrawn funding. It represents a power grid that wasn't built, a food system that wasn't modernized, a health response that arrived too late and left too soon.</p>
+    <p>What the data can't tell us is what those projects would have meant for the people they were designed to serve. But it can tell us they existed, they were funded, and then they were gone.</p>
+    <p>This is one way political instability can show up in a spreadsheet.</p>
+
+    <div class="article-cta">
+      <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
+      <p>I'm currently building my data analytics portfolio and actively exploring Data Analyst and Business Intelligence roles. If you work with data or are hiring in this space, I'd love to connect.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email Ignacio</a>
+        <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
+        <a class="btn btn-ghost" href="/#work">← Back to portfolio</a>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  © <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript · <a href="https://idepablo.com">idepablo.com</a>
+</footer>
+
+<script>
+/* ---------- THEME ---------- */
+const root=document.documentElement, tbtn=document.getElementById('themeBtn');
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+function setTheme(t){root.setAttribute('data-theme',t);tbtn.innerHTML=t==='dark'?SUN:MOON;try{localStorage.setItem('theme',t)}catch(e){}}
+(function(){let saved;try{saved=localStorage.getItem('theme')}catch(e){}
+  const prefers=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(saved||(prefers?'dark':'light'));})();
+tbtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+/* ---------- NAV SHADOW + SCROLL PROGRESS ---------- */
+const nav=document.getElementById('nav'), prog=document.getElementById('progress');
+function onScroll(){nav.classList.toggle('scrolled',scrollY>10);
+  const h=document.documentElement.scrollHeight-innerHeight;
+  prog.style.width=(h>0?(scrollY/h*100):0)+'%';}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* ---------- REVEAL ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- YEAR ---------- */
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+
+</body>
+</html>
