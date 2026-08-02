@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>One Hospital Resource Limits Everything: Beds. A SQL Deep Dive | Ignacio de Pablo</title>
+<meta name="description" content="A SQL analysis of 101,766 hospital encounters: how long patients stay, what tracks with longer stays, and where the number-two diabetes medication flips. By Ignacio de Pablo." />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="One Hospital Resource Limits Everything: Beds. A SQL Deep Dive | Ignacio de Pablo" />
+<meta property="og:description" content="A SQL analysis of 101,766 hospital encounters: how long patients stay, what tracks with longer stays, and where the number-two diabetes medication flips." />
+<meta property="og:url" content="https://idepablo.com/projects/hospital-length-of-stay.html" />
+<meta property="og:image" content="https://idepablo.com/hospital_beds.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="One Hospital Resource Limits Everything: Beds. A SQL Deep Dive | Ignacio de Pablo" />
+<meta name="twitter:description" content="A SQL analysis of 101,766 hospital encounters: how long patients stay, what tracks with longer stays, and where the number-two diabetes medication flips." />
+<meta name="twitter:image" content="https://idepablo.com/hospital_beds.jpg" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#ffffff; --bg-2:#f5f5f7; --bg-3:#fbfbfd;
+    --text:#1d1d1f; --text-2:#6e6e73; --text-3:#86868b;
+    --line:rgba(0,0,0,.10); --card:#ffffff; --card-line:rgba(0,0,0,.08);
+    --accent:#0071e3; --accent-2:#0059b3; --accent-soft:rgba(0,113,227,.10);
+    --grad-a:#0071e3; --grad-b:#22a0e8;
+    --shadow:0 4px 24px rgba(0,0,0,.06); --shadow-lg:0 18px 60px rgba(0,0,0,.10);
+    --nav-bg:rgba(255,255,255,.72);
+    --code-bg:#f5f5f7; --code-line:rgba(0,0,0,.08);
+    --font-display:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
+    --maxw:820px;
+  }
+  html[data-theme="dark"]{
+    --bg:#000000; --bg-2:#0a0a0c; --bg-3:#101014;
+    --text:#f5f5f7; --text-2:#a1a1a6; --text-3:#86868b;
+    --line:rgba(255,255,255,.12); --card:#141416; --card-line:rgba(255,255,255,.09);
+    --accent:#2997ff; --accent-2:#0a84ff; --accent-soft:rgba(41,151,255,.15);
+    --grad-a:#2997ff; --grad-b:#38bdf8;
+    --shadow:0 4px 24px rgba(0,0,0,.4); --shadow-lg:0 24px 70px rgba(0,0,0,.6);
+    --nav-bg:rgba(10,10,12,.68);
+    --code-bg:#101014; --code-line:rgba(255,255,255,.09);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:-.005em;background:var(--bg);color:var(--text);line-height:1.65;
+    transition:background .5s ease,color .5s ease;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
+  .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
+    background:linear-gradient(90deg,var(--grad-a),var(--grad-b));transition:width .08s linear}
+
+  /* NAV */
+  nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
+    background:var(--nav-bg);border-bottom:1px solid transparent;transition:border-color .4s ease,background .5s ease}
+  nav.scrolled{border-bottom-color:var(--line)}
+  .navbar{max-width:1120px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:600;letter-spacing:-.01em;font-size:1.02rem;font-family:var(--font-display)}
+  .navlinks{display:flex;gap:30px;align-items:center}
+  .navlinks a{color:var(--text-2);font-size:.9rem;font-weight:450;transition:color .25s}
+  .navlinks a:hover{color:var(--text)}
+  .theme-toggle{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--text);
+    cursor:pointer;display:grid;place-items:center;transition:transform .3s,background .3s,border-color .3s}
+  .theme-toggle:hover{background:var(--bg-2);transform:scale(1.06)}
+  .theme-toggle svg{width:17px;height:17px}
+  @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
+
+  /* ARTICLE HERO */
+  .article-hero{padding:150px 0 56px;border-bottom:1px solid var(--line)}
+  .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:18px}
+  .byline{color:var(--text-3);font-size:.92rem;margin-bottom:8px}
+  .meta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  .meta-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border:1px solid var(--card-line);border-radius:980px;
+    background:var(--card);font-size:.82rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow)}
+
+  /* HEADLINE STATS */
+  .stat-band{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin:48px 0 0}
+  @media(max-width:720px){.stat-band{grid-template-columns:repeat(2,1fr)}}
+  .stat-band .cell{background:var(--card);border:1px solid var(--card-line);border-radius:18px;padding:20px 18px;box-shadow:var(--shadow)}
+  .stat-band .num{font-family:var(--font-display);font-size:clamp(1.4rem,2.6vw,1.9rem);font-weight:700;letter-spacing:-.02em;
+    background:linear-gradient(90deg,var(--grad-a),var(--grad-b));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat-band .cap{color:var(--text-3);font-size:.82rem;margin-top:4px}
+
+  /* ARTICLE BODY */
+  article{padding:64px 0 90px}
+  article h2{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,1.85rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:60px 0 6px}
+  article h2:first-child{margin-top:0}
+  article .qsub{color:var(--text-3);font-size:.95rem;font-style:italic;margin-bottom:18px}
+  article p{color:var(--text-2);margin-bottom:18px;max-width:70ch}
+  article strong{color:var(--text);font-weight:600}
+  article ul,article ol{margin:0 0 18px 22px;color:var(--text-2)}
+  article li{margin-bottom:8px}
+  hr{border:none;border-top:1px solid var(--line);margin:44px 0}
+
+  /* CODE BLOCKS */
+  pre{background:var(--code-bg);border:1px solid var(--code-line);border-radius:16px;padding:20px 22px;overflow-x:auto;
+    margin:22px 0;box-shadow:var(--shadow)}
+  code{font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:.83rem;line-height:1.6;color:var(--text)}
+  pre .kw{color:var(--accent);font-weight:600}
+  pre .cm{color:var(--text-3)}
+  pre .st{color:#bf5af2}
+  html[data-theme="light"] pre .st{color:#8944ab}
+
+  /* RESULT TABLES */
+  .tbl-wrap{overflow-x:auto;margin:22px 0;border:1px solid var(--card-line);border-radius:16px;box-shadow:var(--shadow);max-height:480px;overflow-y:auto}
+  table{border-collapse:collapse;width:100%;font-size:.84rem;background:var(--card)}
+  th{font-family:var(--font-display);text-align:left;font-weight:600;color:var(--text);padding:11px 14px;
+    border-bottom:1px solid var(--line);background:var(--bg-2);white-space:nowrap;position:sticky;top:0}
+  td{padding:9px 14px;border-bottom:1px solid var(--card-line);color:var(--text-2);white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  td.hi{color:var(--accent);font-weight:600}
+  td.bar{font-family:"SF Mono",SFMono-Regular,ui-monospace,Menlo,Consolas,monospace;font-size:.66rem;letter-spacing:-1px;color:var(--accent)}
+
+  /* CTA */
+  .article-cta{border-top:1px solid var(--line);padding:56px 0 20px;margin-top:60px;text-align:center}
+  .article-cta h3{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;margin-bottom:10px}
+  .article-cta p{color:var(--text-2);max-width:560px;margin:0 auto 26px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .btn{padding:12px 26px;border-radius:980px;font-size:.95rem;font-weight:500;transition:transform .25s,background .25s,box-shadow .25s;cursor:pointer;border:none;display:inline-block}
+  .btn-primary{background:var(--accent);color:#fff}
+  .btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 26px var(--accent-soft)}
+  .btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--accent-soft);transform:scale(1.04)}
+
+  footer{border-top:1px solid var(--line);padding:40px 24px;text-align:center;color:var(--text-3);font-size:.86rem}
+  footer a{color:var(--text-2)}
+
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav id="nav">
+  <div class="navbar">
+    <a href="/" class="brand">Ignacio <span>de Pablo</span></a>
+    <div class="navlinks">
+      <a href="/#about">About</a>
+      <a href="/#skills">Skills</a>
+      <a href="/#work">Work</a>
+      <a href="/#certs">Certifications</a>
+      <a href="/#contact">Contact</a>
+      <a href="/#work" class="nav-back">← Portfolio</a>
+      <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode"></button>
+    </div>
+  </div>
+</nav>
+
+<header class="article-hero">
+  <div class="wrap">
+    <div class="eyebrow">Case Study · SQL · Healthcare Analytics</div>
+    <h1>One Hospital Resource Limits Everything: Beds. A SQL Deep Dive</h1>
+    <div class="byline">Ignacio de Pablo · August 2026</div>
+    <div class="meta-row">
+      <span class="meta-pill">🛠️ MySQL</span>
+      <span class="meta-pill">🗄️ Diabetes 130-US Hospitals · 101,766 encounters</span>
+      <span class="meta-pill">📅 UCI ML Repository · 1999–2008</span>
+    </div>
+    <div class="stat-band">
+      <div class="cell reveal"><div class="num">101,766</div><div class="cap">Hospital encounters analyzed</div></div>
+      <div class="cell reveal"><div class="num">79%</div><div class="cap">Of stays end within a week</div></div>
+      <div class="cell reveal"><div class="num">43.5%</div><div class="cap">Of bed-days from just 21% of visits</div></div>
+      <div class="cell reveal"><div class="num">80+</div><div class="cap">The age where the #2 diabetes med flips</div></div>
+    </div>
+  </div>
+</header>
+
+<article>
+  <div class="wrap">
+
+    <p>Every hospital runs on the same constraint. If a hospital has 100 beds, it can help 100 people. The 101st patient waits, gets transferred, or goes somewhere else.</p>
+    <p>Adding beds takes years and serious capital. The faster lever is time: if patients who no longer need a bed go home sooner, that bed goes to someone who does. That is why length of stay is one of the most watched numbers in hospital operations. It is a care problem and a financial problem at the same time.</p>
+    <p>I wanted to see what that looks like in real data. So I took a well-known public healthcare dataset, the Diabetes 130-US Hospitals dataset from the UCI Machine Learning Repository, and loaded it into MySQL. It contains 101,766 hospital encounters from 130 US hospitals between 1999 and 2008.</p>
+    <p>One detail matters before any query runs: <strong>each row is an encounter, not a patient</strong>. The same person can appear more than once if they were hospitalized more than once. Every number in this analysis counts hospital visits, not people.</p>
+    <p>With the data loaded, I asked five questions about time in the hospital. Here's what I found.</p>
+
+    <hr />
+
+    <h2 class="reveal">About the Dataset &amp; Tools</h2>
+    <p>The Diabetes 130-US Hospitals dataset covers diabetes-related hospital encounters across 130 US facilities from 1999 to 2008. I loaded it into a MySQL database as two related tables: <strong>health</strong> (encounter-level clinical data: length of stay, procedures, medications) and <strong>demographics</strong> (patient attributes: race, gender, age), joined on the patient number.</p>
+    <p>Tools: MySQL · Data: Diabetes 130-US Hospitals for Years 1999–2008 (101,766 encounters), UCI Machine Learning Repository</p>
+
+    <hr />
+
+    <h2 class="reveal">Business Questions I Explored</h2>
+    <p>Before writing a single query, I framed five questions:</p>
+    <ol>
+      <li>How long do patients actually stay, and do most stays end within a week?</li>
+      <li>Do encounters with more lab procedures also run longer?</li>
+      <li>Which medical specialties drive the most procedures per encounter?</li>
+      <li>Does the average number of lab procedures differ by race?</li>
+      <li>How do the three main diabetes medications rank within each age group?</li>
+    </ol>
+
+    <hr />
+
+    <h2 class="reveal">Q1 - How Long Do Patients Actually Stay?</h2>
+    <p class="qsub">What does the distribution of hospital stays look like, and do most end within a week?</p>
+    <p>SQL has no charts. But it can fake one. With ROUND to create buckets, COUNT to fill them, and RPAD to print one star per 100 encounters, you get a histogram made of text:</p>
+<pre><code><span class="cm">-- Q1: Length-of-stay distribution (1 star = 100 encounters)</span>
+
+<span class="kw">SELECT</span> <span class="kw">ROUND</span>(time_in_hospital, 1) <span class="kw">AS</span> stay_length_days,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count,
+<span class="kw">RPAD</span>(<span class="st">''</span>, <span class="kw">COUNT</span>(*)/100, <span class="st">'*'</span>) <span class="kw">AS</span> bar
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> stay_length_days
+<span class="kw">ORDER BY</span> stay_length_days;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>stay_length_days</th><th>encounter_count</th><th>bar</th></tr>
+      <tr><td>1</td><td>14,208</td><td class="bar">**********************************************************************************************************************************************</td></tr>
+      <tr><td>2</td><td>17,224</td><td class="bar">****************************************************************************************************************************************************************************</td></tr>
+      <tr><td>3</td><td class="hi">17,756</td><td class="bar">**********************************************************************************************************************************************************************************</td></tr>
+      <tr><td>4</td><td>13,924</td><td class="bar">*******************************************************************************************************************************************</td></tr>
+      <tr><td>5</td><td>9,966</td><td class="bar">****************************************************************************************************</td></tr>
+      <tr><td>6</td><td>7,539</td><td class="bar">***************************************************************************</td></tr>
+      <tr><td>7</td><td>5,859</td><td class="bar">***********************************************************</td></tr>
+      <tr><td>8</td><td>4,391</td><td class="bar">********************************************</td></tr>
+      <tr><td>9</td><td>3,002</td><td class="bar">******************************</td></tr>
+      <tr><td>10</td><td>2,342</td><td class="bar">***********************</td></tr>
+      <tr><td>11</td><td>1,855</td><td class="bar">*******************</td></tr>
+      <tr><td>12</td><td>1,448</td><td class="bar">**************</td></tr>
+      <tr><td>13</td><td>1,210</td><td class="bar">************</td></tr>
+      <tr><td>14</td><td>1,042</td><td class="bar">**********</td></tr>
+    </table></div>
+    <p>The shape tells the story before any percentage does. Stays climb fast, peak at 3 days, then fall off in a long tail out to 14 days.</p>
+    <p>The numbers behind the shape: <strong>80,617 encounters lasted less than 7 days. That is 79% of all hospital visits</strong> in the data, roughly four out of five.</p>
+    <p>For a hospital, that is mostly good news. Beds turn over quickly for the typical patient. But the tail is where the operational attention goes. I summed total bed-days on each side of the 7-day line:</p>
+<pre><code><span class="cm">-- Q1b: Bed-days consumed on each side of the 7-day line</span>
+
+<span class="kw">SELECT</span>
+<span class="kw">CASE</span> <span class="kw">WHEN</span> time_in_hospital &lt; 7 <span class="kw">THEN</span> <span class="st">'under 7 days'</span> <span class="kw">ELSE</span> <span class="st">'7 days or more'</span> <span class="kw">END</span> <span class="kw">AS</span> stay_group,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count,
+<span class="kw">SUM</span>(time_in_hospital) <span class="kw">AS</span> total_bed_days,
+<span class="kw">ROUND</span>(<span class="kw">SUM</span>(time_in_hospital) * 100.0 / (<span class="kw">SELECT</span> <span class="kw">SUM</span>(time_in_hospital) <span class="kw">FROM</span> health), 1) <span class="kw">AS</span> pct_of_all_bed_days
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> stay_group;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>stay_group</th><th>encounter_count</th><th>total_bed_days</th><th>pct_of_all_bed_days</th></tr>
+      <tr><td>under 7 days</td><td>80,617</td><td>252,684</td><td>56.5</td></tr>
+      <tr><td>7 days or more</td><td>21,149</td><td>194,678</td><td class="hi">43.5</td></tr>
+    </table></div>
+    <p>The 21% of encounters lasting 7 days or more consumed <strong>43.5% of all bed-days</strong> in the dataset. One in five visits used almost half the beds. Those long stays are exactly where a hospital wants to confirm the patient truly needs to be there.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q2 - Do More Lab Procedures Mean Longer Stays?</h2>
+    <p class="qsub">Do encounters with more lab procedures also have a higher average time in the hospital?</p>
+    <p>The raw number of lab procedures per encounter ranges widely, so comparing it directly to length of stay is noisy. Instead, I binned encounters into three buckets with a CASE WHEN: fewer than 25 lab procedures ("few"), 25 to 54 ("average"), and 55 or more ("many"). These cutoffs are analysis buckets, not clinical thresholds.</p>
+<pre><code><span class="cm">-- Q2: Lab procedure buckets vs. average time in hospital</span>
+
+<span class="kw">SELECT</span>
+<span class="kw">CASE</span> <span class="kw">WHEN</span> num_lab_procedures &gt;= 0 <span class="kw">AND</span> num_lab_procedures &lt; 25 <span class="kw">THEN</span> <span class="st">'few'</span>
+     <span class="kw">WHEN</span> num_lab_procedures &gt;= 25 <span class="kw">AND</span> num_lab_procedures &lt; 55 <span class="kw">THEN</span> <span class="st">'average'</span>
+     <span class="kw">ELSE</span> <span class="st">'many'</span>
+<span class="kw">END</span> <span class="kw">AS</span> procedure_frequency,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(time_in_hospital), 2) <span class="kw">AS</span> avg_time_in_hospital_days,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> procedure_frequency
+<span class="kw">ORDER BY</span> avg_time_in_hospital_days <span class="kw">DESC</span>;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>procedure_frequency</th><th>avg_time_in_hospital_days</th><th>encounter_count</th></tr>
+      <tr><td>many</td><td class="hi">5.66</td><td>29,779</td></tr>
+      <tr><td>average</td><td>4.07</td><td>54,501</td></tr>
+      <tr><td>few</td><td>3.28</td><td>17,486</td></tr>
+    </table></div>
+    <p>The pattern is consistent across all three groups. Encounters in the "many" bucket stayed <strong>2.4 days longer on average</strong> than the "few" bucket, a 73% longer stay.</p>
+    <p>One caution before reading too much into this. <strong>This is a correlation, not a cause.</strong> Lab procedures probably don't make patients stay longer; sicker, more complex patients likely need more lab work and more time in a bed. But for operations, the pattern is still useful: lab procedure volume early in an encounter could serve as a rough signal for which patients are headed toward longer stays.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q3 - Which Specialties Drive the Most Procedures?</h2>
+    <p class="qsub">Which medical specialties average the most procedures per encounter, at meaningful volume?</p>
+    <p>Procedures are a major cost driver. If a hospital wants to review procedure use, staffing, or scheduling, it shouldn't start with a list of every specialty in the building. It should start where procedures concentrate.</p>
+    <p>Two filters make that list trustworthy. First, only specialties averaging more than 2.5 procedures per encounter. Second, only specialties with more than 50 encounter records, because an average built on a handful of visits isn't an average worth acting on. Filtering on aggregated values is what HAVING does; WHERE can't touch them.</p>
+<pre><code><span class="cm">-- Q3: High-procedure specialties with real volume</span>
+
+<span class="kw">SELECT</span> medical_specialty,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(num_procedures), 1) <span class="kw">AS</span> avg_procedures_per_encounter,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> medical_specialty
+<span class="kw">HAVING</span> encounter_count &gt; 50 <span class="kw">AND</span> avg_procedures_per_encounter &gt; 2.5
+<span class="kw">ORDER BY</span> avg_procedures_per_encounter <span class="kw">DESC</span>;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>medical_specialty</th><th>avg_procedures_per_encounter</th><th>encounter_count</th></tr>
+      <tr><td>Surgery-Thoracic</td><td class="hi">3.5</td><td>109</td></tr>
+      <tr><td>Surgery-Cardiovascular/Thoracic</td><td>3.2</td><td>652</td></tr>
+      <tr><td>Radiologist</td><td>3.2</td><td>1,140</td></tr>
+      <tr><td>Cardiology</td><td>2.7</td><td class="hi">5,352</td></tr>
+      <tr><td>Surgery-Vascular</td><td>2.6</td><td>533</td></tr>
+    </table></div>
+    <p>Out of dozens of specialties in the data, only five clear both bars. No surprises in who made the list: surgical and cardiac specialties are procedure-heavy by nature. The value isn't the surprise, it's the shortlist. Instead of reviewing every department, the hospital now has five places to look first, and one of them, <strong>cardiology, combines a high average with real volume: over 5,000 encounters</strong>.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q4 - An Early Equity Check: Lab Procedures by Race</h2>
+    <p class="qsub">Does the average number of lab procedures per encounter differ by race?</p>
+    <p>Healthcare equity questions deserve serious analysis, and serious analysis starts with simple checks. Race lives in the demographics table and lab procedures live in the health table, so answering this requires a JOIN on the patient number:</p>
+<pre><code><span class="cm">-- Q4: Average lab procedures by race</span>
+
+<span class="kw">SELECT</span> d.race,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(h.num_lab_procedures), 1) <span class="kw">AS</span> avg_lab_procedures,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health <span class="kw">AS</span> h
+<span class="kw">JOIN</span> demographics <span class="kw">AS</span> d <span class="kw">ON</span> h.patient_nbr = d.patient_nbr
+<span class="kw">GROUP BY</span> d.race
+<span class="kw">ORDER BY</span> avg_lab_procedures <span class="kw">DESC</span>;</code></pre>
+    <div class="tbl-wrap"><table>
+      <tr><th>race</th><th>avg_lab_procedures</th><th>encounter_count</th></tr>
+      <tr><td>AfricanAmerican</td><td>44.1</td><td>19,198</td></tr>
+      <tr><td>?</td><td>44.0</td><td>2,280</td></tr>
+      <tr><td>Other</td><td>43.7</td><td>1,524</td></tr>
+      <tr><td>Caucasian</td><td>42.8</td><td>76,107</td></tr>
+      <tr><td>Hispanic</td><td>42.7</td><td>2,019</td></tr>
+      <tr><td>Asian</td><td>40.9</td><td>638</td></tr>
+    </table></div>
+    <p>The averages land in a narrow band: from 40.9 (Asian) to 44.1 (AfricanAmerican), a spread of about 3 lab procedures against averages in the low 40s. On this first look, there are no glaring gaps.</p>
+    <p>Three honest caveats about what this query can and cannot say:</p>
+    <ul>
+      <li><strong>Group sizes are very unequal.</strong> Caucasian encounters number 76,107 while Asian encounters number 638, so the smaller groups carry more noise.</li>
+      <li><strong>2,280 encounters have race recorded as '?'.</strong> Missing demographic data is itself worth flagging in any equity review.</li>
+      <li><strong>A similar average doesn't rule out differences.</strong> Groups could differ in age, diagnosis mix, or severity in ways a single average hides.</li>
+    </ul>
+    <p>So the takeaway isn't "treatment is equal." It's narrower and more defensible: this simple screen found no large raw differences in lab procedure counts by race. A real equity analysis would control for clinical factors before drawing conclusions, and that's beyond a single GROUP BY.</p>
+
+    <hr />
+
+    <h2 class="reveal">Q5 - Ranking Diabetes Medications by Age Group</h2>
+    <p class="qsub">How do insulin, metformin, and glipizide rank by usage within each age group?</p>
+    <p>This dataset stores each medication in its own column: one for insulin, one for metformin, one for glipizide. That wide format makes ranking awkward, because the thing I want to rank, the medication name, is trapped in column headers instead of living in a column of its own.</p>
+    <p>The fix is to reshape the data from wide to long: stack the three medication columns into one, using UNION ALL. Then wrap that reshaped table in a CTE, join it to demographics to get age, and rank within each age group using a window function.</p>
+<pre><code><span class="cm">-- Q5: Reshape wide to long, then rank medications within each age group</span>
+
+<span class="kw">WITH</span> long_health_cte <span class="kw">AS</span> (
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'metformin'</span> <span class="kw">AS</span> medication, metformin <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'glipizide'</span> <span class="kw">AS</span> medication, glipizide <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'insulin'</span> <span class="kw">AS</span> medication, insulin <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+)
+<span class="kw">SELECT</span> demographics.age,
+long_health_cte.medication,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_use_count,
+<span class="kw">RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> demographics.age <span class="kw">ORDER BY</span> <span class="kw">COUNT</span>(*) <span class="kw">DESC</span>) <span class="kw">AS</span> medication_rank
+<span class="kw">FROM</span> long_health_cte
+<span class="kw">JOIN</span> demographics <span class="kw">ON</span> long_health_cte.patient_nbr = demographics.patient_nbr
+<span class="kw">WHERE</span> med_usage <span class="kw">NOT IN</span> (<span class="st">'No'</span>)
+<span class="kw">GROUP BY</span> medication, age
+<span class="kw">ORDER BY</span> age, medication_rank;</code></pre>
+    <p>Two details matter here. <strong>UNION ALL, not UNION</strong>, because we're counting encounter records and don't want duplicates silently removed before the count. And <strong>PARTITION BY age</strong>, which restarts the ranking inside each age bracket instead of ranking across the whole table.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>age</th><th>medication</th><th>encounter_use_count</th><th>medication_rank</th></tr>
+      <tr><td>[0-10)</td><td>insulin</td><td>132</td><td>1</td></tr>
+      <tr><td>[10-20)</td><td>insulin</td><td>598</td><td>1</td></tr>
+      <tr><td>[10-20)</td><td>metformin</td><td>46</td><td>2</td></tr>
+      <tr><td>[10-20)</td><td>glipizide</td><td>3</td><td>3</td></tr>
+      <tr><td>[20-30)</td><td>insulin</td><td>1,208</td><td>1</td></tr>
+      <tr><td>[20-30)</td><td>metformin</td><td>170</td><td>2</td></tr>
+      <tr><td>[20-30)</td><td>glipizide</td><td>58</td><td>3</td></tr>
+      <tr><td>[30-40)</td><td>insulin</td><td>2,302</td><td>1</td></tr>
+      <tr><td>[30-40)</td><td>metformin</td><td>765</td><td>2</td></tr>
+      <tr><td>[30-40)</td><td>glipizide</td><td>293</td><td>3</td></tr>
+      <tr><td>[40-50)</td><td>insulin</td><td>5,569</td><td>1</td></tr>
+      <tr><td>[40-50)</td><td>metformin</td><td>2,303</td><td>2</td></tr>
+      <tr><td>[40-50)</td><td>glipizide</td><td>1,021</td><td>3</td></tr>
+      <tr><td>[50-60)</td><td>insulin</td><td>9,496</td><td>1</td></tr>
+      <tr><td>[50-60)</td><td>metformin</td><td>4,181</td><td>2</td></tr>
+      <tr><td>[50-60)</td><td>glipizide</td><td>2,076</td><td>3</td></tr>
+      <tr><td>[60-70)</td><td>insulin</td><td>12,113</td><td>1</td></tr>
+      <tr><td>[60-70)</td><td>metformin</td><td>5,051</td><td>2</td></tr>
+      <tr><td>[60-70)</td><td>glipizide</td><td>2,905</td><td>3</td></tr>
+      <tr><td>[70-80)</td><td>insulin</td><td>13,185</td><td>1</td></tr>
+      <tr><td>[70-80)</td><td>metformin</td><td>4,950</td><td>2</td></tr>
+      <tr><td>[70-80)</td><td>glipizide</td><td>3,593</td><td>3</td></tr>
+      <tr><td>[80-90)</td><td>insulin</td><td>8,445</td><td>1</td></tr>
+      <tr><td>[80-90)</td><td class="hi">glipizide</td><td>2,364</td><td class="hi">2</td></tr>
+      <tr><td>[80-90)</td><td>metformin</td><td>2,296</td><td>3</td></tr>
+      <tr><td>[90-100)</td><td>insulin</td><td>1,335</td><td>1</td></tr>
+      <tr><td>[90-100)</td><td class="hi">glipizide</td><td>373</td><td class="hi">2</td></tr>
+      <tr><td>[90-100)</td><td>metformin</td><td>226</td><td>3</td></tr>
+    </table></div>
+    <p>Insulin ranks first in every single age group, usually by a wide margin. No surprise in a dataset of diabetes-related hospital encounters: inpatient settings lean heavily on insulin.</p>
+    <p>The interesting movement is underneath. <strong>Metformin holds second place through every age bracket from the teens to the seventies. Then, at ages 80–89, glipizide overtakes it</strong>, and the flip holds again for 90–99. In the two oldest brackets, the number-two diabetes medication changes.</p>
+    <p>I'll stay in my lane on the why: this is usage data, not clinical reasoning, and prescribing decisions for elderly patients involve factors this table doesn't capture. But finding the flip is exactly what this query structure is for. A wide table hides it; a long, ranked table surfaces it in one read.</p>
+
+    <hr />
+
+    <h2 class="reveal">Key Findings</h2>
+    <ul>
+      <li><strong>79%</strong> of hospital encounters end in under 7 days, peaking at a 3-day stay</li>
+      <li>The <strong>21%</strong> of stays lasting 7+ days consumed <strong>43.5%</strong> of all bed-days</li>
+      <li>Encounters with 55+ lab procedures averaged <strong>5.66 days</strong> in the hospital vs. 3.28 for low-procedure encounters, a 73% longer stay</li>
+      <li>Only <strong>5 specialties</strong> average more than 2.5 procedures per encounter at meaningful volume, led by thoracic surgery and anchored by cardiology's 5,352 encounters</li>
+      <li>Average lab procedures by race sit in a narrow band (<strong>40.9 to 44.1</strong>), with no large raw gaps on a first-pass screen</li>
+      <li>Insulin ranks <strong>#1 in every age group</strong>; at ages <strong>80+</strong>, glipizide overtakes metformin as the #2 medication</li>
+    </ul>
+
+    <hr />
+
+    <h2 class="reveal">Closing Thoughts</h2>
+    <p>Start to finish, this analysis moved from a simple distribution to a windowed ranking, and each query narrowed the picture. None of these findings required anything exotic: GROUP BY, HAVING, a JOIN, a CASE WHEN, a CTE, and one window function. The skill isn't the syntax; it's knowing which question each tool answers, and what the result doesn't prove.</p>
+    <p>This dataset is best known for one column I barely touched: <strong>readmitted</strong>. Every encounter records whether the patient came back within 30 days, after 30 days, or not at all. Readmissions are the other side of the bed problem: discharging patients quickly frees beds, but discharging them too quickly sends them back. Whether short stays predict readmission is the natural next question, and it's where this analysis goes next.</p>
+
+    <div class="article-cta">
+      <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
+      <p>I'm currently building my data analytics portfolio and actively exploring Data Analyst and Business Intelligence roles. If you work with data or are hiring in this space, I'd love to connect.</p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email Ignacio</a>
+        <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
+        <a class="btn btn-ghost" href="/#work">← Back to portfolio</a>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  © <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript · <a href="https://idepablo.com">idepablo.com</a>
+</footer>
+
+<script>
+/* ---------- THEME ---------- */
+const root=document.documentElement, tbtn=document.getElementById('themeBtn');
+const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+function setTheme(t){root.setAttribute('data-theme',t);tbtn.innerHTML=t==='dark'?SUN:MOON;try{localStorage.setItem('theme',t)}catch(e){}}
+(function(){let saved;try{saved=localStorage.getItem('theme')}catch(e){}
+  const prefers=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
+  setTheme(saved||(prefers?'dark':'light'));})();
+tbtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+
+/* ---------- NAV SHADOW + SCROLL PROGRESS ---------- */
+const nav=document.getElementById('nav'), prog=document.getElementById('progress');
+function onScroll(){nav.classList.toggle('scrolled',scrollY>10);
+  const h=document.documentElement.scrollHeight-innerHeight;
+  prog.style.width=(h>0?(scrollY/h*100):0)+'%';}
+addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+/* ---------- REVEAL ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ---------- YEAR ---------- */
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+
+</body>
+</html>
