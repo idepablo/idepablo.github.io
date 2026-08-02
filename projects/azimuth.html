@@ -4,21 +4,21 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>AZIMUTH · Launch Market Intelligence Platform | Ignacio de Pablo</title>
-<meta name="description" content="AZIMUTH: an end-to-end data platform tracking the global launch market on a Databricks lakehouse with a dbt star schema. Architecture overview by Ignacio de Pablo." />
+<meta name="description" content="AZIMUTH: a provider-agnostic business intelligence platform modeling the global orbital launch market on a Databricks lakehouse. In-progress build log, architecture, and scope decisions by Ignacio de Pablo." />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta property="og:type" content="website" />
 <meta property="og:title" content="AZIMUTH: Launch Market Intelligence Platform | Ignacio de Pablo" />
-<meta property="og:description" content="An end-to-end data platform tracking the global launch market on a Databricks lakehouse with a dbt star schema. Architecture overview." />
+<meta property="og:description" content="A provider-agnostic BI platform modeling the global orbital launch market. Follow the in-progress build log, architecture, and scope decisions." />
 <meta property="og:url" content="https://idepablo.com/projects/azimuth.html" />
-<meta property="og:image" content="https://idepablo.com/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image" content="https://idepablo.com/azimuth_cover.png" />
+<meta property="og:image:width" content="1376" />
+<meta property="og:image:height" content="768" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="AZIMUTH: Launch Market Intelligence Platform | Ignacio de Pablo" />
-<meta name="twitter:description" content="An end-to-end data platform tracking the global launch market on a Databricks lakehouse with a dbt star schema. Architecture overview." />
-<meta name="twitter:image" content="https://idepablo.com/og-image.png" />
+<meta name="twitter:description" content="A provider-agnostic BI platform modeling the global orbital launch market. Follow the in-progress build log and scope decisions." />
+<meta name="twitter:image" content="https://idepablo.com/azimuth_cover.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -71,7 +71,10 @@
   .theme-toggle svg{width:17px;height:17px}
   @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
 
-  .article-hero{padding:150px 0 56px;border-bottom:1px solid var(--line)}
+  .article-hero{padding:120px 0 52px;border-bottom:1px solid var(--line)}
+  .cover{width:100%;aspect-ratio:16/9;max-height:360px;border-radius:20px;margin-bottom:32px;
+    background-image:url('https://idepablo.com/azimuth_cover.png'),linear-gradient(135deg,#0a2540,#1a4a7a);
+    background-size:cover;background-position:center;border:1px solid var(--card-line);box-shadow:var(--shadow-lg)}
   .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
   h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:18px}
   .standfirst{color:var(--text-2);font-size:clamp(1.05rem,1.7vw,1.25rem);max-width:640px}
@@ -79,14 +82,58 @@
   .meta-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 15px;border:1px solid var(--card-line);border-radius:980px;
     background:var(--card);font-size:.82rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow)}
   .inprog{background:var(--accent-soft);color:var(--accent);border-color:transparent;font-weight:600}
+  .meta-pill.repo{color:var(--accent);border-color:var(--accent-soft)}
 
-  article{padding:64px 0 90px}
-  article h2{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,1.85rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:60px 0 16px}
+  article{padding:60px 0 90px}
+  article h2{font-family:var(--font-display);font-size:clamp(1.4rem,2.8vw,1.85rem);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin:58px 0 16px}
   article h2:first-child{margin-top:0}
   article p{color:var(--text-2);margin-bottom:18px;max-width:70ch}
   article strong{color:var(--text);font-weight:600}
   article ul{margin:0 0 18px 22px;color:var(--text-2)}
   article li{margin-bottom:10px}
+  .section-note{color:var(--text-3);font-size:.9rem}
+
+  /* planned views */
+  .views{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:6px 0 8px}
+  .view{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:18px 20px;box-shadow:var(--shadow)}
+  .view h4{font-family:var(--font-display);font-size:1rem;font-weight:650;color:var(--text);margin-bottom:5px}
+  .view p{font-size:.9rem;margin:0}
+  .view .v2{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--accent);background:var(--accent-soft);padding:2px 8px;border-radius:6px;margin-left:6px}
+  @media(max-width:640px){.views{grid-template-columns:1fr}}
+
+  /* status */
+  .status{display:flex;flex-direction:column;gap:10px;margin:6px 0}
+  .status-item{display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--card-line);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow)}
+  .status-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0}
+  .dot-done{background:#22c55e}.dot-active{background:var(--accent)}.dot-plan{background:var(--text-3);opacity:.55}
+  .status-body{flex:1}
+  .status-body .sl{font-weight:600;color:var(--text)}
+  .status-body .sd{color:var(--text-2);font-size:.92rem}
+  .status-tag{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:4px 10px;border-radius:7px;white-space:nowrap}
+  .t-done{background:rgba(34,197,94,.15);color:#16a34a}
+  .t-active{background:var(--accent-soft);color:var(--accent)}
+  .t-plan{background:var(--bg-2);color:var(--text-3)}
+
+  /* timeline */
+  .tl{position:relative;margin:6px 0 0;padding-left:26px;border-left:2px solid var(--card-line);display:flex;flex-direction:column;gap:24px}
+  .tl-item{position:relative}
+  .tl-item::before{content:"";position:absolute;left:-33px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+  .tl-item.done::before{background:var(--accent)}
+  .tl-when{color:var(--accent);font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+  .tl-phase{font-family:var(--font-display);font-weight:650;font-size:1.06rem;color:var(--text)}
+  .tl-item p{margin:5px 0 0;font-size:.94rem;max-width:64ch}
+
+  /* build log */
+  .logpost{background:var(--card);border:1px solid var(--card-line);border-radius:18px;padding:28px 26px;box-shadow:var(--shadow);margin-top:6px}
+  .lp-meta{color:var(--text-3);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .logpost h3{font-family:var(--font-display);font-size:1.28rem;font-weight:700;letter-spacing:-.01em;margin-bottom:14px;color:var(--text)}
+  .logpost p{margin-bottom:14px}
+  .logpost ul{margin:0 0 16px 20px}
+  .mini-stats{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 18px}
+  .mini-stat{background:var(--bg-2);border:1px solid var(--card-line);border-radius:12px;padding:10px 14px;min-width:96px}
+  .mini-stat b{font-family:var(--font-display);font-size:1.15rem;color:var(--accent);display:block;line-height:1.1}
+  .mini-stat span{font-size:.76rem;color:var(--text-3)}
+  .logmore{color:var(--text-3);font-size:.9rem;text-align:center;margin-top:18px}
 
   .diagram-shell{background:var(--card);border:1px solid var(--card-line);border-radius:22px;padding:26px 18px 12px;box-shadow:var(--shadow);margin:26px 0}
   .diagram-shell svg{width:100%;height:auto;display:block}
@@ -143,15 +190,17 @@
 
 <header class="article-hero">
   <div class="wrap">
-    <div class="eyebrow">Architecture Overview · Databricks · BI Platform</div>
-    <h1>AZIMUTH: Launch Market Intelligence Platform</h1>
-    <p class="standfirst">An end-to-end data platform tracking the global launch market (cadence, reliability, reuse, and mass to orbit), built on a Databricks lakehouse with a dbt star schema, data-quality tests, and an interactive dashboard.</p>
+    <div class="cover" role="img" aria-label="AZIMUTH cover image"></div>
+    <div class="eyebrow">Self-directed project · In progress</div>
+    <h1>AZIMUTH · Launch Market Intelligence Platform</h1>
+    <p class="standfirst">A provider-agnostic business intelligence platform that models the global orbital launch market, built so any launch vehicle can be set as the focus and benchmarked against the full field. Built from scratch on a Databricks lakehouse, in the open, one phase at a time.</p>
     <div class="meta-row">
       <span class="meta-pill inprog">🛠️ In active development</span>
+      <span class="meta-pill">Last updated · August 2026</span>
       <span class="meta-pill">Databricks</span>
       <span class="meta-pill">dbt</span>
-      <span class="meta-pill">Python</span>
-      <a class="meta-pill" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener" style="color:var(--accent)">View repository ↗</a>
+      <span class="meta-pill">Python · SQL</span>
+      <a class="meta-pill repo" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener">View repository ↗</a>
     </div>
   </div>
 </header>
@@ -159,8 +208,28 @@
 <article>
   <div class="wrap">
 
-    <h2 class="reveal">The business question</h2>
-    <p>The orbital launch market is scaling fast, but the public conversation runs on headlines rather than metrics. AZIMUTH treats it like any other market a BI team would cover: <strong>who is launching, how often, how reliably, with how much reuse, and how much mass is actually reaching orbit</strong>. These are trends an analyst, investor, or space enthusiast can interrogate instead of guessing at.</p>
+    <h2 class="reveal">What AZIMUTH is</h2>
+    <p>AZIMUTH is a business intelligence platform that models the global orbital launch market. It is provider-agnostic by design: instead of tracking one company, it models the whole market, so that any launch vehicle can be set as the focus and benchmarked against the field. The same underlying model serves competitive benchmarking, program planning, and plain market research.</p>
+    <p>The guiding question is a stakeholder's. If you are evaluating a new heavy-lift vehicle, how does it actually stand against the rest of the market on cadence, reliability, reuse, and mass to orbit? That question is what every part of the model is built to answer.</p>
+
+    <h2 class="reveal">The four views</h2>
+    <p>On top of the model, four views are planned:</p>
+    <div class="views reveal">
+      <div class="view"><h4>Market Overview</h4><p>The current state of the launch market across providers, vehicles, and mission types.</p></div>
+      <div class="view"><h4>The Maturation Race</h4><p>How vehicles progress from first flight toward operational reliability, compared across programs.</p></div>
+      <div class="view"><h4>Scenario Simulator</h4><p>Adjust assumptions and watch a program's competitive position shift.</p></div>
+      <div class="view"><h4>Ask AZIMUTH <span class="v2">v2</span></h4><p>Natural-language querying over the modeled data.</p></div>
+    </div>
+
+    <h2 class="reveal">Where it stands</h2>
+    <p>This is an in-progress build. Here is what works now and what does not yet, so you know before you click rather than after.</p>
+    <div class="status reveal">
+      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 0 · Scope &amp; data model</div><div class="sd">Grain, dimensions, outcome and censoring split, and scope decisions are locked and documented.</div></div><span class="status-tag t-done">Done</span></div>
+      <div class="status-item"><span class="status-dot dot-active"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">Pulling the full launch history from Launch Library 2 into the bronze layer.</div></div><span class="status-tag t-active">In progress</span></div>
+      <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Modeling</div><div class="sd">Silver and gold dbt models, the star schema, and data-quality tests.</div></div><span class="status-tag t-plan">Planned</span></div>
+      <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Dashboard</div><div class="sd">The four views above, built on the gold layer.</div></div><span class="status-tag t-plan">Planned</span></div>
+      <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Ask AZIMUTH</div><div class="sd">Natural-language querying over the modeled data.</div></div><span class="status-tag t-plan">v2</span></div>
+    </div>
 
     <h2 class="reveal">Lakehouse architecture</h2>
     <p>The platform follows a medallion architecture on Databricks: raw launch data lands in bronze, gets cleaned and conformed in silver, and is modeled into an analytics-ready star schema in gold with dbt, where data-quality tests guard every layer boundary.</p>
@@ -170,7 +239,7 @@
         <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="var(--accent)"/></marker></defs>
         <rect class="svg-stage" x="20" y="30" width="180" height="90" rx="16"/>
         <text class="svg-stagename" x="110" y="62" text-anchor="middle">Source data</text>
-        <text class="svg-stagedesc" x="110" y="82" text-anchor="middle">launch records ·</text>
+        <text class="svg-stagedesc" x="110" y="82" text-anchor="middle">Launch Library 2 ·</text>
         <text class="svg-stagedesc" x="110" y="97" text-anchor="middle">Python ingestion</text>
         <line class="svg-arrow" x1="204" y1="75" x2="240" y2="75"/>
         <rect class="svg-stage" x="244" y="30" width="180" height="90" rx="16"/>
@@ -191,35 +260,29 @@
       <div class="diagram-cap">Medallion flow: ingestion → bronze → silver → gold</div>
     </div>
 
-    <h2 class="reveal">The star schema</h2>
-    <p>The gold layer is dimensionally modeled around a single fact table, <strong>fct_launches</strong>, with one row per launch attempt. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) resolves to measures on the fact grain sliced by conformed dimensions.</p>
+    <h2 class="reveal">The data model</h2>
+    <p>The gold layer is dimensionally modeled around a single fact table, <strong>fct_launches</strong>, with one row per launch attempt, keyed on the launch UUID. Five conformed dimensions hang off it: provider, vehicle, mission, launch site, and orbit. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) resolves to measures on that grain sliced by these dimensions.</p>
+    <p class="section-note">Two relationships in the source are genuinely many-to-many, program and configuration families, so they are parked for a later version rather than forced into v1.</p>
 
     <div class="diagram-shell reveal">
       <svg viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Star schema centered on fct_launches with five dimensions">
-        <!-- connector lines -->
         <line class="svg-line" x1="450" y1="280" x2="150" y2="105"/>
         <line class="svg-line" x1="450" y1="280" x2="750" y2="105"/>
         <line class="svg-line" x1="450" y1="280" x2="110" y2="430"/>
         <line class="svg-line" x1="450" y1="280" x2="790" y2="430"/>
         <line class="svg-line" x1="450" y1="280" x2="450" y2="490"/>
-
-        <!-- dim_date -->
         <rect class="svg-box" x="40" y="40" width="220" height="130" rx="16"/>
         <text class="svg-title" x="150" y="68" text-anchor="middle">dim_date</text>
         <text class="svg-field" x="60" y="94">date_key</text>
         <text class="svg-field" x="60" y="112">year · quarter · month</text>
         <text class="svg-field" x="60" y="130">day_of_week</text>
         <text class="svg-field" x="60" y="148">is_weekend</text>
-
-        <!-- dim_provider -->
         <rect class="svg-box" x="640" y="40" width="220" height="130" rx="16"/>
         <text class="svg-title" x="750" y="68" text-anchor="middle">dim_provider</text>
         <text class="svg-field" x="660" y="94">provider_key</text>
         <text class="svg-field" x="660" y="112">provider_name</text>
         <text class="svg-field" x="660" y="130">country</text>
         <text class="svg-field" x="660" y="148">sector (gov / commercial)</text>
-
-        <!-- fct_launches -->
         <rect class="svg-fact" x="310" y="195" width="280" height="180" rx="18"/>
         <text class="svg-titlefact" x="450" y="225" text-anchor="middle">fct_launches</text>
         <text class="svg-field" x="332" y="252">launch_key · date_key</text>
@@ -228,24 +291,18 @@
         <text class="svg-field" x="332" y="311">launch_outcome</text>
         <text class="svg-field" x="332" y="329">payload_mass_kg</text>
         <text class="svg-field" x="332" y="347">booster_reused_flag</text>
-
-        <!-- dim_vehicle -->
         <rect class="svg-box" x="20" y="370" width="220" height="130" rx="16"/>
         <text class="svg-title" x="130" y="398" text-anchor="middle">dim_vehicle</text>
         <text class="svg-field" x="40" y="424">vehicle_key</text>
-        <text class="svg-field" x="40" y="442">vehicle_name · family</text>
+        <text class="svg-field" x="40" y="442">configuration · family</text>
         <text class="svg-field" x="40" y="460">payload_capacity_kg</text>
         <text class="svg-field" x="40" y="478">reusable_flag</text>
-
-        <!-- dim_launch_site -->
         <rect class="svg-box" x="660" y="370" width="220" height="130" rx="16"/>
         <text class="svg-title" x="770" y="398" text-anchor="middle">dim_launch_site</text>
         <text class="svg-field" x="680" y="424">site_key</text>
         <text class="svg-field" x="680" y="442">site_name · pad</text>
         <text class="svg-field" x="680" y="460">country · region</text>
         <text class="svg-field" x="680" y="478">latitude · longitude</text>
-
-        <!-- dim_orbit -->
         <rect class="svg-box" x="340" y="470" width="220" height="80" rx="16"/>
         <text class="svg-title" x="450" y="498" text-anchor="middle">dim_orbit</text>
         <text class="svg-field" x="360" y="522">orbit_key · orbit_class (LEO / GTO / …)</text>
@@ -253,14 +310,64 @@
       <div class="diagram-cap">Target star schema (in development) · one row per launch attempt in fct_launches</div>
     </div>
 
-    <h2 class="reveal">What it answers</h2>
-    <ul>
-      <li><strong>Cadence:</strong> launches per provider per quarter, and how the market's tempo is shifting.</li>
-      <li><strong>Reliability:</strong> success rates by vehicle and vehicle family over time.</li>
-      <li><strong>Reuse:</strong> what share of launches fly on previously flown boosters, and how that trends.</li>
-      <li><strong>Mass to orbit:</strong> the metric that matters most: how much payload actually reaches each orbit class, and by whom.</li>
-    </ul>
-    <p>The platform is in active development; the repository tracks progress as the models and dashboard take shape.</p>
+    <h2 class="reveal">Timeline</h2>
+    <div class="tl reveal">
+      <div class="tl-item done">
+        <div class="tl-when">Phase 0 · Complete · Aug 2026</div>
+        <div class="tl-phase">Scoping &amp; data audit</div>
+        <p>Read the Launch Library 2 API closely, drafted the medallion schema, made the scope decisions in writing, and ran a first data-integrity check. Deliverable: a written scope document in the repo.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Phase 1 · In progress</div>
+        <div class="tl-phase">Production backfill</div>
+        <p>Pull the full launch history from Launch Library 2 (roughly 7,589 records across 76 pages, throttled) and land it into the bronze layer, then re-run the data-integrity check against the full history rather than a recent sample.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Phase 2 · Planned</div>
+        <div class="tl-phase">Silver &amp; gold modeling</div>
+        <p>Clean and conform in silver, build the gold star schema with dbt, and guard every layer boundary with data-quality tests.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Phase 3 · Planned</div>
+        <div class="tl-phase">Dashboard</div>
+        <p>Build the four views on top of the gold layer: Market Overview, The Maturation Race, and the Scenario Simulator.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Phase 4 · Planned · v2</div>
+        <div class="tl-phase">Ask AZIMUTH</div>
+        <p>Layer natural-language querying over the modeled data.</p>
+      </div>
+    </div>
+
+    <h2 class="reveal">Build log</h2>
+
+    <div class="logpost reveal">
+      <div class="lp-meta">Build log · August 2026</div>
+      <h3>Phase 0: Scoping what the data can honestly support</h3>
+      <p>Before writing a single transformation, I wanted to know what this dataset can and cannot honestly support. Phase 0 was entirely about scope: reading the Launch Library 2 API closely, sketching the model, and making the judgment calls in writing so I am not tempted to hand-wave them later.</p>
+      <p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five dimensions came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
+      <p>A few decisions were less obvious and worth writing down:</p>
+      <ul>
+        <li><strong>Vehicle identity.</strong> A "rocket" in the API is an instance; the thing I actually want to compare is the configuration. So vehicle identity is <strong>rocket.configuration.id</strong>, and configurations get their own load.</li>
+        <li><strong>Outcomes and censoring.</strong> There are nine statuses. They collapse into four real outcomes and five schedule states. That split is the censoring boundary for any later reliability or maturation analysis, so I keep it explicit rather than flattening everything to success or failure.</li>
+        <li><strong>Partial failures.</strong> These are ambiguous by design. My working call is to keep partial failure as its own outcome rather than force it into success or failure, and to document the reasoning so the choice is defensible.</li>
+        <li><strong>Dates.</strong> <strong>net</strong> is the launch date, and its precision varies for older records, so I anchor on net rather than a window start.</li>
+        <li><strong>Orbital scope.</strong> I scope to orbital launches using <strong>mission.orbit</strong>, and I treat Unknown as its own third category instead of silently assuming orbital. Suborbital is cleanly excluded.</li>
+      </ul>
+      <p>Then I ran a data-integrity check on the most recent 100 launches to see how bad the missing-data problem is:</p>
+      <div class="mini-stats">
+        <div class="mini-stat"><b>0</b><span>missing mission</span></div>
+        <div class="mini-stat"><b>0</b><span>missing orbit</span></div>
+        <div class="mini-stat"><b>91</b><span>orbital</span></div>
+        <div class="mini-stat"><b>5</b><span>Unknown</span></div>
+        <div class="mini-stat"><b>4</b><span>suborbital</span></div>
+      </div>
+      <p>Every record had a mission and an orbit, so mission.orbit is a clean filter with no missing-data judgment call on this sample. The orbit split: 60 Low Earth, 11 Sun-Synchronous, 10 Polar, 7 Geostationary Transfer, 2 Elliptical, and 1 Medium Earth, plus 4 suborbital and 5 Unknown.</p>
+      <p>One honest caveat I am carrying forward: this is the most recent 100 launches, which is the best case. Historical records from the 1960s and 70s are far more likely to have gaps, so I will re-run this same check against the full backfill in Phase 1 rather than assuming it holds.</p>
+      <p>The deliverable for this phase is a written scope document in the repo: the grain, which statuses count as success, how partial failures are handled and why, how the orbital scope is drawn, and what I am deliberately not modeling in v1. If someone asks me one question about this project, it will probably be answered there.</p>
+      <p>Next: Phase 1, the full production backfill from Launch Library 2, landing into bronze.</p>
+    </div>
+    <p class="logmore">More posts as each phase ships.</p>
 
     <div class="article-cta">
       <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
