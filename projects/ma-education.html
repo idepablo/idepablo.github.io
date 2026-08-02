@@ -22,6 +22,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
+<script>
+  /* Apply saved theme before paint to avoid a flash. Modes: auto | light | dark (default auto). */
+  (function(){var r=document.documentElement,m;try{m=localStorage.getItem('theme-mode')}catch(e){}if(m!=='light'&&m!=='dark')m='auto';var d=m==='dark'||(m==='auto'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);r.setAttribute('data-theme',d?'dark':'light');r.setAttribute('data-theme-mode',m);})();
+</script>
 <style>
   :root{
     --bg:#ffffff; --bg-2:#f5f5f7; --bg-3:#fbfbfd;
@@ -155,7 +159,7 @@
   <div class="wrap">
     <div class="eyebrow">Case Study · Tableau · Data Visualization</div>
     <h1>Massachusetts Education Dashboard</h1>
-    <p class="standfirst">An interactive dashboard evaluating 1,800+ Massachusetts public schools across 100+ performance metrics, built to surface outliers and performance gaps at a glance for stakeholders — with a focus on dropout patterns.</p>
+    <p class="standfirst">An interactive dashboard evaluating 1,800+ Massachusetts public schools across 100+ performance metrics, built to surface outliers and performance gaps at a glance for stakeholders, with a focus on dropout patterns.</p>
     <div class="meta-row">
       <span class="meta-pill">🛠️ Tableau</span>
       <span class="meta-pill">🗄️ Massachusetts public schools data</span>
@@ -199,7 +203,7 @@
         toolbar="bottom" hide-tabs>
       </tableau-viz>
     </div>
-    <p class="viz-note">Interactive — hover, click, and filter directly in the dashboard. If it doesn't load, <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/viz/MASchoolsDropoutAnalysis/Dashboard" target="_blank" rel="noopener">open it on Tableau Public ↗</a></p>
+    <p class="viz-note">Interactive: hover, click, and filter directly in the dashboard. If it doesn't load, <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/viz/MASchoolsDropoutAnalysis/Dashboard" target="_blank" rel="noopener">open it on Tableau Public ↗</a></p>
   </div>
 
   <div class="wrap">
@@ -217,7 +221,7 @@
     <p style="color:var(--text-3);font-size:.86rem">Figures computed directly from the dashboard's packaged dataset (Massachusetts public schools, 2017 report year; 1,861 schools, 376 with graduation-cohort data).</p>
 
     <h2 class="reveal">Why this matters</h2>
-    <p>Dashboards like this one are how analytics earns its keep in an organization: leadership shouldn't need to file a request and wait for a report to know where the problems are. The same design principles — KPIs for orientation, scatter plots for outlier detection, ranked bars for comparison — carry directly into the operational and financial dashboards I built during seven years in fintech, where the "schools" were 12,000+ merchants and the metrics were fees, chargebacks, and settlement volume.</p>
+    <p>Dashboards like this one are how analytics earns its keep in an organization: leadership shouldn't need to file a request and wait for a report to know where the problems are. The same design principles (KPIs for orientation, scatter plots for outlier detection, ranked bars for comparison) carry directly into the operational and financial dashboards I built during seven years in fintech, where the "schools" were 12,000+ merchants and the metrics were fees, chargebacks, and settlement volume.</p>
 
     <div class="article-cta">
       <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
@@ -238,15 +242,24 @@
 
 <script type="module" src="https://public.tableau.com/javascripts/api/tableau.embedding.3.latest.min.js"></script>
 <script>
-/* ---------- THEME ---------- */
+/* ---------- THEME (auto / light / dark) ---------- */
 const root=document.documentElement, tbtn=document.getElementById('themeBtn');
 const SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
 const MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
-function setTheme(t){root.setAttribute('data-theme',t);tbtn.innerHTML=t==='dark'?SUN:MOON;try{localStorage.setItem('theme',t)}catch(e){}}
-(function(){let saved;try{saved=localStorage.getItem('theme')}catch(e){}
-  const prefers=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches;
-  setTheme(saved||(prefers?'dark':'light'));})();
-tbtn.addEventListener('click',()=>setTheme(root.getAttribute('data-theme')==='dark'?'light':'dark'));
+const AUTO='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>';
+const mq=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+function getMode(){let m;try{m=localStorage.getItem('theme-mode')}catch(e){}return (m==='light'||m==='dark')?m:'auto';}
+function resolveTheme(m){return m==='auto'?((mq&&mq.matches)?'dark':'light'):m;}
+function applyMode(m){
+  try{localStorage.setItem('theme-mode',m)}catch(e){}
+  root.setAttribute('data-theme-mode',m);
+  root.setAttribute('data-theme',resolveTheme(m));
+  tbtn.innerHTML=m==='auto'?AUTO:(m==='dark'?MOON:SUN);
+  tbtn.setAttribute('aria-label',m==='auto'?'Theme: auto (matches your system). Tap to set light.':(m==='light'?'Theme: light. Tap to set dark.':'Theme: dark. Tap to set auto.'));
+}
+applyMode(getMode());
+tbtn.addEventListener('click',()=>{const next={auto:'light',light:'dark',dark:'auto'};applyMode(next[getMode()]);});
+if(mq){const onSys=()=>{if(getMode()==='auto')root.setAttribute('data-theme',resolveTheme('auto'));};mq.addEventListener?mq.addEventListener('change',onSys):mq.addListener(onSys);}
 
 /* ---------- NAV SHADOW + SCROLL PROGRESS ---------- */
 const nav=document.getElementById('nav'), prog=document.getElementById('progress');
