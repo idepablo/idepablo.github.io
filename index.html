@@ -106,7 +106,15 @@
   .hero h1 .last{color:inherit}
   .hero .role{font-size:clamp(1.15rem,2.4vw,1.55rem);color:var(--text-2);font-weight:500;letter-spacing:-.01em;margin-bottom:22px}
   .hero .pitch{font-size:clamp(1.02rem,1.7vw,1.24rem);color:var(--text-2);max-width:600px;margin:0 auto 34px;font-weight:400}
-  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:56px}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
+  .now-strip{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:52px;
+    padding:8px 14px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);box-shadow:var(--shadow)}
+  .now-label{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
+  .now-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.55);animation:nowpulse 2s ease-out infinite}
+  @keyframes nowpulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  .now-item{font-size:.85rem;font-weight:550;color:var(--accent);padding:5px 12px;border-radius:980px;background:var(--accent-soft);transition:transform .2s,background .2s}
+  .now-item:hover{transform:scale(1.04)}
+  @media(max-width:640px){.now-strip{border-radius:18px;padding:10px 14px}}
   .btn{padding:12px 26px;border-radius:980px;font-size:.98rem;font-weight:500;transition:transform .25s,background .25s,box-shadow .25s;cursor:pointer;border:none}
   .btn-primary{background:var(--accent);color:#fff}
   .btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 26px var(--accent-soft)}
@@ -213,6 +221,7 @@
   .cert .issuer{color:var(--text-3);font-size:.82rem;margin:6px 0 14px}
   .cert .verify{font-size:.8rem;color:var(--accent);font-weight:550;display:inline-flex;align-items:center;gap:5px;opacity:.9}
   .cert .verify:hover{opacity:1}
+  .cert-progress{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:7px}
   .member-pill{display:inline-flex;align-items:center;gap:9px;padding:11px 22px;border-radius:980px;background:var(--accent-soft);
     color:var(--accent);font-weight:600;font-size:.96rem;box-shadow:var(--shadow)}
   .member-pill svg{width:17px;height:17px;stroke:var(--accent);fill:none;stroke-width:2}
@@ -289,6 +298,11 @@
       <a href="#work" class="btn btn-primary">View my work</a>
       <a href="https://idepablo.com/resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Download résumé</a>
     </div>
+    <div class="now-strip">
+      <span class="now-label"><span class="now-dot"></span>Currently working on</span>
+      <a class="now-item" href="/projects/azimuth.html">🚀 AZIMUTH · Launch Market BI Platform</a>
+      <a class="now-item" href="#certs">📊 Microsoft PL-300 certification</a>
+    </div>
     <div class="certstrip">
       <div class="degree-pill">🎓 B.S. Information Technology · WGU</div>
       <div class="label">Industry certifications</div>
@@ -327,8 +341,8 @@
   <div class="wrap">
     <div class="stats">
       <div class="stat reveal"><div class="vicon">🏦</div><div class="vtitle">7+ years in FinTech</div><div class="cap">Hands-on with payments, merchants, and financial data at real operational scale.</div></div>
-      <div class="stat reveal d2"><div class="vicon">🎓</div><div class="vtitle">Always learning</div><div class="cap">A B.S. in IT, an incoming M.S. in Data Analytics, and 9 industry certifications, with more on the way.</div></div>
-      <div class="stat reveal d3"><div class="vicon">🚀</div><div class="vtitle">Builder at heart</div><div class="cap">I taught myself to ship a full production web app end to end, from database to LLM chatbot.</div></div>
+      <div class="stat reveal d2"><div class="vicon">🎓</div><div class="vtitle">Always learning</div><div class="cap">A B.S. in IT, an incoming M.S. in Data Analytics, and several industry certifications, with more on the way.</div></div>
+      <div class="stat reveal d3"><div class="vicon">🚀</div><div class="vtitle">Builder at heart</div><div class="cap">If I can build it myself, I will: a production web app with an LLM chatbot, this website, custom PCs, and a home NAS server.</div></div>
     </div>
   </div>
 </section>
@@ -476,7 +490,7 @@
       <p class="lead" style="margin-left:auto;margin-right:auto">Verified credentials across cloud, data, security, and IT. Click any badge to verify.</p>
     </div>
     <div class="cert-grid" id="certGrid"></div>
-    <p class="reveal" style="text-align:center;color:var(--text-3);font-size:.9rem;margin-top:30px">In progress: Microsoft Power BI Data Analyst (PL-300)</p>
+    <p class="reveal" style="text-align:center;color:var(--text-3);font-size:.9rem;margin-top:30px">Plus four stacked CompTIA specialist certifications: IT Operations Specialist, Secure Infrastructure Specialist, Cloud Admin Professional, and Secure Cloud Professional.</p>
     <div class="reveal" style="text-align:center;margin-top:24px">
       <span class="member-pill"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>PMI Member · National &amp; Puget Sound chapters</span>
     </div>
@@ -544,7 +558,7 @@
       <h2>Let's connect.</h2>
       <p class="lead">Seeking Data Analyst and BI Analyst opportunities in Seattle or remote. If you're working in data or hiring, I'd love to hear from you.</p>
       <div class="cta-row" style="justify-content:center;margin:30px 0 40px">
-        <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email Ignacio</a>
+        <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email me</a>
         <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
       </div>
       <div class="contact-links">
@@ -604,7 +618,8 @@ const certs=[
   {name:'Google IT Support',issuer:'Google / Coursera',img:CB+'fb97a12f-c0f1-4f37-9b7d-4a830199fe84/GCC_badge_IT_Support_1000x1000.png',mono:'G',verify:'https://www.credly.com/badges/edc8f4fb-0ac1-4c7e-a1b9-468e5298e765',hero:true},
   {name:'Linux Essentials',issuer:'LPI',img:CB+'1d36cb36-20fc-4961-8d70-6307c015d1aa/blob',mono:'Lx',verify:'https://www.credly.com/badges/a4fa37d3-5b1d-4583-88ab-16914051ae83',hero:true},
   {name:'PMI CAPM',issuer:'Project Management Institute',img:CB+'80c95f74-dcf0-43fc-a437-053a598feb05/blob',mono:'PMI',verify:'https://www.credly.com/badges/a3f660f1-9a19-404c-bb49-6af3e47aaf0a',hero:true},
-  {name:'ITIL 4 Foundation',issuer:'PeopleCert / Axelos',img:'',mono:'ITIL',verify:'https://www.peoplecert.org/en/for-corporations/certificate-verification-service',hero:false}
+  {name:'ITIL 4 Foundation',issuer:'PeopleCert / Axelos',img:'https://idepablo.com/itil_badge.png',mono:'ITIL',verify:'https://www.peoplecert.org/en/for-corporations/certificate-verification-service',hero:true},
+  {name:'Power BI Data Analyst (PL-300)',issuer:'Microsoft',img:'https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg',mono:'PL',pending:true,hero:false}
 ];
 function logoImg(c){
   if(!c.img) return '<span class="mono">'+c.mono+'</span>';
@@ -619,10 +634,10 @@ certs.filter(c=>c.hero).forEach(c=>{
 // cert grid
 const grid=document.getElementById('certGrid');
 certs.forEach((c,i)=>{
-  const el=document.createElement('a'); el.className='cert reveal'+(i%4===1?' d2':i%4===2?' d3':i%4===3?' d4':'');
-  el.href=c.verify; el.target='_blank'; el.rel='noopener';
+  const el=document.createElement(c.pending?'div':'a'); el.className='cert reveal'+(i%4===1?' d2':i%4===2?' d3':i%4===3?' d4':'');
+  if(!c.pending){el.href=c.verify; el.target='_blank'; el.rel='noopener';}
   el.innerHTML='<div class="badge">'+logoImg(c)+'</div><h4>'+c.name+'</h4><div class="issuer">'+c.issuer+'</div>'+
-    '<span class="verify">Verify ↗</span>';
+    (c.pending?'<span class="cert-progress">In progress</span>':'<span class="verify">Verify ↗</span>');
   grid.appendChild(el); io.observe(el);
 });
 document.getElementById('yr').textContent=new Date().getFullYear();
