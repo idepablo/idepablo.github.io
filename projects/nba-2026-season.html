@@ -83,7 +83,9 @@
     background:var(--card);font-size:.82rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow)}
   .stat-band{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:34px}
   @media(max-width:760px){.stat-band{grid-template-columns:repeat(2,1fr)}}
-  .cell{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:18px;box-shadow:var(--shadow)}
+  .cell{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:18px;box-shadow:var(--shadow);display:block;transition:transform .25s,border-color .25s}
+  a.cell:hover{transform:translateY(-3px);border-color:var(--accent)}
+  article h2{scroll-margin-top:80px}
   .cell .num{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--accent);line-height:1.1}
   .cell .cap{color:var(--text-3);font-size:.8rem;margin-top:6px;line-height:1.45}
 
@@ -159,10 +161,10 @@
       <span class="meta-pill">🏀 Basketball-Reference · 2025-26 season</span>
     </div>
     <div class="stat-band">
-      <div class="cell reveal"><div class="num">.35 to .38</div><div class="cap">Boston's 3P% at every position, the flattest profile in the league</div></div>
-      <div class="cell reveal"><div class="num">414</div><div class="cap">Team-high assists (Derrick White). The league's elite sit at 530 to 697</div></div>
-      <div class="cell reveal"><div class="num">10%</div><div class="cap">Of Boston's points from players under 25, 2nd lowest in the NBA</div></div>
-      <div class="cell reveal"><div class="num">56-26</div><div class="cap">The finish, 2nd in the East, with Jayson Tatum playing only 16 games</div></div>
+      <a class="cell reveal" href="#question-1-shooting"><div class="num">.35 to .38</div><div class="cap">Boston's 3P% at every position, the flattest profile in the league</div></a>
+      <a class="cell reveal" href="#question-2-playmaking"><div class="num">414</div><div class="cap">Team-high assists (Derrick White). The league's elite sit at 530 to 697</div></a>
+      <a class="cell reveal" href="#question-3-aging"><div class="num">10%</div><div class="cap">Of Boston's points from players under 25, 2nd lowest in the NBA</div></a>
+      <a class="cell reveal" href="#question-4-season-arc"><div class="num">56-26</div><div class="cap">The finish, 2nd in the East, with Jayson Tatum playing only 16 games</div></a>
     </div>
   </div>
 </header>
@@ -171,17 +173,18 @@
   <div class="wrap">
 
     <p>I recently built a portfolio project in Tableau with a premise I enjoyed: I played the role of a data analyst for the Boston Celtics, and the job was to answer the kinds of questions a front office actually asks. Not "make a bar chart," but "how did we survive last season" and "where do we find more playmaking." I pulled fresh 2025-26 data, built the model, and let four questions drive the whole analysis.</p>
+    <p>This is a portfolio piece from my transition into data analytics, built to show the full path from raw data to stakeholder answers.</p>
     <p>The full interactive workbook is embedded at the end of this page, or you can <a href="https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank" rel="noopener" style="color:var(--accent)">open it on Tableau Public ↗</a>. All numbers are regular season.</p>
 
     <hr />
 
-    <h2 class="reveal">The data, and the cleaning that came first</h2>
+    <h2 class="reveal" id="data-cleaning">The data, and the cleaning that came first</h2>
     <p>Everything comes from <a href="https://www.basketball-reference.com/" target="_blank" rel="noopener" style="color:var(--accent)">Basketball-Reference</a> (Sports Reference LLC): 2025-26 regular season player totals, playoff totals, league standings, and the Celtics game-by-game log, cleaned into four CSVs and connected in Tableau with relationships. I validated the results against the official Celtics statistics page and every figure reconciled to the decimal, for example Jaylen Brown at 28.7 points per game (2,038 points over 71 games).</p>
     <p>The cleaning taught me as much as the charts. Traded players appear on multiple rows: one per team plus a combined row labeled 2TM, 3TM, or even 4TM. Sum points naively and every traded player counts twice. James Harden shows a combined row with 557 assists plus separate rows for his Clippers and Cavaliers stints. I handled it with two calculated fields, including my first level-of-detail expression: a Season Row filter that keeps the combined row for traded players and the only row for everyone else. I also caught a quirk worth knowing: traded players can carry different positions on different rows (CJ McCollum was a shooting guard in Washington and a point guard in Atlanta), which the combined row resolves. Five players had that conflict, and I only knew because I checked.</p>
 
     <hr />
 
-    <h2 class="reveal"><span class="qtag">Question 1 · From the coaching staff</span>"Which positions shoot the three well, for us and around the league?"</h2>
+    <h2 class="reveal" id="question-1-shooting"><span class="qtag">Question 1 · From the coaching staff</span>"Which positions shoot the three well, for us and around the league?"</h2>
     <p>My first answer was wrong, and that mistake became the most valuable part of the project. I built a table of average 3-point percentage by team and position, and it told me Lakers centers shot a perfect 1.000 from three.</p>
     <p>AVG treats every player equally: a 1-for-1 shooter counts the same as a player with 500 attempts. The honest number is total makes divided by total attempts, which weights by volume:</p>
 <pre>SUM([3P]) / SUM([3PA])</pre>
@@ -194,19 +197,19 @@
 
     <hr />
 
-    <h2 class="reveal"><span class="qtag">Question 2 · From the general manager</span>"We want more playmaking. What does the market look like, and where do we stand?"</h2>
+    <h2 class="reveal" id="question-2-playmaking"><span class="qtag">Question 2 · From the general manager</span>"We want more playmaking. What does the market look like, and where do we stand?"</h2>
     <p>I mapped the assist market as a treemap grouped by position, then located Boston in it. The uncomfortable answer first: Derrick White led the team with 414 assists and Payton Pritchard was right behind at 408. The league's elite creators sit between 530 and 697. Boston runs its offense by committee, with four players sharing the load and nobody in the top tier.</p>
     <p>The market itself had a surprise. Point guards dominate assist volume as a group, but the single biggest producer in the league is a center: Nikola Jokić with 697. The second lesson for a front office shopping for playmaking is that it no longer comes only in point guard form. Jalen Johnson produced 566 assists as a small forward. If Boston upgrades here, the market is wider than the obvious position.</p>
 
     <hr />
 
-    <h2 class="reveal"><span class="qtag">Question 3 · From the front office</span>"How is this roster aging? Where does the scoring come from in three years?"</h2>
+    <h2 class="reveal" id="question-3-aging"><span class="qtag">Question 3 · From the front office</span>"How is this roster aging? Where does the scoring come from in three years?"</h2>
     <p>I split every team's points into three age bands: under 25, 25 to 29, and 30 plus. Boston's profile is stark. Only 10% of the team's scoring came from players under 25, second lowest in the league behind New York. 75% came from the 25-29 prime band.</p>
     <p>Read one way, that is exactly what a contender should look like: production concentrated in players at their peak. Read the other way, there is almost no internal pipeline. The teams at the opposite extreme (Washington at 77% under-25 scoring) are rebuilding, so youth share alone is not a virtue. But the gap between Boston's 10% and the league norm is the number I would put in front of the front office when the conversation turns to the next contract cycle.</p>
 
     <hr />
 
-    <h2 class="reveal"><span class="qtag">Question 4 · From everyone in the building</span>"How did we win 56 games without Jayson Tatum?"</h2>
+    <h2 class="reveal" id="question-4-season-arc"><span class="qtag">Question 4 · From everyone in the building</span>"How did we win 56 games without Jayson Tatum?"</h2>
     <p>Tatum played only 16 regular season games, and averaged 21.8 points in them. The season happened mostly without him, and the game log tells the story: an 0-3 start, then a steady climb, a 9-2 February as the best month, and a 56-26 finish, second in the East.</p>
     <div class="fig reveal"><img src="https://idepablo.com/projects/img/Celtics_Season_Arc.png" alt="Cumulative Celtics wins by month, annotated: 0-3 start, 9-2 February, 56-26 finish" loading="lazy" /><div class="cap">The season arc: 0-3 start, a 9-2 February, a 56-26 finish.</div></div>
     <p>The player data shows who carried it. Jaylen Brown finished top-3 in the league in total points. White and Pritchard combined for 822 assists and over 2,600 points. The bubble chart below is my favorite view of it: Celtics labeled in green against the league's leaders in gray, with Brown out among the elite and Tatum's dot sitting down among the role players, which is what 16 games of totals looks like.</p>
@@ -221,11 +224,11 @@
     <hr />
 
     <h2 class="reveal">Explore the interactive workbook</h2>
-    <p>The full six-part story, including the drill-down from conference to player level. Best experienced on a wider screen.</p>
-    <div class="embed-shell reveal">
-      <div class='tableauPlaceholder' id='viz1785965912958' style='position: relative'><noscript><a href='https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link'><img alt='Boston vs. the League: 2025-26 Analysis Update ' src='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NB&#47;NBA2025-26SeasonAnalysisBostonCeltics_17859648246570&#47;Bostonvs_theLeague2025-26AnalysisUpdate&#47;1_rss.png' style='border: none' /></a></noscript><object class='tableauViz' style='display:none;'><param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' /> <param name='embed_code_version' value='3' /> <param name='site_root' value='' /><param name='name' value='NBA2025-26SeasonAnalysisBostonCeltics_17859648246570&#47;Bostonvs_theLeague2025-26AnalysisUpdate' /><param name='tabs' value='yes' /><param name='toolbar' value='yes' /><param name='static_image' value='https:&#47;&#47;public.tableau.com&#47;static&#47;images&#47;NB&#47;NBA2025-26SeasonAnalysisBostonCeltics_17859648246570&#47;Bostonvs_theLeague2025-26AnalysisUpdate&#47;1.png' /> <param name='animate_transition' value='yes' /><param name='display_static_image' value='yes' /><param name='display_spinner' value='yes' /><param name='display_overlay' value='yes' /><param name='display_count' value='yes' /><param name='language' value='en-US' /></object></div>
+    <p>Explore the full interactive version on Tableau Public, including the drill-down to player level.</p>
+    <a href="https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank" rel="noopener" class="fig reveal" style="display:block;text-decoration:none"><img src="https://idepablo.com/projects/img/workbook_preview.png" alt="First slide of the interactive Tableau story: Boston vs. the League bubble chart of points and assists" loading="lazy" /><div class="cap" style="color:var(--accent);font-weight:550">Open the interactive workbook ↗</div></a>
+    <div class="reveal" style="text-align:center;margin:22px 0 0">
+      <a class="btn btn-primary" href="https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank" rel="noopener">Explore the interactive workbook on Tableau Public</a>
     </div>
-    <p class="viz-note">If the embed does not load, <a href="https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank" rel="noopener">open it on Tableau Public ↗</a></p>
     <p style="color:var(--text-3);font-size:.85rem;margin-top:26px">Data: Basketball-Reference / Sports Reference LLC. Validation: celtics.com official statistics.</p>
 
     <div class="share-row" style="border-top:1px solid var(--line);margin-top:56px;padding-top:34px;text-align:center">
@@ -288,17 +291,6 @@ document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 /* ---------- YEAR ---------- */
 document.getElementById('yr').textContent=new Date().getFullYear();
 
-/* ---------- TABLEAU EMBED ---------- */
-(function(){
-  var divElement = document.getElementById('viz1785965912958');
-  var vizElement = divElement.getElementsByTagName('object')[0];
-  var w = Math.min(divElement.parentNode.clientWidth || 1016, 1016);
-  vizElement.style.width = w + 'px';
-  vizElement.style.height = '1014px';
-  var scriptElement = document.createElement('script');
-  scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
-  vizElement.parentNode.insertBefore(scriptElement, vizElement);
-})();
 </script>
 <script data-goatcounter="https://idepablo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
