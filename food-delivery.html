@@ -5,20 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>What 2,000 Food Delivery Customers Reveal about Spending and Marketing | Ignacio de Pablo</title>
 <meta name="description" content="An Excel analysis of 2,021 food delivery customers: income explains 67% of spending variation, wine and meat drive revenue, and the best customers don't rely on discounts. By Ignacio de Pablo." />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="What 2,000 Food Delivery Customers Reveal about Spending and Marketing | Ignacio de Pablo" />
-<meta property="og:description" content="An Excel analysis of 2,021 customers: income explains 67% of spending variation, wine and meat drive revenue, and the best customers do not rely on discounts." />
-<meta property="og:url" content="https://idepablo.com/projects/food-delivery.html" />
-<meta property="og:image" content="https://idepablo.com/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="What 2,000 Food Delivery Customers Reveal about Spending and Marketing | Ignacio de Pablo" />
-<meta name="twitter:description" content="An Excel analysis of 2,021 customers: income explains 67% of spending variation, wine and meat drive revenue, and the best customers do not rely on discounts." />
-<meta name="twitter:image" content="https://idepablo.com/og-image.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -196,7 +182,7 @@
     <h3>Does Income Predict Spending?</h3>
     <p>The first question I wanted to answer was simple: Does earning more money mean spending more on food delivery? To find out, I plotted income against total spend for all 2,021 customers.</p>
     <figure><img src="/projects/img/food-01-income-scatter.png" alt="Scatter plot of income vs. total spend with trendline, R-squared 0.67" onerror="this.closest('figure').style.display='none'" /><figcaption>Income vs. total spend across all 2,021 customers</figcaption></figure>
-    <p>The result was clear. I added a trendline to the chart, along with an R-squared value of 0.67. For those unfamiliar with R-squared, think of it as a score between 0 and 1 that measures how much of the variation in one variable a model explains using the other. At 0.67, income explains approximately 67% of the observed variation in customer spending, and since the trendline slope is positive, the relationship between income and spending is a strong positive one.</p>
+    <p>The result was clear. I added a trendline to the chart, along with an R-squared value of 0.67. For those unfamiliar with R-squared, think of it as a score between 0 and 1 that measures how well one variable explains the other. The closer to 1, the stronger the relationship between two variables. At 0.67, income explains approximately 67% of the variation in customer spending, which, in data analytics terms, is considered a strong positive correlation.</p>
     <p>In plain English: the more someone earns, the more they tend to spend on food delivery. Not a shocking finding, but having the data to quantify that relationship is what turns an assumption into an insight.</p>
     <p>One interesting detail worth noting: at higher income levels, the data fans out significantly, meaning high earners vary much more in their spending habits than lower-income customers. Some spend heavily, others barely engage at all. That gap at the top is actually an opportunity worth exploring for any marketing team.</p>
 
@@ -209,7 +195,7 @@
     <p>For any marketing team, this is actionable. The majority of revenue comes from two categories and a small group of high-spending customers. Protecting and growing that segment should be the priority.</p>
 
     <h3>Which Campaign Actually Worked?</h3>
-    <p>This is where things get really interesting. The company ran 6 marketing campaigns across its customer base. Looking at the results, no single campaign managed to achieve both high reach and high average spend at the same time, and that tension is exactly where the business opportunity lies.</p>
+    <p>This is where things get really interesting. DoorDash ran 6 marketing campaigns across its customer base. Looking at the results, no single campaign managed to achieve both high reach and high average spend at the same time, and that tension is exactly where the business opportunity lies.</p>
     <figure><img src="/projects/img/food-04-campaign-performance.png" alt="Campaign performance: reach vs. average spend across six campaigns" onerror="this.closest('figure').style.display='none'" /><figcaption>Campaign performance: reach vs. average spend</figcaption></figure>
     <p>Campaign 6 reached the most customers by far with 311 buyers, more than double any other campaign. However, its average spend of $917 was not the highest. That title belongs to Campaign 5, which attracted customers who spent an average of $1,537 but reached only 146 people.</p>
     <p>On the other end of the spectrum, Campaign 3 is worth flagging. It reached 151 customers but had the lowest average spend of all six campaigns at just $652. High reach, low value, a combination that should raise questions about who that campaign was targeting and whether the offer was attracting the wrong audience.</p>
@@ -234,15 +220,6 @@
     <p>Third, Campaign 6 reached the most people but not the highest spenders. The 35 to 54 age group is the core audience and should be the primary target for future campaigns.</p>
     <p>Fourth, the best customers are not deal hunters. They are decisive buyers who convert at higher rates without needing discounts. Rewarding them with quality and convenience rather than promotions is likely the smarter long-term strategy.</p>
 
-
-    <div class="share-row" style="border-top:1px solid var(--line);margin-top:56px;padding-top:34px;text-align:center">
-      <div style="font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px">Share this analysis</div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://twitter.com/intent/tweet?text=Food+Delivery+Customer+Analysis%3A+what+2%2C000+customers+reveal+about+spending&url=https%3A%2F%2Fidepablo.com%2Fprojects%2Ffood-delivery.html%3Futm_source%3Dx%26utm_medium%3Dshare&via=idepabloc" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M18.9 1.2h3.7l-8.2 9.4L24 22.8h-7.6l-5.9-7.7-6.8 7.7H.1l8.8-10L0 1.2h7.8l5.3 7 5.8-7zm-1.3 19.4h2L6.7 3.3h-2.2l13.1 17.3z"/></svg> Share on X</a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fidepablo.com%2Fprojects%2Ffood-delivery.html%3Futm_source%3Dlinkedin%26utm_medium%3Dshare" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z"/></svg> Share on LinkedIn</a>
-        <button type="button" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s;font-family:inherit" onclick="navigator.clipboard.writeText('https://idepablo.com/projects/food-delivery.html').then(()=>{this.lastChild.textContent=' Copied!';setTimeout(()=>this.lastChild.textContent=' Copy link',1600)})" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span> Copy link</span></button>
-      </div>
-    </div>
     <div class="article-cta">
       <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
       <p>I would love to hear your thoughts. Do you see the data differently? Would you have approached the analysis in a different way? I am always open to feedback, conversations, and opportunities.</p>

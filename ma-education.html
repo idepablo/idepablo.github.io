@@ -5,20 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Massachusetts Education Dashboard | Ignacio de Pablo</title>
 <meta name="description" content="An interactive Tableau dashboard surfacing performance gaps and dropout patterns across 1,800+ Massachusetts schools and 100+ metrics. By Ignacio de Pablo." />
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Massachusetts Education Dashboard | Ignacio de Pablo" />
-<meta property="og:description" content="Interactive Tableau dashboard analyzing dropout patterns across 1,861 schools, identifying 37 critical schools and a strong link to economic disadvantage." />
-<meta property="og:url" content="https://idepablo.com/projects/ma-education.html" />
-<meta property="og:image" content="https://idepablo.com/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Massachusetts Education Dashboard | Ignacio de Pablo" />
-<meta name="twitter:description" content="Interactive Tableau dashboard analyzing dropout patterns across 1,861 schools, identifying 37 critical schools and a strong link to economic disadvantage." />
-<meta name="twitter:image" content="https://idepablo.com/og-image.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -165,11 +151,10 @@
       <span class="meta-pill">🗄️ Massachusetts public schools data</span>
       <a class="meta-pill" href="https://public.tableau.com/app/profile/ignacio.de.pablo/viz/MASchoolsDropoutAnalysis/Dashboard" target="_blank" rel="noopener" style="color:var(--accent)">Open on Tableau Public ↗</a>
     </div>
-    <div class="stat-band" style="grid-template-columns:repeat(4,1fr)">
-      <div class="cell reveal"><div class="num">1,861</div><div class="cap">Schools evaluated</div></div>
-      <div class="cell reveal"><div class="num">953K</div><div class="cap">Students enrolled</div></div>
-      <div class="cell reveal"><div class="num">7.1%</div><div class="cap">Average dropout rate</div></div>
-      <div class="cell reveal"><div class="num">37</div><div class="cap">Critical schools · ≥20% dropout</div></div>
+    <div class="stat-band">
+      <div class="cell reveal"><div class="num">1,800+</div><div class="cap">Schools evaluated</div></div>
+      <div class="cell reveal"><div class="num">100+</div><div class="cap">Performance metrics</div></div>
+      <div class="cell reveal"><div class="num">4</div><div class="cap">Chart types working together</div></div>
     </div>
   </div>
 </header>
@@ -208,30 +193,18 @@
 
   <div class="wrap">
 
+    <!-- KEY FINDINGS: fill in with your real conclusions from the analysis, then remove this comment.
     <h2 class="reveal">Key findings</h2>
-    <p>Of the 1,861 schools in the dataset, 376 report graduation-cohort data, and that is where the dropout story lives.</p>
     <ul>
-      <li><strong>Dropout is concentrated, not widespread.</strong> The median school loses just 2.9% of its cohort, and 48 schools report zero dropouts. But the average is 7.1% because a small group of schools pulls it up: 37 "critical" schools sit at or above a 20% dropout rate, topping out at 71.4% at Frederick Douglass Academy in Brockton.</li>
-      <li><strong>Economic disadvantage is the strongest signal in the data.</strong> The share of economically disadvantaged students correlates with dropout rate at r = 0.66, the strongest relationship of any metric tested. Schools in the top quartile of economic disadvantage average a 17.8% dropout rate; schools in the bottom quartile average 1.2%. That is roughly a 15x gap.</li>
-      <li><strong>Smaller class sizes correlate with <em>higher</em> dropout, and that's not what it looks like.</strong> Class size shows a negative correlation with dropout (r = −0.42): critical schools average 10.7 students per class and 277 enrolled, versus 15.9 and 882 elsewhere. My interpretation is that this reflects school type rather than cause and effect. Many of the highest-dropout schools are small alternative and academy programs that exist specifically to serve at-risk students, so small classes are a marker of the population served, not a policy failure.</li>
-      <li><strong>Teacher salary barely moves the needle.</strong> Average teacher salary shows almost no relationship with dropout at the school level (r = −0.06), a reminder that spending metrics alone don't explain student outcomes in this dataset.</li>
-      <li><strong>The problem has a geography.</strong> High-dropout schools cluster in Massachusetts's Gateway Cities: Springfield's ten cohort schools average a 22.8% dropout rate, with Lawrence (31.2%), New Bedford (30.4%), Chicopee (26.3%), Brockton (23.5%), and Fall River (22.4%) close behind.</li>
+      <li>Finding 1</li>
+      <li>Finding 2</li>
+      <li>Finding 3</li>
     </ul>
-    <p><strong>What a stakeholder should do with this:</strong> the data argues for targeted intervention over blanket policy. The 37 critical schools are a named, finite list concentrated in a handful of districts, and the strongest lever the data points to is support tied to economic disadvantage, not class size or salary adjustments.</p>
-    <p style="color:var(--text-3);font-size:.86rem">Figures computed directly from the dashboard's packaged dataset (Massachusetts public schools, 2017 report year; 1,861 schools, 376 with graduation-cohort data).</p>
+    -->
 
     <h2 class="reveal">Why this matters</h2>
     <p>Dashboards like this one are how analytics earns its keep in an organization: leadership shouldn't need to file a request and wait for a report to know where the problems are. The same design principles (KPIs for orientation, scatter plots for outlier detection, ranked bars for comparison) carry directly into the operational and financial dashboards I built during seven years in fintech, where the "schools" were 12,000+ merchants and the metrics were fees, chargebacks, and settlement volume.</p>
 
-
-    <div class="share-row" style="border-top:1px solid var(--line);margin-top:56px;padding-top:34px;text-align:center">
-      <div style="font-size:.78rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:16px">Share this analysis</div>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://twitter.com/intent/tweet?text=Massachusetts+Education+Dashboard%3A+dropout+patterns+across+1%2C861+schools&url=https%3A%2F%2Fidepablo.com%2Fprojects%2Fma-education.html%3Futm_source%3Dx%26utm_medium%3Dshare&via=idepabloc" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M18.9 1.2h3.7l-8.2 9.4L24 22.8h-7.6l-5.9-7.7-6.8 7.7H.1l8.8-10L0 1.2h7.8l5.3 7 5.8-7zm-1.3 19.4h2L6.7 3.3h-2.2l13.1 17.3z"/></svg> Share on X</a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fidepablo.com%2Fprojects%2Fma-education.html%3Futm_source%3Dlinkedin%26utm_medium%3Dshare" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z"/></svg> Share on LinkedIn</a>
-        <button type="button" style="display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);font-size:.85rem;font-weight:550;color:var(--text-2);box-shadow:var(--shadow);cursor:pointer;transition:transform .2s,color .2s,border-color .2s;font-family:inherit" onclick="navigator.clipboard.writeText('https://idepablo.com/projects/ma-education.html').then(()=>{this.lastChild.textContent=' Copied!';setTimeout(()=>this.lastChild.textContent=' Copy link',1600)})" onmouseover="this.style.color='var(--accent)';this.style.borderColor='var(--accent)'" onmouseout="this.style.color='var(--text-2)';this.style.borderColor='var(--card-line)'"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span> Copy link</span></button>
-      </div>
-    </div>
     <div class="article-cta">
       <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
       <p>I'm actively exploring opportunities in Seattle or remote. If your team turns data into decisions, I'd love to talk.</p>
