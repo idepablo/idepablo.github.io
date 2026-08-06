@@ -12,13 +12,13 @@
 <meta property="og:title" content="The Best-Controlled Number Tells You the Least | Ignacio de Pablo" />
 <meta property="og:description" content="A Python analysis of six months of iron ore flotation data: a hidden recording gap, two measurement rates in one table, and a reagent that appears to chase impurity instead of preventing it." />
 <meta property="og:url" content="https://idepablo.com/projects/mining-flotation.html" />
-<meta property="og:image" content="https://idepablo.com/projects/img/chart-iron-vs-silica-variation.png" />
-<meta property="og:image:width" content="1189" />
-<meta property="og:image:height" content="390" />
+<meta property="og:image" content="https://idepablo.com/projects/img/mining_cover.jpg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="894" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="The Best-Controlled Number Tells You the Least | Ignacio de Pablo" />
 <meta name="twitter:description" content="A Python analysis of six months of iron ore flotation data, from data audit to a lag analysis of reactive reagent dosing." />
-<meta name="twitter:image" content="https://idepablo.com/projects/img/chart-iron-vs-silica-variation.png" />
+<meta name="twitter:image" content="https://idepablo.com/projects/img/mining_cover.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -72,12 +72,9 @@
   @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
 
   .article-hero{padding:120px 0 56px;border-bottom:1px solid var(--line)}
-  .cover{width:100%;aspect-ratio:16/9;max-height:340px;border-radius:20px;margin-bottom:32px;position:relative;overflow:hidden;
-    background:linear-gradient(135deg,#181210,#332516 55%,#101c28);border:1px solid var(--card-line);box-shadow:var(--shadow-lg);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
-  .cover svg{width:min(72%,560px);height:auto;display:block}
-  .cover .formula{font-family:var(--font-display);font-weight:700;letter-spacing:.14em;color:#e8d5b5;font-size:clamp(.9rem,1.8vw,1.15rem);opacity:.92}
-  .cover .formula span{color:#7fb8e8}
+  .cover{width:100%;aspect-ratio:16/9;max-height:380px;border-radius:20px;margin-bottom:32px;
+    background-image:url('https://idepablo.com/projects/img/mining_cover.jpg'),linear-gradient(135deg,#181210,#332516 55%,#101c28);
+    background-size:cover;background-position:center;border:1px solid var(--card-line);box-shadow:var(--shadow-lg)}
   .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
   h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:14px}
   .subtitle{color:var(--text-2);font-size:clamp(1.02rem,1.7vw,1.2rem);margin-bottom:16px}
@@ -146,13 +143,7 @@
 
 <header class="article-hero">
   <div class="wrap">
-    <div class="cover" role="img" aria-label="A calm flat line and a volatile noisy line, the visual thesis of this analysis">
-      <svg viewBox="0 0 560 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M0 38 L560 36" stroke="#e0b36a" stroke-width="2.5" fill="none" opacity=".95"/>
-        <path d="M0 85 L15 78 L28 96 L42 70 L55 90 L70 62 L84 98 L99 74 L113 88 L128 58 L142 95 L157 79 L171 66 L186 92 L200 72 L215 99 L229 60 L244 84 L258 71 L273 93 L287 65 L302 88 L316 75 L331 97 L345 63 L360 86 L374 70 L389 94 L403 77 L418 61 L432 90 L447 68 L461 96 L476 73 L490 87 L505 64 L519 92 L534 78 L548 85 L560 74" stroke="#5f9fd4" stroke-width="1.8" fill="none" opacity=".9"/>
-      </svg>
-      <div class="formula">Fe 65.05% ± 1.7 · <span>SiO₂ 2.33% ± 48.3</span></div>
-    </div>
+    <div class="cover" role="img" aria-label="An iron ore flotation plant at dusk, froth tanks churning in the foreground"></div>
     <div class="eyebrow">Case Study · Python · Industrial Analytics</div>
     <h1>The Best-Controlled Number Tells You the Least</h1>
     <p class="subtitle">A Python analysis of six months of iron ore flotation data</p>
