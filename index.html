@@ -3,23 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ignacio de Pablo | Data & BI Analyst</title>
-<meta name="description" content="Ignacio de Pablo · Data & BI Analyst. Seven years of fintech operations, turning complex data into decisions with SQL, Python, Power BI, Tableau, and Excel." />
+<title>All Projects | Ignacio de Pablo</title>
+<meta name="description" content="The full project portfolio of Ignacio de Pablo: SQL, Tableau, Excel, and Power BI case studies, plus self-directed builds like the AZIMUTH launch market BI platform." />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Ignacio de Pablo | Data & BI Analyst" />
-<meta property="og:description" content="Data & BI Analyst with 7+ years of fintech operations. SQL, Python, Power BI, Tableau. Case studies in financial analysis, marketing analytics, and data visualization." />
-<meta property="og:url" content="https://idepablo.com/" />
+<meta property="og:title" content="All Projects | Ignacio de Pablo" />
+<meta property="og:description" content="The full project portfolio: SQL, Tableau, Excel, and Power BI case studies, plus self-directed builds." />
+<meta property="og:url" content="https://idepablo.com/projects/" />
 <meta property="og:image" content="https://idepablo.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Ignacio de Pablo | Data & BI Analyst" />
-<meta name="twitter:description" content="Data & BI Analyst with 7+ years of fintech operations. SQL, Python, Power BI, Tableau. Case studies in financial analysis, marketing analytics, and data visualization." />
+<meta name="twitter:title" content="All Projects | Ignacio de Pablo" />
+<meta name="twitter:description" content="The full project portfolio: SQL, Tableau, Excel, and Power BI case studies, plus self-directed builds." />
 <meta name="twitter:image" content="https://idepablo.com/og-image.png" />
-<link rel="preconnect" href="https://images.credly.com" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -35,7 +34,7 @@
     --accent:#0071e3; --accent-2:#0059b3; --accent-soft:rgba(0,113,227,.10);
     --grad-a:#0071e3; --grad-b:#22a0e8;
     --shadow:0 4px 24px rgba(0,0,0,.06); --shadow-lg:0 18px 60px rgba(0,0,0,.10);
-    --nav-bg:rgba(255,255,255,.72); --hero-glow:rgba(0,113,227,.10);
+    --nav-bg:rgba(255,255,255,.72);
     --font-display:"Inter",-apple-system,BlinkMacSystemFont,sans-serif;
     --maxw:1120px;
   }
@@ -46,33 +45,23 @@
     --accent:#2997ff; --accent-2:#0a84ff; --accent-soft:rgba(41,151,255,.15);
     --grad-a:#2997ff; --grad-b:#38bdf8;
     --shadow:0 4px 24px rgba(0,0,0,.4); --shadow-lg:0 24px 70px rgba(0,0,0,.6);
-    --nav-bg:rgba(10,10,12,.68); --hero-glow:rgba(41,151,255,.16);
+    --nav-bg:rgba(10,10,12,.68);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-  body{
-    font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    letter-spacing:-.005em;
-    background:var(--bg);color:var(--text);line-height:1.5;
-    transition:background .5s ease,color .5s ease;overflow-x:hidden;
-  }
+  body{font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing:-.005em;background:var(--bg);color:var(--text);line-height:1.6;
+    transition:background .5s ease,color .5s ease;overflow-x:hidden}
   a{color:inherit;text-decoration:none}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px}
-  section{padding:120px 0;position:relative}
-  .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
-  h2.title{font-size:clamp(2rem,4.2vw,3.2rem);font-weight:700;letter-spacing:-.02em;line-height:1.06}
-  .lead{color:var(--text-2);font-size:clamp(1.05rem,1.6vw,1.3rem);max-width:640px;margin-top:18px;font-weight:400}
-  h1,h2,h3,h4,.brand,.stat .num{font-family:var(--font-display)}
   .progress{position:fixed;top:0;left:0;height:3px;width:0;z-index:200;
     background:linear-gradient(90deg,var(--grad-a),var(--grad-b));transition:width .08s linear}
 
-  /* NAV */
   nav{position:fixed;top:0;left:0;right:0;z-index:100;backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);
-    background:var(--nav-bg);border-bottom:1px solid transparent;transition:border-color .4s ease,background .5s ease,height .3s ease}
+    background:var(--nav-bg);border-bottom:1px solid transparent;transition:border-color .4s ease,background .5s ease}
   nav.scrolled{border-bottom-color:var(--line)}
-  .navbar{max-width:var(--maxw);margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
-  .brand{font-weight:600;letter-spacing:-.01em;font-size:1.02rem}
-  .brand span{color:inherit}
+  .navbar{max-width:1120px;margin:0 auto;padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between}
+  .brand{font-weight:600;letter-spacing:-.01em;font-size:1.02rem;font-family:var(--font-display)}
   .navlinks{display:flex;gap:30px;align-items:center}
   .navlinks a{color:var(--text-2);font-size:.9rem;font-weight:450;transition:color .25s}
   .navlinks a:hover{color:var(--text)}
@@ -80,478 +69,176 @@
     cursor:pointer;display:grid;place-items:center;transition:transform .3s,background .3s,border-color .3s}
   .theme-toggle:hover{background:var(--bg-2);transform:scale(1.06)}
   .theme-toggle svg{width:17px;height:17px}
-  @media(max-width:720px){.navlinks a:not(.nav-cta){display:none}}
+  @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
 
-  /* HERO */
-  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;
-    padding:120px 24px 60px;position:relative;overflow:hidden}
-  .hero::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-    background-image:radial-gradient(circle at center,var(--line) 1px,transparent 1.4px);background-size:30px 30px;
-    -webkit-mask-image:radial-gradient(ellipse 62% 55% at 50% 42%,#000 28%,transparent 78%);
-    mask-image:radial-gradient(ellipse 62% 55% at 50% 42%,#000 28%,transparent 78%);opacity:.6}
-  .hero-glow{position:absolute;top:-10%;left:50%;transform:translateX(-50%);width:900px;height:900px;max-width:120vw;
-    background:radial-gradient(circle,var(--hero-glow) 0%,transparent 62%);pointer-events:none;z-index:0}
-  .aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
-  .aurora span{position:absolute;border-radius:50%;filter:blur(70px);opacity:.42;will-change:transform}
-  html[data-theme="light"] .aurora span{opacity:.22}
-  .aurora .a1{width:460px;height:460px;background:radial-gradient(circle,var(--grad-a),transparent 68%);top:-8%;left:6%;animation:drift1 20s ease-in-out infinite}
-  .aurora .a2{width:400px;height:400px;background:radial-gradient(circle,var(--grad-b),transparent 68%);top:8%;right:4%;animation:drift2 24s ease-in-out infinite}
-  .aurora .a3{width:380px;height:380px;background:radial-gradient(circle,#38bdf8,transparent 70%);bottom:0;left:40%;animation:drift3 28s ease-in-out infinite}
-  @keyframes drift1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,50px) scale(1.08)}}
-  @keyframes drift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-60px,60px) scale(1.1)}}
-  @keyframes drift3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-50px) scale(1.06)}}
-  .hero-inner{position:relative;z-index:1;max-width:900px}
-  .avatar{width:118px;height:118px;border-radius:50%;object-fit:cover;object-position:64% 38%;border:1px solid var(--card-line);box-shadow:var(--shadow-lg);margin-bottom:30px}
-  .hero h1{font-size:clamp(2.8rem,7.5vw,5.4rem);font-weight:700;letter-spacing:-.035em;line-height:1;margin-bottom:8px}
-  .hero h1 .last{color:inherit}
-  .hero .role{font-size:clamp(1.15rem,2.4vw,1.55rem);color:var(--text-2);font-weight:500;letter-spacing:-.01em;margin-bottom:22px}
-  .hero .pitch{font-size:clamp(1.02rem,1.7vw,1.24rem);color:var(--text-2);max-width:600px;margin:0 auto 34px;font-weight:400}
-  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:26px}
-  .now-strip{display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:52px;
-    padding:8px 14px;border:1px solid var(--card-line);border-radius:980px;background:var(--card);box-shadow:var(--shadow)}
-  .now-label{display:inline-flex;align-items:center;gap:7px;font-size:.78rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-3)}
-  .now-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.55);animation:nowpulse 2s ease-out infinite}
-  @keyframes nowpulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
-  .now-item{font-size:.85rem;font-weight:550;color:var(--accent);padding:5px 12px;border-radius:980px;background:var(--accent-soft);transition:transform .2s,background .2s}
-  .now-item:hover{transform:scale(1.04)}
-  @media(max-width:640px){.now-strip{border-radius:18px;padding:10px 14px}}
-  .btn{padding:12px 26px;border-radius:980px;font-size:.98rem;font-weight:500;transition:transform .25s,background .25s,box-shadow .25s;cursor:pointer;border:none}
-  .btn-primary{background:var(--accent);color:#fff}
-  .btn-primary:hover{transform:scale(1.04);box-shadow:0 8px 26px var(--accent-soft)}
-  .btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
-  .btn-ghost:hover{background:var(--accent-soft);transform:scale(1.04)}
-  .certstrip{opacity:0;animation:fadeUp 1s ease .5s forwards}
-  .certstrip .label{font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-3);margin-bottom:20px}
-  .degree-pill{display:inline-flex;align-items:center;gap:8px;padding:9px 18px;border:1px solid var(--card-line);border-radius:980px;
-    background:var(--card);font-size:.88rem;font-weight:600;color:var(--text);margin-bottom:22px;box-shadow:var(--shadow);font-family:var(--font-display)}
-  .logos{display:flex;gap:26px;align-items:center;justify-content:center;flex-wrap:wrap;max-width:720px;margin:0 auto}
-  .logos .logo{height:48px;display:flex;align-items:center;justify-content:center;opacity:.94;
-    transition:opacity .35s,transform .35s;filter:drop-shadow(0 3px 8px rgba(0,0,0,.12))}
-  .logos .logo:hover{opacity:1;transform:translateY(-4px) scale(1.06)}
-  .logos .logo img{height:100%;max-height:48px;width:auto}
-  .logos .logo .mono{height:46px;padding:0 16px;border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;
-    font-weight:700;font-size:.86rem;letter-spacing:.02em;color:var(--text-2);background:var(--card)}
-  .scroll-hint{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);color:var(--text-3);font-size:.75rem;
-    letter-spacing:.1em;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:1}
-  .scroll-hint .mouse{width:22px;height:34px;border:1.5px solid var(--text-3);border-radius:12px;position:relative}
-  .scroll-hint .mouse::after{content:"";position:absolute;top:6px;left:50%;transform:translateX(-50%);width:3px;height:6px;
-    background:var(--text-3);border-radius:2px;animation:scrolldot 1.6s ease infinite}
-  @keyframes scrolldot{0%{opacity:0;top:6px}40%{opacity:1}80%{opacity:0;top:15px}100%{opacity:0}}
+  header.page-hero{padding:140px 0 30px;text-align:center}
+  .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
+  h1{font-family:var(--font-display);font-size:clamp(2rem,4.5vw,3.2rem);font-weight:700;letter-spacing:-.025em;line-height:1.08;margin-bottom:16px}
+  .lead{color:var(--text-2);font-size:clamp(1rem,1.6vw,1.2rem);max-width:620px;margin:0 auto}
 
-  /* STATS */
-  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
-  .stat{background:var(--card);border:1px solid var(--card-line);border-radius:20px;padding:34px 24px;text-align:center;box-shadow:var(--shadow)}
-  .stat{text-align:left}
-  .stat .vicon{font-size:1.7rem;line-height:1;margin-bottom:14px}
-  .stat .vtitle{font-size:1.25rem;font-weight:700;letter-spacing:-.01em;color:var(--text)}
-  .stat .cap{color:var(--text-2);font-size:.95rem;margin-top:8px}
-  @media(max-width:640px){.stats{grid-template-columns:1fr}}
+  section{padding:50px 0 30px}
+  .tier-head{text-align:center;max-width:680px;margin:0 auto 34px}
+  .tier-head p{color:var(--text-2);font-size:1.02rem;margin-top:8px}
 
-  /* REVEAL */
-  .reveal,.reveal-l,.reveal-r{opacity:0;transition:opacity .85s cubic-bezier(.2,.7,.2,1),transform .85s cubic-bezier(.2,.7,.2,1)}
-  .reveal{transform:translateY(46px) scale(.985)}
-  .reveal-l{transform:translateX(-52px)}
-  .reveal-r{transform:translateX(52px)}
-  .reveal.visible,.reveal-l.visible,.reveal-r.visible{opacity:1;transform:none}
-  .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}.d4{transition-delay:.32s}
-
-  /* ABOUT */
-  .about-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:60px;align-items:center}
-  .about-copy p{color:var(--text-2);font-size:1.12rem;margin-top:20px;max-width:560px}
-  .about-copy p strong{color:var(--text);font-weight:600}
-  .about-tags{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
-  .tag{background:var(--bg-2);border:1px solid var(--card-line);border-radius:980px;padding:8px 16px;font-size:.85rem;color:var(--text-2)}
-  .about-card{background:var(--card);border:1px solid var(--card-line);border-radius:24px;padding:34px;box-shadow:var(--shadow)}
-  .about-card .row{display:flex;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--card-line)}
-  .about-card .row:last-child{border-bottom:none}
-  .about-card .k{color:var(--text-3);font-size:.92rem}.about-card .v{font-weight:600;font-size:.95rem;text-align:right}
-  @media(max-width:820px){.about-grid{grid-template-columns:1fr;gap:34px}}
-
-  /* SKILLS */
   .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
   @media(max-width:900px){.grid-3{grid-template-columns:repeat(2,1fr)}}
   @media(max-width:600px){.grid-3{grid-template-columns:1fr}}
-  .skill{background:var(--card);border:1px solid var(--card-line);border-radius:22px;padding:30px;box-shadow:var(--shadow);
-    transition:transform .35s,box-shadow .35s,border-color .35s}
-  .skill:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--accent-soft)}
-  .skill .sicon{width:46px;height:46px;border-radius:13px;background:var(--accent-soft);display:grid;place-items:center;margin-bottom:18px}
-  .skill .sicon svg{width:24px;height:24px;stroke:var(--accent)}
-  .skill h3{font-size:1.2rem;font-weight:650;letter-spacing:-.01em}
-  .skill p{color:var(--text-2);font-size:.96rem;margin:10px 0 16px}
-  .chips{display:flex;flex-wrap:wrap;gap:7px}
-  .chip{font-size:.76rem;background:var(--bg-2);border:1px solid var(--card-line);border-radius:7px;padding:4px 10px;color:var(--text-2)}
-
-  /* PROJECTS */
-  .featured{display:grid;grid-template-columns:1.05fr 1fr;gap:0;background:var(--card);border:1px solid var(--card-line);
-    border-radius:26px;overflow:hidden;box-shadow:var(--shadow-lg);margin-bottom:26px}
-  .featured .img{background:var(--bg-2);min-height:340px;background-size:cover;background-position:center}
-  .featured .body{padding:44px}
-  .featured .kmeta{color:var(--accent);font-size:.8rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-  .featured h3{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:700;letter-spacing:-.02em;margin:12px 0 14px;line-height:1.12}
-  .featured p{color:var(--text-2);font-size:1rem;margin-bottom:10px}
-  .featured .q{color:var(--text);font-weight:500}
-  .featured .tags{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 24px}
-  .arrow-link{color:var(--accent);font-weight:550;font-size:.98rem;display:inline-flex;align-items:center;gap:6px;transition:gap .25s}
-  .arrow-link:hover{gap:11px}
-  @media(max-width:820px){.featured{grid-template-columns:1fr}.featured .img{min-height:220px}.featured .body{padding:30px}}
   .pcard{background:var(--card);border:1px solid var(--card-line);border-radius:22px;overflow:hidden;box-shadow:var(--shadow);
     transition:transform .35s,box-shadow .35s;display:flex;flex-direction:column}
   .pcard:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
   .pcard .img{height:172px;background:var(--bg-2);background-size:cover;background-position:center}
   .pcard .body{padding:24px;flex:1;display:flex;flex-direction:column}
   .pcard .kmeta{color:var(--accent);font-size:.74rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-  .pcard h4{font-size:1.15rem;font-weight:650;letter-spacing:-.01em;margin:8px 0 10px}
+  .pcard h4{font-family:var(--font-display);font-size:1.15rem;font-weight:650;letter-spacing:-.01em;margin:8px 0 10px}
   .pcard p{color:var(--text-2);font-size:.9rem;margin-bottom:14px;flex:1}
   .pcard .tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+  .chip{font-size:.76rem;background:var(--bg-2);border:1px solid var(--card-line);border-radius:7px;padding:4px 10px;color:var(--text-2)}
+  .arrow-link{color:var(--accent);font-weight:550;font-size:.95rem;display:inline-flex;align-items:center;gap:6px;transition:gap .25s}
+  .arrow-link:hover{gap:11px}
   .inprog-badge{display:inline-block;font-size:.68rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
     color:var(--accent);background:var(--accent-soft);padding:3px 9px;border-radius:6px;margin-bottom:10px;width:max-content}
 
-  /* CERTS */
-  .cert-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
-  @media(max-width:900px){.cert-grid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:520px){.cert-grid{grid-template-columns:1fr}}
-  .cert{background:var(--card);border:1px solid var(--card-line);border-radius:20px;padding:26px 22px;text-align:center;
-    box-shadow:var(--shadow);transition:transform .35s,box-shadow .35s,border-color .35s;display:flex;flex-direction:column;align-items:center}
-  .cert:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--accent-soft)}
-  .cert .badge{height:78px;display:grid;place-items:center;margin-bottom:16px}
-  .cert .badge img{height:78px;width:auto;filter:drop-shadow(0 4px 10px rgba(0,0,0,.12))}
-  .cert .badge .mono{height:70px;width:70px;border-radius:18px;background:var(--accent-soft);color:var(--accent);
-    display:grid;place-items:center;font-weight:750;font-size:1.05rem;letter-spacing:.02em}
-  .cert h4{font-size:1rem;font-weight:600;letter-spacing:-.01em;line-height:1.25}
-  .cert .issuer{color:var(--text-3);font-size:.82rem;margin:6px 0 14px}
-  .cert .verify{font-size:.8rem;color:var(--accent);font-weight:550;display:inline-flex;align-items:center;gap:5px;opacity:.9}
-  .cert .verify:hover{opacity:1}
-  .cert-progress{font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--accent);background:var(--accent-soft);padding:4px 12px;border-radius:7px}
-  .member-pill{display:inline-flex;align-items:center;gap:9px;padding:11px 22px;border-radius:980px;background:var(--accent-soft);
-    color:var(--accent);font-weight:600;font-size:.96rem;box-shadow:var(--shadow)}
-  .member-pill svg{width:17px;height:17px;stroke:var(--accent);fill:none;stroke-width:2}
-
-  /* PERSONAL */
-  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-  @media(max-width:900px){.grid-4{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:520px){.grid-4{grid-template-columns:1fr}}
-  .pcell{background:var(--card);border:1px solid var(--card-line);border-radius:20px;padding:30px 26px;box-shadow:var(--shadow);
-    transition:transform .35s,box-shadow .35s,border-color .35s}
-  .pcell .pemoji{font-size:2rem;line-height:1}
-  .pcell:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:var(--accent-soft)}
-  .pcell h4{font-size:1.1rem;font-weight:650;margin:12px 0 8px;letter-spacing:-.01em}
-  .pcell p{color:var(--text-2);font-size:.92rem}
-
-  /* TIMELINE */
-  .timeline{position:relative;max-width:760px;margin:0 auto;padding-left:28px}
-  .timeline::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--card-line)}
-  .tl-item{position:relative;padding:0 0 40px 34px}
-  .tl-item:last-child{padding-bottom:0}
-  .tl-item::before{content:"";position:absolute;left:-1px;top:5px;width:14px;height:14px;border-radius:50%;
-    background:var(--bg);border:3px solid var(--accent)}
-  .tl-date{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.02em}
-  .tl-item h4{font-size:1.14rem;font-weight:650;margin:6px 0 3px;letter-spacing:-.01em}
-  .tl-item .org{color:var(--text-2);font-size:.95rem;margin-bottom:10px}
-  .tl-item ul{list-style:none;margin-top:8px}
-  .tl-item ul li{color:var(--text-2);font-size:.93rem;padding-left:18px;position:relative;margin-bottom:7px}
-  .tl-item ul li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%;background:var(--accent)}
-
-  /* CONTACT */
-  .contact{text-align:center}
-  .contact h2{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:700;letter-spacing:-.03em;line-height:1.05}
-  .contact .lead{margin:20px auto 40px}
-  .contact-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .clink{background:var(--card);border:1px solid var(--card-line);border-radius:16px;padding:18px 24px;min-width:150px;
-    box-shadow:var(--shadow);transition:transform .3s,box-shadow .3s;display:flex;flex-direction:column;gap:4px;align-items:flex-start}
-  .clink:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
-  .clink .cl-k{font-size:.76rem;color:var(--text-3);letter-spacing:.04em;text-transform:uppercase}
-  .clink .cl-v{font-weight:600;font-size:.98rem}
+  .back-row{text-align:center;padding:40px 0 80px}
+  .btn{padding:12px 26px;border-radius:980px;font-size:.95rem;font-weight:500;transition:transform .25s,background .25s,box-shadow .25s;cursor:pointer;border:none;display:inline-block}
+  .btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--accent-soft);transform:scale(1.04)}
 
   footer{border-top:1px solid var(--line);padding:40px 24px;text-align:center;color:var(--text-3);font-size:.86rem}
   footer a{color:var(--text-2)}
-
-  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.reveal-l,.reveal-r{opacity:1;transform:none}}
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none}
+    html{scroll-behavior:auto}
+  }
 </style>
 </head>
 <body>
+
 <div class="progress" id="progress"></div>
 
 <nav id="nav">
   <div class="navbar">
-    <a href="#home" class="brand">Ignacio <span>de Pablo</span></a>
+    <a href="/" class="brand">Ignacio <span>de Pablo</span></a>
     <div class="navlinks">
-      <a href="#about">About</a>
-      <a href="#skills">Skills</a>
-      <a href="#work">Work</a>
-      <a href="#certs">Certifications</a>
-      <a href="#beyond">Beyond</a>
-      <a href="#contact">Contact</a>
+      <a href="/#about">About</a>
+      <a href="/#skills">Skills</a>
+      <a href="/#work">Work</a>
+      <a href="/#certs">Certifications</a>
+      <a href="/#contact">Contact</a>
+      <a href="/#work" class="nav-back">← Portfolio</a>
       <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode"></button>
     </div>
   </div>
 </nav>
 
-<!-- HERO -->
-<header class="hero" id="home">
-  <div class="hero-inner">
-    <img class="avatar" src="https://idepablo.com/profile.jpg" alt="Ignacio de Pablo" onerror="this.style.display='none'"/>
-    <h1>Ignacio <span class="last">de Pablo</span></h1>
-    <div class="role">Data &amp; BI Analyst</div>
-    <p class="pitch">I turn complex financial and operational data into clear decisions, using SQL, Python, Power BI, Tableau, and seven years of fintech context behind every chart.</p>
-    <div class="cta-row">
-      <a href="#work" class="btn btn-primary">View my work</a>
-      <a href="https://idepablo.com/resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Download résumé</a>
-    </div>
-    <div class="now-strip">
-      <span class="now-label"><span class="now-dot"></span>Currently working on</span>
-      <a class="now-item" href="/projects/azimuth.html">🚀 AZIMUTH · Launch Market BI Platform</a>
-      <a class="now-item" href="#certs">📊 Microsoft PL-300 certification</a>
-    </div>
-    <div class="certstrip">
-      <div class="degree-pill">🎓 B.S. Information Technology · WGU</div>
-      <div class="label">Industry certifications</div>
-      <div class="logos" id="heroLogos"></div>
-    </div>
+<header class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Portfolio</div>
+    <h1>All projects</h1>
+    <p class="lead">The full list. Every project is built around a real business question and real data, and each links to its complete case study.</p>
   </div>
 </header>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="wrap about-grid">
-    <div class="about-copy reveal-l">
-      <div class="eyebrow">About</div>
-      <h2 class="title">The story behind the data</h2>
-      <p>For more than seven years I worked inside fintech operations at a payment processor, helping a portfolio of <strong>12,000+ merchants</strong> keep running: analyzing their transactional, billing, and settlement data across <strong>$50M+ in monthly volume</strong>, resolving discrepancies, and building the reports leadership relied on to make decisions.</p>
-      <p>That work made me want to understand the tools and processes behind it all more deeply, so I went back to school for a <strong>B.S. in Information Technology</strong>, expanding my technical foundation and learning how the systems I had worked with actually fit together.</p>
-      <p>Along the way I realized my real passion was in the data itself. I leaned all the way in, completing an intensive Data Analytics Bootcamp, building real-world projects in SQL, Python, Tableau, and Power BI, and preparing to begin an <strong>M.S. in Data Analytics</strong>. I continue sharpening my ability to turn messy data into clear decisions, a craft I plan to keep enriching for a long time.</p>
-      <div class="about-tags">
-        <span class="tag">🗣️ Native Spanish · Fluent English</span>
-        <span class="tag">📊 SQL · Python · BI</span>
-        <span class="tag">💳 Fintech &amp; Payments</span>
-      </div>
-    </div>
-    <div class="about-card reveal-r d2">
-      <div class="row"><span class="k">Focus</span><span class="v">Data Analytics &amp; BI</span></div>
-      <div class="row"><span class="k">Core stack</span><span class="v">SQL · Python · Power BI · Tableau</span></div>
-      <div class="row"><span class="k">Experience</span><span class="v">7+ yrs in FinTech</span></div>
-      <div class="row"><span class="k">Location</span><span class="v">Seattle, WA · on-site, hybrid or remote</span></div>
-      <div class="row"><span class="k">Status</span><span class="v" style="color:var(--accent)">Open to work</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- STATS -->
-<section style="padding-top:0">
+<!-- EDUCATIONAL -->
+<section>
   <div class="wrap">
-    <div class="stats">
-      <div class="stat reveal"><div class="vicon">🏦</div><div class="vtitle">7+ years in FinTech</div><div class="cap">Hands-on with payments, merchants, and financial data at real operational scale.</div></div>
-      <div class="stat reveal d2"><div class="vicon">🎓</div><div class="vtitle">Always learning</div><div class="cap">A B.S. in IT, an incoming M.S. in Data Analytics, and several industry certifications, with more on the way.</div></div>
-      <div class="stat reveal d3"><div class="vicon">🚀</div><div class="vtitle">Builder at heart</div><div class="cap">If I can build it myself, I will: a production web app with an LLM chatbot, this website, custom PCs, and a home NAS server.</div></div>
-    </div>
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills" style="background:var(--bg-2)">
-  <div class="wrap">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
-      <div class="eyebrow">Skills</div>
-      <h2 class="title">Skills &amp; tools</h2>
-      <p class="lead" style="margin-left:auto;margin-right:auto">The skills I use to collect, clean, analyze, and visualize data, and a toolkit I am always expanding.</p>
+    <div class="tier-head reveal">
+      <div class="eyebrow">Educational</div>
+      <p>Personal projects rooted in my studies. Each one takes a dataset, brief, or concept from my IT degree or data bootcamp and carries it further with real data and my own analysis.</p>
     </div>
     <div class="grid-3">
-      <div class="skill reveal">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
-        <h3>SQL</h3>
-        <p>Extracting, filtering, and aggregating data, from simple lookups to multi-table joins and complex subqueries.</p>
-        <div class="chips"><span class="chip">JOINs</span><span class="chip">CTEs</span><span class="chip">Window Functions</span><span class="chip">MySQL</span><span class="chip">PostgreSQL</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/projects/img/mining_cover.png'),linear-gradient(135deg,#1c1410,#3a2a1a 60%,#14202e)"></div>
+        <div class="body">
+          <div class="kmeta">Python · Industrial Analytics</div>
+          <h4>The Best-Controlled Number Tells You the Least</h4>
+          <p>Six months of iron ore flotation data in pandas: a hidden 13-day recording gap, two measurement rates in one table, and a reagent that appears to chase impurity instead of preventing it.</p>
+          <div class="tags"><span class="chip">Python</span><span class="chip">pandas</span><span class="chip">Lag Analysis</span></div>
+          <a class="arrow-link" href="/projects/mining-flotation.html">Read the case study →</a>
+        </div>
       </div>
-      <div class="skill reveal d2">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></div>
-        <h3>Excel</h3>
-        <p>Data cleaning, transformation, and analysis, from formulas and pivot tables to automated Power Query workflows.</p>
-        <div class="chips"><span class="chip">PivotTables</span><span class="chip">Power Query</span><span class="chip">XLOOKUP</span><span class="chip">Macros</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/projects/img/celtics_cover.jpg');background-position:center"></div>
+        <div class="body">
+          <div class="kmeta">Tableau · Sports Analytics</div>
+          <h4>Four Questions from the Celtics Front Office</h4>
+          <p>Playing data analyst for the Celtics: shooting, playmaking, roster age, and winning without Tatum, answered in Tableau on 2025-26 data.</p>
+          <div class="tags"><span class="chip">Tableau</span><span class="chip">LOD Expressions</span><span class="chip">Data Cleaning</span></div>
+          <a class="arrow-link" href="/projects/nba-2026-season.html">Read the case study →</a>
+        </div>
       </div>
-      <div class="skill reveal d3">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></div>
-        <h3>Power BI</h3>
-        <p>Interactive dashboards and reports with calculated measures, data modeling, and visual storytelling.</p>
-        <div class="chips"><span class="chip">DAX</span><span class="chip">Data Modeling</span><span class="chip">Reports</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/hospital_beds.jpg')"></div>
+        <div class="body">
+          <div class="kmeta">SQL · Healthcare Analytics</div>
+          <h4>Hospital Length of Stay Analysis</h4>
+          <p>Analyzed 101,766 hospital encounters and found the 21% of stays lasting 7+ days consumed 43.5% of all bed-days, using CTEs, window functions, and multi-table JOINs.</p>
+          <div class="tags"><span class="chip">MySQL</span><span class="chip">CTEs</span><span class="chip">Window Functions</span></div>
+          <a class="arrow-link" href="/projects/hospital-length-of-stay.html">Read the case study →</a>
+        </div>
       </div>
-      <div class="skill reveal">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M20 20h-2M2 20h20"/></svg></div>
-        <h3>Tableau</h3>
-        <p>Interactive dashboards, KPI tracking, and data storytelling that surface outliers at a glance.</p>
-        <div class="chips"><span class="chip">Dashboards</span><span class="chip">KPIs</span><span class="chip">Calculated Fields</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/Cover_Picture.png')"></div>
+        <div class="body">
+          <div class="kmeta">SQL · Financial Analysis</div>
+          <h4>What happened to $1.76&nbsp;billion in World Bank funding?</h4>
+          <p>Analyzed World Bank IDA lending across eras, sectors, and individual projects in MySQL, turning a broad geopolitical funding story into a structured analysis of 11,171 records.</p>
+          <div class="tags"><span class="chip">MySQL</span><span class="chip">Aggregations</span><span class="chip">Period Analysis</span></div>
+          <a class="arrow-link" href="/projects/world-bank-ida.html">Read the case study →</a>
+        </div>
       </div>
-      <div class="skill reveal d2">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M12 2a10 10 0 0 1 0 20M12 2a10 10 0 0 0 0 20M2 12h20"/><path d="M12 2c3 3 3 17 0 20M12 2c-3 3-3 17 0 20"/></svg></div>
-        <h3>Python</h3>
-        <p>Data manipulation and visualization through real projects using industry-standard libraries.</p>
-        <div class="chips"><span class="chip">Pandas</span><span class="chip">NumPy</span><span class="chip">Matplotlib</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/massachusetts_schools.png')"></div>
+        <div class="body">
+          <div class="kmeta">Tableau · Visualization</div>
+          <h4>Massachusetts Education Dashboard</h4>
+          <p>Interactive dashboard analyzing dropout patterns across 1,861 schools, identifying 37 critical schools and a strong relationship with economic disadvantage.</p>
+          <div class="tags"><span class="chip">Tableau</span><span class="chip">KPIs</span></div>
+          <a class="arrow-link" href="/projects/ma-education.html">Read the case study →</a>
+        </div>
       </div>
-      <div class="skill reveal d3">
-        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
-        <h3>Web &amp; Data Eng</h3>
-        <p>Shipping full-stack side projects, like a production platform on Supabase/PostgreSQL with REST APIs and an LLM chatbot.</p>
-        <div class="chips"><span class="chip">Supabase</span><span class="chip">REST APIs</span><span class="chip">HTML/CSS/JS</span></div>
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/doordash.png')"></div>
+        <div class="body">
+          <div class="kmeta">Excel · Marketing Analytics</div>
+          <h4>Food Delivery Customer Analysis</h4>
+          <p>Found income explains 67% of spending variation, and that discount-heavy campaigns underperform for high-value segments.</p>
+          <div class="tags"><span class="chip">Excel</span><span class="chip">Correlation</span></div>
+          <a class="arrow-link" href="/projects/food-delivery.html">Read the case study →</a>
+        </div>
       </div>
+      <!-- To add a project: copy a pcard block above, update image, kmeta, title, text, tags, and link. -->
     </div>
   </div>
 </section>
 
-<!-- WORK -->
-<section id="work">
+<!-- PERSONAL -->
+<section>
   <div class="wrap">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
-      <div class="eyebrow">Portfolio</div>
-      <h2 class="title">Selected work</h2>
-      <p class="lead" style="margin-left:auto;margin-right:auto">Each project built around a real business question and real data.</p>
-    </div>
-
-    <!-- Tier 1: Educational -->
-    <div class="reveal" style="text-align:center;max-width:680px;margin:0 auto 30px">
-      <div class="eyebrow">Educational</div>
-      <p class="lead" style="margin:8px auto 0;font-size:1.08rem">Personal projects rooted in my studies. Each one takes a dataset, brief, or concept from my IT degree or data bootcamp and carries it further with real data and my own analysis.</p>
-    </div>
-
-    <div class="featured reveal">
-      <div class="img" style="background-image:url('https://idepablo.com/hospital_beds.jpg')"></div>
-      <div class="body">
-        <div class="kmeta">SQL · Healthcare Analytics · Featured</div>
-        <h3>Hospital Length of Stay Analysis</h3>
-        <p class="q">Where do hospital bed-days actually go, and how concentrated is the burden?</p>
-        <p>Analyzed 101,766 hospital encounters and found the 21% of stays lasting 7+ days consumed 43.5% of all bed-days, using CTEs, window functions, and multi-table JOINs.</p>
-        <div class="tags"><span class="chip">MySQL</span><span class="chip">CTEs</span><span class="chip">Window Functions</span></div>
-        <a class="arrow-link" href="/projects/hospital-length-of-stay.html">Read the case study →</a>
-      </div>
-    </div>
-
-    <div class="featured reveal" style="margin-top:26px">
-      <div class="img" style="background-image:url('https://idepablo.com/projects/img/celtics_cover.jpg');background-position:center"></div>
-      <div class="body">
-        <div class="kmeta">Tableau · Sports Analytics · Featured</div>
-        <h3>Four Questions from the Celtics Front Office, Answered in Tableau</h3>
-        <p class="q">Playing data analyst for the Boston Celtics: shooting, playmaking, roster age, and winning without Tatum.</p>
-        <p>Four front-office questions answered with 2025-26 data: four related data sources, a before-and-after on shooting efficiency methodology, and an interactive story that drills from conference down to individual players.</p>
-        <div class="tags"><span class="chip">Tableau</span><span class="chip">LOD Expressions</span><span class="chip">Data Cleaning</span></div>
-        <a class="arrow-link" href="/projects/nba-2026-season.html">Read the case study →</a>
-        <a class="arrow-link" href="https://public.tableau.com/views/NBA2025-26SeasonAnalysisBostonCeltics_17859648246570/Bostonvs_theLeague2025-26AnalysisUpdate?:language=en-US&amp;:display_count=n&amp;:origin=viz_share_link" target="_blank" rel="noopener" style="margin-left:18px;opacity:.75">Tableau ↗</a>
-      </div>
-    </div>
-
-    <div class="reveal" style="text-align:center;margin-top:30px">
-      <a href="/projects/" class="btn btn-primary" style="padding:14px 34px">Browse all projects →</a>
-      <p style="color:var(--text-3);font-size:.88rem;margin-top:12px">SQL, Tableau, Excel, and Power BI case studies, with more added as they ship.</p>
-    </div>
-
-    <!-- Tier 2: Personal -->
-    <div class="reveal" style="text-align:center;max-width:680px;margin:90px auto 30px">
+    <div class="tier-head reveal">
       <div class="eyebrow">Personal</div>
-      <p class="lead" style="margin:8px auto 0;font-size:1.08rem">Self-directed builds driven by curiosity rather than a syllabus: larger, open-ended, and engineered end to end. First up: AZIMUTH, in active development.</p>
+      <p>Self-directed builds driven by curiosity rather than a syllabus: larger, open-ended, and engineered end to end.</p>
     </div>
-
-    <div class="featured reveal">
-      <div class="img" style="background-image:url('https://idepablo.com/azimuth_cover.png'),linear-gradient(135deg,#0a2540,#1a4a7a);background-size:cover;background-position:center"></div>
-      <div class="body">
-        <span class="inprog-badge">In progress</span>
-        <div class="kmeta">Self-directed · Databricks · BI Platform</div>
-        <h3>AZIMUTH · Launch Market Intelligence Platform</h3>
-        <p class="q">How does any launch vehicle really stand against the whole market?</p>
-        <p>A provider-agnostic BI platform that models the global orbital launch market and benchmarks any vehicle against the field. Built from scratch on a Databricks lakehouse, in the open, with a running build log.</p>
-        <div class="tags"><span class="chip">Databricks</span><span class="chip">dbt</span><span class="chip">Python</span><span class="chip">SQL</span></div>
-        <a class="arrow-link" href="/projects/azimuth.html">Follow the build →</a>
-        <a class="arrow-link" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener" style="margin-left:18px;opacity:.75">GitHub ↗</a>
+    <div class="grid-3">
+      <div class="pcard reveal">
+        <div class="img" style="background-image:url('https://idepablo.com/azimuth_cover.png'),linear-gradient(135deg,#0a2540,#1a4a7a)"></div>
+        <div class="body">
+          <span class="inprog-badge">In progress</span>
+          <div class="kmeta">Self-directed · Databricks · BI Platform</div>
+          <h4>AZIMUTH · Launch Market Intelligence Platform</h4>
+          <p>A provider-agnostic BI platform that models the global orbital launch market and benchmarks any vehicle against the field. Built in the open, with a running build log.</p>
+          <div class="tags"><span class="chip">Databricks</span><span class="chip">dbt</span><span class="chip">Python</span><span class="chip">SQL</span></div>
+          <a class="arrow-link" href="/projects/azimuth.html">Follow the build →</a>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- CERTIFICATIONS -->
-<section id="certs" style="background:var(--bg-2)">
-  <div class="wrap">
-    <div class="reveal" style="text-align:center;max-width:640px;margin:0 auto 56px">
-      <div class="eyebrow">Credentials</div>
-      <h2 class="title">Certifications</h2>
-      <p class="lead" style="margin-left:auto;margin-right:auto">Verified credentials across cloud, data, security, and IT. Click any badge to verify.</p>
-    </div>
-    <div class="cert-grid" id="certGrid"></div>
-    <p class="reveal" style="text-align:center;color:var(--text-3);font-size:.9rem;margin-top:30px">Plus four stacked CompTIA specialist certifications: IT Operations Specialist, Secure Infrastructure Specialist, Cloud Admin Professional, and Secure Cloud Professional.</p>
-    <div class="reveal" style="text-align:center;margin-top:24px">
-      <span class="member-pill"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.8-3.9 3.8.9 5.4-4.8-2.5-4.8 2.5.9-5.4L4.2 7.7l5.4-.8L12 2z"/></svg>PMI Member · National &amp; Puget Sound chapters</span>
-    </div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="wrap">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
-      <div class="eyebrow">Background</div>
-      <h2 class="title">Experience &amp; education</h2>
-    </div>
-    <div class="timeline">
-      <div class="tl-item reveal"><div class="tl-date">July 2026</div><h4>B.S., Information Technology</h4><div class="org">Western Governors University</div></div>
-      <div class="tl-item reveal"><div class="tl-date">Admitted · Fall 2026</div><h4>M.S., Data Analytics (Data Engineering)</h4><div class="org">Western Governors University</div></div>
-      <div class="tl-item reveal"><div class="tl-date">Mar – Jun 2026</div><h4>Data Analytics Bootcamp</h4><div class="org">Data Analytics Accelerator (DAA)</div></div>
-      <div class="tl-item reveal"><div class="tl-date">Mar 2024 – Jul 2026</div><h4>Data Analyst · Independent Projects &amp; Continuing Education</h4><div class="org">Seattle, WA</div>
-        <ul>
-          <li>Built an end-to-end portfolio of SQL, Excel, Tableau, and Power BI analyses on real datasets, including a $1.76B World Bank IDA lending study and a dashboard spanning 1,800+ schools.</li>
-          <li>Designed and shipped a production web platform on a Supabase/PostgreSQL backend, integrating a third-party sports-data REST API and an LLM chatbot end to end.</li>
-          <li>Paired a B.S. in Information Technology with an intensive Data Analytics Bootcamp and admission to an M.S. in Data Analytics (Data Engineering specialization).</li>
-        </ul>
-      </div>
-      <div class="tl-item reveal"><div class="tl-date">Mar 2023 – Mar 2024</div><h4>Bilingual Financial Support Analyst</h4><div class="org">Gravity Payments · Seattle, WA</div>
-        <ul>
-          <li>Analyzed transactional, billing, and settlement data across a 12,000+ merchant portfolio using Excel, Salesforce, and internal financial systems, protecting recurring revenue from leakage.</li>
-          <li>Built recurring KPI dashboards giving leadership data-driven visibility into portfolio health.</li>
-          <li>Reduced average case resolution time by 25% through structured root-cause analysis.</li>
-        </ul>
-      </div>
-      <div class="tl-item reveal"><div class="tl-date">Dec 2016 – Mar 2023</div><h4>Bilingual Customer Success Engineer</h4><div class="org">Gravity Payments · Seattle, WA</div>
-        <ul>
-          <li>Founded and scaled the Spanish-language merchant program from ~250 to 900+ accounts, contributing to a ~20% reduction in churn.</li>
-          <li>Analyzed support metrics in Excel to identify performance gaps and drive improvement.</li>
-          <li>Trained and mentored 4 bilingual agents, building onboarding materials and quality frameworks.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- BEYOND THE DATA -->
-<section id="beyond">
-  <div class="wrap">
-    <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
-      <div class="eyebrow">Off the clock</div>
-      <h2 class="title">Beyond the data</h2>
-      <p class="lead" style="margin:18px auto 0">The things I enjoy most when I'm not working.</p>
-    </div>
-    <div class="grid-4">
-      <div class="pcell reveal"><div class="pemoji">🤺</div><h4>Fencing</h4><p>I love this sport for its blend of speed, strategy, and reading your opponent in real time. Proud registered member of USA Fencing.</p></div>
-      <div class="pcell reveal d2"><div class="pemoji">🎬</div><h4>Cinema</h4><p>Movies of every era, from brand-new releases to old classics. My all-time favorites: Top Gun and Drive.</p></div>
-      <div class="pcell reveal d3"><div class="pemoji">🚀</div><h4>Space</h4><p>Spaceships, space exploration, and honestly anything with the word "space" in it. It even sparked my AZIMUTH launch-analytics project.</p></div>
-      <div class="pcell reveal d4"><div class="pemoji">👨‍👧</div><h4>Family</h4><p>I stepped out of the corporate world for a while to witness my first daughter's earliest milestones. I wouldn't trade it for anything.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" class="contact" style="background:var(--bg-2)">
-  <div class="wrap">
-    <div class="reveal">
-      <div class="eyebrow" style="text-align:center">Get in touch</div>
-      <h2>Let's connect.</h2>
-      <p class="lead">Seeking Data Analyst and BI Analyst opportunities in Seattle or remote. If you're working in data or hiring, I'd love to hear from you.</p>
-      <div class="cta-row" style="justify-content:center;margin:30px 0 40px">
-        <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email me</a>
-        <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
-      </div>
-      <div class="contact-links">
-        <a class="clink" href="mailto:idepabloc@gmail.com"><span class="cl-k">Email</span><span class="cl-v">idepabloc@gmail.com</span></a>
-        <a class="clink" href="https://www.linkedin.com/in/idepabloc" target="_blank" rel="noopener"><span class="cl-k">LinkedIn</span><span class="cl-v">in/idepabloc</span></a>
-        <a class="clink" href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" rel="noopener"><span class="cl-k">Tableau</span><span class="cl-v">Public profile</span></a>
-        <a class="clink" href="https://github.com/idepablo" target="_blank" rel="noopener"><span class="cl-k">GitHub</span><span class="cl-v">github.com/idepablo</span></a>
-      </div>
-    </div>
-  </div>
-</section>
+<div class="back-row">
+  <a href="/#work" class="btn btn-ghost">← Back to portfolio</a>
+</div>
 
 <footer>
   © <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript · <a href="https://idepablo.com">idepablo.com</a>
@@ -584,46 +271,14 @@ function onScroll(){nav.classList.toggle('scrolled',scrollY>10);
   prog.style.width=(h>0?(scrollY/h*100):0)+'%';}
 addEventListener('scroll',onScroll,{passive:true}); onScroll();
 
-/* ---------- REVEAL ON SCROLL ---------- */
-const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.12});
-document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el=>io.observe(el));
+/* ---------- REVEAL ---------- */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-/* ---------- LOGOS + CERTS ---------- */
-// Official Credly badge images (verify links go back to Credly)
-const CB='https://images.credly.com/size/340x340/images/';
-const certs=[
-  {name:'AWS Certified Cloud Practitioner',issuer:'Amazon Web Services',img:CB+'00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png',mono:'AWS',verify:'https://www.credly.com/badges/384ef19e-ff5e-4e8d-bafd-1e9e2bd80afe',hero:true},
-  {name:'CompTIA A+',issuer:'CompTIA',img:CB+'f6d62c5d-1e1d-4de6-92ee-8dc8c80b1c7b/blob',mono:'A+',verify:'https://www.credly.com/badges/03e902da-6a6d-4e95-8716-ca8cb6ab0d70',hero:true},
-  {name:'CompTIA Network+',issuer:'CompTIA',img:CB+'c70ba73e-3c8a-46fa-9d60-4a9af94ad662/blob',mono:'N+',verify:'https://www.credly.com/badges/a4f5acbb-9a2c-4438-a7bc-65839fa982ff',hero:true},
-  {name:'CompTIA Security+',issuer:'CompTIA',img:CB+'80d8a06a-c384-42bf-ad36-db81bce5adce/blob',mono:'S+',verify:'https://www.credly.com/badges/e8d289cf-9ec5-47f1-a49b-317908e3c34a',hero:true},
-  {name:'CompTIA Cloud+',issuer:'CompTIA',img:CB+'b2e3c623-cc4a-4f0c-8a3b-aa6231e138fe/blob',mono:'Cl+',verify:'https://www.credly.com/badges/045ead3d-cae2-4e6a-b1ca-554a8f226c56/public_url',hero:true},
-  {name:'Google IT Support',issuer:'Google / Coursera',img:CB+'fb97a12f-c0f1-4f37-9b7d-4a830199fe84/GCC_badge_IT_Support_1000x1000.png',mono:'G',verify:'https://www.credly.com/badges/edc8f4fb-0ac1-4c7e-a1b9-468e5298e765',hero:true},
-  {name:'Linux Essentials',issuer:'LPI',img:CB+'1d36cb36-20fc-4961-8d70-6307c015d1aa/blob',mono:'Lx',verify:'https://www.credly.com/badges/a4fa37d3-5b1d-4583-88ab-16914051ae83',hero:true},
-  {name:'PMI CAPM',issuer:'Project Management Institute',img:CB+'80c95f74-dcf0-43fc-a437-053a598feb05/blob',mono:'PMI',verify:'https://www.credly.com/badges/a3f660f1-9a19-404c-bb49-6af3e47aaf0a',hero:true},
-  {name:'ITIL 4 Foundation',issuer:'PeopleCert / Axelos',img:'https://idepablo.com/itil_badge.png',mono:'ITIL',verify:'https://www.peoplecert.org/en/for-corporations/certificate-verification-service',hero:true},
-  {name:'Power BI Data Analyst (PL-300)',issuer:'Microsoft',img:'https://learn.microsoft.com/media/learn/certification/badges/microsoft-certified-associate-badge.svg',mono:'PL',pending:true,hero:false}
-];
-function logoImg(c){
-  if(!c.img) return '<span class="mono">'+c.mono+'</span>';
-  return '<img src="'+c.img+'" alt="'+c.name+'" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;mono&quot;>'+c.mono+'</span>\'"/>';
-}
-// hero strip: unique issuers only
-const heroWrap=document.getElementById('heroLogos');
-certs.filter(c=>c.hero).forEach(c=>{
-  const d=document.createElement('a'); d.className='logo'; d.href=c.verify; d.target='_blank'; d.rel='noopener'; d.title=c.name;
-  d.innerHTML=logoImg(c); heroWrap.appendChild(d);
-});
-// cert grid
-const grid=document.getElementById('certGrid');
-certs.forEach((c,i)=>{
-  const el=document.createElement(c.pending?'div':'a'); el.className='cert reveal'+(i%4===1?' d2':i%4===2?' d3':i%4===3?' d4':'');
-  if(!c.pending){el.href=c.verify; el.target='_blank'; el.rel='noopener';}
-  el.innerHTML='<div class="badge">'+logoImg(c)+'</div><h4>'+c.name+'</h4><div class="issuer">'+c.issuer+'</div>'+
-    (c.pending?'<span class="cert-progress">In progress</span>':'<span class="verify">Verify ↗</span>');
-  grid.appendChild(el); io.observe(el);
-});
+/* ---------- YEAR ---------- */
 document.getElementById('yr').textContent=new Date().getFullYear();
 </script>
+
 <script data-goatcounter="https://idepablo.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
