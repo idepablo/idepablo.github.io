@@ -12,13 +12,13 @@
 <meta property="og:title" content="The Column You Test Decides the Answer | Ignacio de Pablo" />
 <meta property="og:description" content="A statistical analysis of employee attrition in R: how a correctly executed t-test on the wrong column produces a confident, statistically valid, completely wrong answer." />
 <meta property="og:url" content="https://idepablo.com/projects/ibm-attrition.html" />
-<meta property="og:image" content="https://idepablo.com/og-image.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image" content="https://idepablo.com/projects/img/attrition_cover.jpg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="900" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="The Column You Test Decides the Answer | Ignacio de Pablo" />
 <meta name="twitter:description" content="A statistical analysis of employee attrition in R: how a valid t-test on the wrong column produces a confidently wrong answer." />
-<meta name="twitter:image" content="https://idepablo.com/og-image.png" />
+<meta name="twitter:image" content="https://idepablo.com/projects/img/attrition_cover.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -72,16 +72,9 @@
   @media(max-width:720px){.navlinks a:not(.nav-back){display:none}}
 
   .article-hero{padding:120px 0 56px;border-bottom:1px solid var(--line)}
-  .cover{width:100%;aspect-ratio:16/9;max-height:340px;border-radius:20px;margin-bottom:32px;overflow:hidden;
-    background:linear-gradient(135deg,#0e1626,#16233c 55%,#101c1a);border:1px solid var(--card-line);box-shadow:var(--shadow-lg);
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-  .cover .pv{display:flex;gap:clamp(20px,6vw,70px);align-items:baseline}
-  .cover .pv .p{font-family:"SF Mono",ui-monospace,Menlo,monospace;font-weight:600;text-align:center}
-  .cover .pv .p b{display:block;font-size:clamp(1.3rem,3.4vw,2.2rem);font-weight:700}
-  .cover .pv .p span{display:block;font-size:clamp(.62rem,1.3vw,.78rem);letter-spacing:.08em;text-transform:uppercase;margin-top:8px;opacity:.75}
-  .cover .pv .wrong{color:#e07a6a}
-  .cover .pv .right{color:#6fc38f}
-  .cover .caption{color:#9fb3cc;font-family:var(--font-display);font-weight:600;letter-spacing:.1em;font-size:clamp(.68rem,1.4vw,.82rem);text-transform:uppercase;opacity:.85}
+  .cover{width:100%;aspect-ratio:16/9;max-height:380px;border-radius:20px;margin-bottom:32px;
+    background-image:url('https://idepablo.com/projects/img/attrition_cover.jpg'),linear-gradient(135deg,#0e1626,#16233c 55%,#101c1a);
+    background-size:cover;background-position:center;border:1px solid var(--card-line);box-shadow:var(--shadow-lg)}
   .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
   h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:14px}
   .subtitle{color:var(--text-2);font-size:clamp(1.02rem,1.7vw,1.2rem);margin-bottom:16px}
@@ -154,13 +147,7 @@
 
 <header class="article-hero">
   <div class="wrap">
-    <div class="cover" role="img" aria-label="Two p-values compared: 0.677 from testing the wrong column, below 0.001 from testing the right one">
-      <div class="pv">
-        <div class="p wrong"><b>p = 0.677</b><span>EmployeeNumber</span></div>
-        <div class="p right"><b>p &lt; 0.001</b><span>YearsAtCompany</span></div>
-      </div>
-      <div class="caption">Same test · same data · different column</div>
-    </div>
+    <div class="cover" role="img" aria-label="Cover: four employees face a city window while one walks out a bright door, one figure in a grid of many highlighted in orange"></div>
     <div class="eyebrow">Case Study · R · Statistical Analysis</div>
     <h1>The Column You Test Decides the Answer</h1>
     <p class="subtitle">A statistical analysis of employee attrition in R</p>
