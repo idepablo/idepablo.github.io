@@ -12,13 +12,13 @@
 <meta property="og:title" content="AZIMUTH: Launch Market Intelligence Platform | Ignacio de Pablo" />
 <meta property="og:description" content="A provider-agnostic BI platform modeling the global orbital launch market. Follow the in-progress build log, architecture, and scope decisions." />
 <meta property="og:url" content="https://idepablo.com/projects/azimuth.html" />
-<meta property="og:image" content="https://idepablo.com/azimuth_cover.png" />
-<meta property="og:image:width" content="1376" />
-<meta property="og:image:height" content="768" />
+<meta property="og:image" content="https://idepablo.com/projects/img/azimuth_cover.jpg" />
+<meta property="og:image:width" content="1600" />
+<meta property="og:image:height" content="900" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="AZIMUTH: Launch Market Intelligence Platform | Ignacio de Pablo" />
 <meta name="twitter:description" content="A provider-agnostic BI platform modeling the global orbital launch market. Follow the in-progress build log and scope decisions." />
-<meta name="twitter:image" content="https://idepablo.com/azimuth_cover.png" />
+<meta name="twitter:image" content="https://idepablo.com/projects/img/azimuth_cover.jpg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap" rel="stylesheet" />
@@ -73,7 +73,7 @@
 
   .article-hero{padding:120px 0 52px;border-bottom:1px solid var(--line)}
   .cover{width:100%;aspect-ratio:16/9;max-height:360px;border-radius:20px;margin-bottom:32px;
-    background-image:url('https://idepablo.com/azimuth_cover.png'),linear-gradient(135deg,#0a2540,#1a4a7a);
+    background-image:url('https://idepablo.com/projects/img/azimuth_cover.jpg'),linear-gradient(135deg,#0a2540,#1a4a7a);
     background-size:cover;background-position:center;border:1px solid var(--card-line);box-shadow:var(--shadow-lg)}
   .eyebrow{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px}
   h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);font-weight:700;letter-spacing:-.025em;line-height:1.1;margin-bottom:18px}
@@ -179,8 +179,9 @@
     <div class="navlinks">
       <a href="/#about">About</a>
       <a href="/#skills">Skills</a>
-      <a href="/#work">Work</a>
+      <a href="/#work">Projects</a>
       <a href="/#certs">Certifications</a>
+      <a href="/#experience">Experience</a>
       <a href="/#contact">Contact</a>
       <a href="/#work" class="nav-back">← Portfolio</a>
       <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark mode"></button>
@@ -196,12 +197,13 @@
     <p class="standfirst">A provider-agnostic business intelligence platform that models the global orbital launch market, built so any launch vehicle can be set as the focus and benchmarked against the full field. Built from scratch on a Databricks lakehouse, in the open, one phase at a time.</p>
     <div class="meta-row">
       <span class="meta-pill inprog">🛠️ In active development</span>
-      <span class="meta-pill">Last updated · August 2026</span>
+      <span class="meta-pill">Last updated · August 9, 2026</span>
       <span class="meta-pill">Databricks</span>
       <span class="meta-pill">dbt</span>
       <span class="meta-pill">Python · SQL</span>
       <a class="meta-pill repo" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener">View repository ↗</a>
     </div>
+    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Current phase:</strong> Phase 1 · Bronze ingestion. <strong style="color:var(--text-2);font-weight:600">Next milestone:</strong> a resumable, idempotent backfill of all 7,589 historical launches into Bronze, targeted for the end of August 2026.</p>
   </div>
 </header>
 
@@ -232,7 +234,7 @@
     </div>
 
     <h2 class="reveal">Lakehouse architecture</h2>
-    <p>The platform follows a medallion architecture on Databricks: raw launch data lands in bronze, gets cleaned and conformed in silver, and is modeled into an analytics-ready star schema in gold with dbt, where data-quality tests guard every layer boundary.</p>
+    <p>The platform will follow a medallion architecture on Databricks: raw launch data will land in bronze, get cleaned and conformed in silver, and be modeled into an analytics-ready star schema in gold with dbt, with data-quality tests guarding every layer boundary.</p>
 
     <div class="diagram-shell reveal">
       <svg viewBox="0 0 900 150" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Medallion architecture: bronze, silver, gold layers">
@@ -261,7 +263,7 @@
     </div>
 
     <h2 class="reveal">The data model</h2>
-    <p>The gold layer is dimensionally modeled around a single fact table, <strong>fct_launches</strong>, with one row per launch attempt, keyed on the launch UUID. Five conformed dimensions hang off it: provider, vehicle, mission, launch site, and orbit. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) resolves to measures on that grain sliced by these dimensions.</p>
+    <p>The gold layer will be dimensionally modeled around a single fact table, <strong>fct_launches</strong>. The planned grain is one row per launch attempt, keyed on the launch UUID. Five conformed dimensions will hang off it: provider, vehicle, mission, launch site, and orbit. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) will resolve to measures on that grain sliced by these dimensions.</p>
     <p class="section-note">Two relationships in the source are genuinely many-to-many, program and configuration families, so they are parked for a later version rather than forced into v1.</p>
 
     <div class="diagram-shell reveal">
@@ -330,7 +332,7 @@
       <div class="tl-item">
         <div class="tl-when">Phase 3 · Planned</div>
         <div class="tl-phase">Dashboard</div>
-        <p>Build the four views on top of the gold layer: Market Overview, The Maturation Race, and the Scenario Simulator.</p>
+        <p>Build the three initial views on top of the gold layer: Market Overview, The Maturation Race, and the Scenario Simulator. Ask AZIMUTH follows in v2.</p>
       </div>
       <div class="tl-item">
         <div class="tl-when">Phase 4 · Planned · v2</div>
@@ -345,7 +347,7 @@
       <div class="lp-meta">Build log · August 2026</div>
       <h3>Phase 0: Scoping what the data can honestly support</h3>
       <p>Before writing a single transformation, I wanted to know what this dataset can and cannot honestly support. Phase 0 was entirely about scope: reading the Launch Library 2 API closely, sketching the model, and making the judgment calls in writing so I am not tempted to hand-wave them later.</p>
-      <p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five dimensions came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
+      <p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five nested objects came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Which of these become conformed dimensions, and which end up as fact attributes, is a Phase 3 decision. Status in particular is more likely a degenerate attribute than a dimension. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
       <p>A few decisions were less obvious and worth writing down:</p>
       <ul>
         <li><strong>Vehicle identity.</strong> A "rocket" in the API is an instance; the thing I actually want to compare is the configuration. So vehicle identity is <strong>rocket.configuration.id</strong>, and configurations get their own load.</li>
