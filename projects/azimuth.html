@@ -127,6 +127,7 @@
   .logpost{background:var(--card);border:1px solid var(--card-line);border-radius:18px;padding:28px 26px;box-shadow:var(--shadow);margin-top:6px}
   .lp-meta{color:var(--text-3);font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
   .logpost h3{font-family:var(--font-display);font-size:1.28rem;font-weight:700;letter-spacing:-.01em;margin-bottom:14px;color:var(--text)}
+  .logpost h4{font-family:var(--font-display);font-size:1.02rem;font-weight:650;letter-spacing:-.005em;margin:24px 0 8px;color:var(--text)}
   .logpost p{margin-bottom:14px}
   .logpost ul{margin:0 0 16px 20px}
   .mini-stats{display:flex;flex-wrap:wrap;gap:10px;margin:2px 0 18px}
@@ -197,13 +198,13 @@
     <p class="standfirst">A provider-agnostic business intelligence platform that models the global orbital launch market, built so any launch vehicle can be set as the focus and benchmarked against the full field. Built from scratch on a Databricks lakehouse, in the open, one phase at a time.</p>
     <div class="meta-row">
       <span class="meta-pill inprog">🛠️ In active development</span>
-      <span class="meta-pill">Last updated · August 9, 2026</span>
+      <span class="meta-pill">Last updated · August 11, 2026</span>
       <span class="meta-pill">Databricks</span>
       <span class="meta-pill">dbt</span>
       <span class="meta-pill">Python · SQL</span>
       <a class="meta-pill repo" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener">View repository ↗</a>
     </div>
-    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Current phase:</strong> Phase 1 · Bronze ingestion. <strong style="color:var(--text-2);font-weight:600">Next milestone:</strong> a resumable, idempotent backfill of all 7,589 historical launches into Bronze, targeted for the end of August 2026.</p>
+    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Current phase:</strong> Phase 2 · Silver modeling in dbt. <strong style="color:var(--text-2);font-weight:600">Next milestone:</strong> cleaned and conformed silver models with data-quality tests, running green in CI, targeted for the end of September 2026.</p>
   </div>
 </header>
 
@@ -227,8 +228,8 @@
     <p>This is an in-progress build. Here is what works now and what does not yet, so you know before you click rather than after.</p>
     <div class="status reveal">
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 0 · Scope &amp; data model</div><div class="sd">Grain, dimensions, outcome and censoring split, and scope decisions are locked and documented.</div></div><span class="status-tag t-done">Done</span></div>
-      <div class="status-item"><span class="status-dot dot-active"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">Pulling the full launch history from Launch Library 2 into the bronze layer.</div></div><span class="status-tag t-active">In progress</span></div>
-      <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Modeling</div><div class="sd">Silver and gold dbt models, the star schema, and data-quality tests.</div></div><span class="status-tag t-plan">Planned</span></div>
+      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">The full launch history from Launch Library 2, landed in the bronze layer and verified idempotent.</div></div><span class="status-tag t-done">Done</span></div>
+      <div class="status-item"><span class="status-dot dot-active"></span><div class="status-body"><div class="sl">Modeling</div><div class="sd">Silver and gold dbt models, the star schema, and data-quality tests.</div></div><span class="status-tag t-active">In progress</span></div>
       <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Dashboard</div><div class="sd">The four views above, built on the gold layer.</div></div><span class="status-tag t-plan">Planned</span></div>
       <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Ask AZIMUTH</div><div class="sd">Natural-language querying over the modeled data.</div></div><span class="status-tag t-plan">v2</span></div>
     </div>
@@ -263,7 +264,7 @@
     </div>
 
     <h2 class="reveal">The data model</h2>
-    <p>The gold layer will be dimensionally modeled around a single fact table, <strong>fct_launches</strong>. The planned grain is one row per launch attempt, keyed on the launch UUID. Five conformed dimensions will hang off it: provider, vehicle, mission, launch site, and orbit. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) will resolve to measures on that grain sliced by these dimensions.</p>
+    <p>The gold layer will be dimensionally modeled around a single fact table, <strong>fct_launches</strong>. The planned grain is one row per launch attempt, keyed on the launch UUID. Four conformed dimensions are settled: provider, vehicle, launch site, and orbit, along with a standard date dimension. Where the mission attributes land, as a dimension of their own or as fields on the fact, is a Phase 2 decision still open. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) will resolve to measures on that grain sliced by these dimensions.</p>
     <p class="section-note">Two relationships in the source are genuinely many-to-many, program and configuration families, so they are parked for a later version rather than forced into v1.</p>
 
     <div class="diagram-shell reveal">
@@ -291,12 +292,11 @@
         <text class="svg-field" x="332" y="270">provider_key · vehicle_key</text>
         <text class="svg-field" x="332" y="288">site_key · orbit_key</text>
         <text class="svg-field" x="332" y="311">launch_outcome</text>
-        <text class="svg-field" x="332" y="329">payload_mass_kg</text>
-        <text class="svg-field" x="332" y="347">booster_reused_flag</text>
+        <text class="svg-field" x="332" y="329">net_precision</text>
         <rect class="svg-box" x="20" y="370" width="220" height="130" rx="16"/>
         <text class="svg-title" x="130" y="398" text-anchor="middle">dim_vehicle</text>
         <text class="svg-field" x="40" y="424">vehicle_key</text>
-        <text class="svg-field" x="40" y="442">configuration · family</text>
+        <text class="svg-field" x="40" y="442">configuration</text>
         <text class="svg-field" x="40" y="460">payload_capacity_kg</text>
         <text class="svg-field" x="40" y="478">reusable_flag</text>
         <rect class="svg-box" x="660" y="370" width="220" height="130" rx="16"/>
@@ -319,15 +319,15 @@
         <div class="tl-phase">Scoping &amp; data audit</div>
         <p>Read the Launch Library 2 API closely, drafted the medallion schema, made the scope decisions in writing, and ran a first data-integrity check. Deliverable: a written scope document in the repo.</p>
       </div>
-      <div class="tl-item">
-        <div class="tl-when">Phase 1 · In progress</div>
+      <div class="tl-item done">
+        <div class="tl-when">Phase 1 · Complete · Aug 2026</div>
         <div class="tl-phase">Production backfill</div>
-        <p>Pull the full launch history from Launch Library 2 (roughly 7,589 records across 76 pages, throttled) and land it into the bronze layer, then re-run the data-integrity check against the full history rather than a recent sample.</p>
+        <p>Pulled the full launch history from Launch Library 2: 76 pages, 7,598 records, throttled to the API's rate limit over roughly five hours. Built the loader to be resumable and idempotent, with a load audit table recording every run. Verified by running the same load twice: the second run inserted 0 rows and updated 0 rows.</p>
       </div>
       <div class="tl-item">
-        <div class="tl-when">Phase 2 · Planned</div>
+        <div class="tl-when">Phase 2 · In progress</div>
         <div class="tl-phase">Silver &amp; gold modeling</div>
-        <p>Clean and conform in silver, build the gold star schema with dbt, and guard every layer boundary with data-quality tests.</p>
+        <p>Re-run the Phase 0 data-integrity check against the full history rather than a recent sample, then clean and conform in silver, build the gold star schema with dbt, and guard every layer boundary with data-quality tests.</p>
       </div>
       <div class="tl-item">
         <div class="tl-when">Phase 3 · Planned</div>
@@ -344,10 +344,59 @@
     <h2 class="reveal">Build log</h2>
 
     <div class="logpost reveal">
+      <div class="lp-meta">Build log · August 11, 2026</div>
+      <h3>Phase 1: Bronze ingestion</h3>
+      <p>Phase 1 was getting all 7,598 historical launches out of the Launch Library 2 API and into a Delta table. The test for "done" was not that the script ran. It was running the same load twice and having nothing change.</p>
+      <h4>Splitting fetch from load</h4>
+      <p>The API allows about 15 calls an hour, so pulling the full history takes around five hours. I split ingestion into two jobs instead of one.</p>
+      <p>Job one calls the API and saves each response to disk exactly as it arrived. Job two reads those files and merges them into the warehouse.</p>
+      <p>Reasons:</p>
+      <ul>
+        <li>If load logic has a bug and both jobs are one script, fixing it costs another five hours of fetching. Split apart, I re-run the load against files already on disk in seconds.</li>
+        <li>Databricks Free Edition cuts off compute for the day if you exceed quota. Running a five hour job on it is a bad bet.</li>
+        <li>The raw files are a record of what the API returned on a given day, so if a number looks wrong later I can check whether the source was wrong or my code was.</li>
+      </ul>
+      <h4>Building against the dev mirror</h4>
+      <p>The Space Devs run a development mirror without the rate limit. I built the whole pipeline against that first.</p>
+      <p>It has 354 records where production has 7,589, so it works for testing code but not for anything quantitative. Every null rate I checked in Phase 0 had to be rechecked against production.</p>
+      <h4>Checkpointing</h4>
+      <p>76 pages over five hours means the job has to survive interruption. It writes a state file after each page: the next URL, the page number, and the ingest date of the original run.</p>
+      <p>The ingest date is in there so that a run starting on the 11th and resuming on the 12th still stamps every file with the 11th. They belong to one run.</p>
+      <p>State is saved after the file is written, not before. That way a crash between those two lines costs me a repeated page rather than a skipped one.</p>
+      <h4>The config mistake</h4>
+      <p><strong>PAGE_SIZE</strong> and <strong>SLEEP_SECONDS</strong> sit next to each other at the top of the file. Switching to the production API, I meant to set the sleep to 240 seconds. I set the page size to 240 instead.</p>
+      <p>Nothing errored. The API capped the page size silently and kept serving pages with no delay, because the sleep was still zero. Ten pages went through in about twenty seconds before I noticed and killed it. Then I got a 429.</p>
+      <p>The fix was retry logic: catch a 429, wait ten minutes, retry the same page, give up after five attempts. I also want to add a startup check that validates the page size against the documented maximum, since the API will accept a value it has no intention of honouring.</p>
+      <h4>Both safety nets fired during the real run</h4>
+      <p>At page 10 I closed the laptop lid by accident and the process died. Restarting picked up at page 11 from the state file.</p>
+      <p>At page 40 the API rate limited me again, unattended. The retry logic waited ten minutes and carried on. I found out afterwards by scrolling back through the log.</p>
+      <h4>.venv in git history</h4>
+      <p>Running <strong>git ls-files</strong> before pushing turned up several hundred megabytes of virtual environment tracked in the repo.</p>
+      <p>The folder had a <strong>.git</strong> in it from an earlier experiment and <strong>.venv</strong> had been committed then. Adding it to <strong>.gitignore</strong> afterwards does nothing, because <strong>.gitignore</strong> only stops git tracking files it is not already tracking. Nothing had been pushed, so I deleted the history and started clean.</p>
+      <h4>What landed</h4>
+      <p>76 pages, 7,598 records, all with unique launch ids.</p>
+      <p>The loader merges on launch id: update if the incoming record is newer, insert if it is new. Every column is stored as a string on purpose. If I cast dates and numbers in bronze, one malformed value fails the load and I lose the row. I would rather cast in silver, where a bad value shows up as a failed test.</p>
+      <p>There is a load audit table: one row per run with run id, timestamp, source file, rows in source, rows inserted, rows updated, duration, and status. It writes a row whether the merge succeeds or fails, so failed runs are still on the record.</p>
+      <p>That is how I can show the pipeline is idempotent rather than assert it:</p>
+      <div class="mini-stats">
+        <div class="mini-stat"><b>7,598</b><span>run 1 · inserted</span></div>
+        <div class="mini-stat"><b>0</b><span>run 2 · inserted</span></div>
+        <div class="mini-stat"><b>0</b><span>run 2 · updated</span></div>
+        <div class="mini-stat"><b>7,598</b><span>rows either way</span></div>
+      </div>
+      <h4>What I have not proven</h4>
+      <p>Matching row counts rule out duplicates. They do not rule out gaps.</p>
+      <p>The API paginates by offset. If records are inserted while a five hour run is in progress, offsets shift and a record can be pushed past a boundary already read. It would get skipped and the row count would not show it.</p>
+      <p>The count came back as 7,598 when the API reported 7,589 earlier the same day. My guess is launches that flew and were confirmed during the run, but I have not verified that. A completeness comparison against the source count is going on the data quality list.</p>
+      <h4>Next</h4>
+      <p>Phase 2 is the silver layer in dbt. First task is rerunning the Phase 0 null checks against all 7,598 records rather than the most recent hundred. Launches from the 1960s will be sparser than launches from last month, and that may change a scope decision I have already written down.</p>
+    </div>
+
+    <div class="logpost reveal">
       <div class="lp-meta">Build log · August 2026</div>
       <h3>Phase 0: Scoping what the data can honestly support</h3>
       <p>Before writing a single transformation, I wanted to know what this dataset can and cannot honestly support. Phase 0 was entirely about scope: reading the Launch Library 2 API closely, sketching the model, and making the judgment calls in writing so I am not tempted to hand-wave them later.</p>
-      <p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five nested objects came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Which of these become conformed dimensions, and which end up as fact attributes, is a Phase 3 decision. Status in particular is more likely a degenerate attribute than a dimension. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
+      <p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five nested objects came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Which of these become conformed dimensions, and which end up as fact attributes, is a Phase 2 decision. Status in particular is more likely a degenerate attribute than a dimension. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
       <p>A few decisions were less obvious and worth writing down:</p>
       <ul>
         <li><strong>Vehicle identity.</strong> A "rocket" in the API is an instance; the thing I actually want to compare is the configuration. So vehicle identity is <strong>rocket.configuration.id</strong>, and configurations get their own load.</li>
@@ -366,7 +415,7 @@
       </div>
       <p>Every record had a mission and an orbit, so mission.orbit is a clean filter with no missing-data judgment call on this sample. The orbit split: 60 Low Earth, 11 Sun-Synchronous, 10 Polar, 7 Geostationary Transfer, 2 Elliptical, and 1 Medium Earth, plus 4 suborbital and 5 Unknown.</p>
       <p>One honest caveat I am carrying forward: this is the most recent 100 launches, which is the best case. Historical records from the 1960s and 70s are far more likely to have gaps, so I will re-run this same check against the full backfill in Phase 1 rather than assuming it holds.</p>
-      <p>The deliverable for this phase is a written scope document in the repo: the grain, which statuses count as success, how partial failures are handled and why, how the orbital scope is drawn, and what I am deliberately not modeling in v1. If someone asks me one question about this project, it will probably be answered there.</p>
+      <p>The deliverable for this phase is a <a href="https://github.com/idepablo/azimuth-launch-tool/blob/main/docs/scope.md" target="_blank" rel="noopener">written scope document in the repo</a>: the grain, which statuses count as success, how partial failures are handled and why, how the orbital scope is drawn, and what I am deliberately not modeling in v1. If someone asks me one question about this project, it will probably be answered there.</p>
       <p>Next: Phase 1, the full production backfill from Launch Library 2, landing into bronze.</p>
     </div>
     <p class="logmore">More posts as each phase ships.</p>
