@@ -3,21 +3,21 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Ignacio de Pablo | Data & BI Analyst</title>
-<meta name="description" content="Ignacio de Pablo · Data & BI Analyst. Seven years of fintech operations, turning complex data into decisions with SQL, Python, Power BI, Tableau, and Excel." />
+<title>Ignacio de Pablo | Solutions Engineer & Data Analytics Builder</title>
+<meta name="description" content="Ignacio de Pablo · Solutions Engineer at Synology (LATAM) and data analytics builder. Case studies in SQL, Python, R, Tableau, and Excel, plus AZIMUTH, a launch-market BI platform built in the open." />
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
 <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Ignacio de Pablo | Data & BI Analyst" />
-<meta property="og:description" content="Data & BI Analyst with 7+ years of fintech operations. SQL, Python, Power BI, Tableau. Case studies in financial analysis, marketing analytics, and data visualization." />
+<meta property="og:title" content="Ignacio de Pablo | Solutions Engineer & Data Analytics Builder" />
+<meta property="og:description" content="Solutions Engineer (LATAM) and data analytics builder. SQL, Python, Power BI, Tableau. Case studies plus AZIMUTH, a launch-market BI platform built in the open." />
 <meta property="og:url" content="https://idepablo.com/" />
 <meta property="og:image" content="https://idepablo.com/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Ignacio de Pablo | Data & BI Analyst" />
-<meta name="twitter:description" content="Data & BI Analyst with 7+ years of fintech operations. SQL, Python, Power BI, Tableau. Case studies in financial analysis, marketing analytics, and data visualization." />
+<meta name="twitter:title" content="Ignacio de Pablo | Solutions Engineer & Data Analytics Builder" />
+<meta name="twitter:description" content="Solutions Engineer (LATAM) and data analytics builder. SQL, Python, Power BI, Tableau. Case studies plus AZIMUTH, a launch-market BI platform built in the open." />
 <meta name="twitter:image" content="https://idepablo.com/og-image.png" />
 <link rel="preconnect" href="https://images.credly.com" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -244,6 +244,7 @@
   .tl-item:last-child{padding-bottom:0}
   .tl-item::before{content:"";position:absolute;left:-1px;top:5px;width:14px;height:14px;border-radius:50%;
     background:var(--bg);border:3px solid var(--accent)}
+  .tl-item.tl-now::before{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
   .tl-date{color:var(--accent);font-size:.82rem;font-weight:600;letter-spacing:.02em}
   .tl-item h4{font-size:1.14rem;font-weight:650;margin:6px 0 3px;letter-spacing:-.01em}
   .tl-item .org{color:var(--text-2);font-size:.95rem;margin-bottom:10px}
@@ -267,6 +268,28 @@
 
   @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.reveal,.reveal-l,.reveal-r{opacity:1;transform:none}}
+
+  .site-footer{border-top:1px solid var(--line);margin-top:80px;padding:56px 24px 30px;font-size:.9rem}
+  .sf-wrap{max-width:1080px;margin:0 auto}
+  .sf-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:38px}
+  @media(max-width:820px){.sf-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.sf-grid{grid-template-columns:1fr}}
+  .sf-name{font-weight:650;color:var(--text);margin-bottom:10px;font-size:1rem}
+  .sf-brand p{color:var(--text-3);font-size:.84rem;line-height:1.65;max-width:300px;margin:0}
+  .sf-h{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:13px}
+  .sf-col a{display:block;color:var(--text-2);margin-bottom:9px;font-size:.87rem;text-decoration:none;transition:color .2s}
+  .sf-col a:hover{color:var(--accent)}
+  .sf-bottom{border-top:1px solid var(--line);margin-top:44px;padding-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--text-3);font-size:.8rem}
+  .sf-bottom a{color:var(--text-3);text-decoration:none}
+  .sf-bottom a:hover{color:var(--accent)}
+
+  .icon-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+  .ilink{width:48px;height:48px;border:1px solid var(--line);border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--text-2);transition:color .2s,border-color .2s,transform .2s}
+  .ilink:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+  .ilink svg{width:20px;height:20px}
+  .tl-badge{display:inline-block;margin-left:6px;padding:2px 9px;border-radius:980px;background:var(--accent-soft);color:var(--accent);font-size:.66rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;vertical-align:middle}
+  .grid-3 .skill:last-child:nth-child(3n+1){grid-column:2}
+  @media(max-width:900px){.grid-3 .skill:last-child:nth-child(3n+1){grid-column:auto}}
 </style>
 </head>
 <body>
@@ -293,8 +316,8 @@
   <div class="hero-inner">
     <img class="avatar" src="https://idepablo.com/profile.jpg" alt="Ignacio de Pablo" onerror="this.style.display='none'"/>
     <h1>Ignacio <span class="last">de Pablo</span></h1>
-    <div class="role">Data &amp; BI Analyst</div>
-    <p class="pitch">I turn complex financial and operational data into clear decisions, using SQL, Python, Power BI, Tableau, and seven years of fintech context behind every chart.</p>
+    <div class="role">Solutions Engineer · Data Analytics Builder</div>
+    <p class="pitch">Solutions engineering by day, data analytics always. Seven years of fintech operations taught me the same skill drives both: start from the problem someone actually has, and work backward.</p>
     <div class="cta-row">
       <a href="#work" class="btn btn-primary">View my projects</a>
       <a href="https://idepablo.com/resume.pdf" class="btn btn-ghost" target="_blank" rel="noopener">Download résumé</a>
@@ -302,6 +325,7 @@
     <div class="now-strip">
       <span class="now-label"><span class="now-dot"></span>Currently working on</span>
       <a class="now-item" href="/projects/azimuth.html">🚀 AZIMUTH · Launch Market BI Platform</a>
+      <a class="now-item" href="#experience">🎓 GT Analytics MicroMasters</a>
       <a class="now-item" href="#certs">📊 Microsoft PL-300 certification</a>
     </div>
     <div class="certstrip">
@@ -320,19 +344,19 @@
       <h2 class="title">The story behind the data</h2>
       <p>For more than seven years I worked inside fintech operations at a payment processor, helping a portfolio of <strong>12,000+ merchants</strong> keep running: analyzing their transactional, billing, and settlement data across <strong>$50M+ in monthly volume</strong>, resolving discrepancies, and building the reports leadership relied on to make decisions.</p>
       <p>That work made me want to understand the tools and processes behind it all more deeply, so I went back to school for a <strong>B.S. in Information Technology</strong>, expanding my technical foundation and learning how the systems I had worked with actually fit together.</p>
-      <p>Along the way I realized my real passion was in the data itself. I leaned all the way in, completing an intensive Data Analytics Bootcamp, building real-world projects in SQL, Python, Tableau, and Power BI, and preparing to begin an <strong>M.S. in Data Analytics</strong>. I continue sharpening my ability to turn messy data into clear decisions, a craft I plan to keep enriching for a long time.</p>
+      <p>Along the way I realized my real passion was in the data itself. I leaned all the way in, completing an intensive Data Analytics Bootcamp and building real-world projects in SQL, Python, Tableau, and Power BI. That path opened my next chapter: I now work as a <strong>Solutions Engineer at Synology</strong>, sitting where technology and people meet, while I keep building my data practice through the <strong>Georgia Tech Analytics MicroMasters</strong>, the first step toward its M.S. in Analytics, with enrollment targeted for Fall 2027.</p>
       <div class="about-tags">
         <span class="tag">🗣️ Native Spanish · Fluent English</span>
         <span class="tag">📊 SQL · Python · BI</span>
-        <span class="tag">💳 Fintech &amp; Payments</span>
+        <span class="tag">🌎 Solutions Engineering · LATAM</span>
       </div>
     </div>
     <div class="about-card reveal-r d2">
       <div class="row"><span class="k">Focus</span><span class="v">Data Analytics &amp; BI</span></div>
       <div class="row"><span class="k">Core stack</span><span class="v">SQL · Python · Power BI · Tableau</span></div>
       <div class="row"><span class="k">Experience</span><span class="v">7+ yrs in FinTech</span></div>
-      <div class="row"><span class="k">Location</span><span class="v">Seattle, WA · on-site, hybrid or remote</span></div>
-      <div class="row"><span class="k">Status</span><span class="v" style="color:var(--accent)">Open to work</span></div>
+      <div class="row"><span class="k">Location</span><span class="v">Seattle, WA</span></div>
+      <div class="row"><span class="k">Now</span><span class="v" style="color:var(--accent)">Solutions Engineer, LATAM · Synology</span></div>
     </div>
   </div>
 </section>
@@ -341,9 +365,9 @@
 <section style="padding-top:0">
   <div class="wrap">
     <div class="stats">
-      <div class="stat reveal"><div class="vicon">🏦</div><div class="vtitle">7+ years in FinTech</div><div class="cap">Hands-on with payments, merchants, and financial data at real operational scale.</div></div>
-      <div class="stat reveal d2"><div class="vicon">🎓</div><div class="vtitle">Always learning</div><div class="cap">A B.S. in IT, an incoming M.S. in Data Analytics, and several industry certifications, with more on the way.</div></div>
-      <div class="stat reveal d3"><div class="vicon">🚀</div><div class="vtitle">Builder at heart</div><div class="cap">If I can build it myself, I will: a production web app with an LLM chatbot, this website, custom PCs, and a home NAS server.</div></div>
+      <div class="stat reveal"><div class="vicon">🧭</div><div class="vtitle">From operations to solutions</div><div class="cap">Seven years of fintech operations at real scale, now powering solutions engineering across LATAM. The job underneath is the same: understand the system, fix the problem.</div></div>
+      <div class="stat reveal d2"><div class="vicon">🎓</div><div class="vtitle">Always learning</div><div class="cap">A B.S. in IT, the Georgia Tech Analytics MicroMasters in progress, and a stack of industry certifications. Next stop: Georgia Tech's M.S. in Analytics.</div></div>
+      <div class="stat reveal d3"><div class="vicon">🔧</div><div class="vtitle">Curious by default</div><div class="cap">Building and fixing things since I was a kid: custom PCs, a home server, this website, a production web app with an LLM chatbot. If it makes me curious, I'll take it apart, improve it, or build my own.</div></div>
     </div>
   </div>
 </section>
@@ -354,7 +378,7 @@
     <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
       <div class="eyebrow">Skills</div>
       <h2 class="title">Skills &amp; tools</h2>
-      <p class="lead" style="margin-left:auto;margin-right:auto">The skills I use to collect, clean, analyze, and visualize data, and a toolkit I am always expanding.</p>
+      <p class="lead" style="margin-left:auto;margin-right:auto">The skills I use to collect, clean, analyze, and visualize data, plus the systems side that keeps it all running.</p>
     </div>
     <div class="grid-3">
       <div class="skill reveal">
@@ -392,6 +416,12 @@
         <h3>Web &amp; Data Eng</h3>
         <p>Shipping full-stack side projects, like a production platform on Supabase/PostgreSQL with REST APIs and an LLM chatbot.</p>
         <div class="chips"><span class="chip">Supabase</span><span class="chip">REST APIs</span><span class="chip">HTML/CSS/JS</span></div>
+      </div>
+      <div class="skill reveal d2">
+        <div class="sicon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="2" y="3" width="20" height="6" rx="2"/><rect x="2" y="15" width="20" height="6" rx="2"/><path d="M6 6h.01M6 18h.01M10 6h4M10 18h4"/></svg></div>
+        <h3>Systems &amp; Solutions</h3>
+        <p>The systems side behind the data: networking, cloud, security, and service management, each backed by an industry certification.</p>
+        <div class="chips"><span class="chip">Networking</span><span class="chip">AWS Cloud</span><span class="chip">Security</span><span class="chip">Storage &amp; Backup</span><span class="chip">ITIL</span></div>
       </div>
     </div>
   </div>
@@ -488,12 +518,21 @@
       <h2 class="title">Experience &amp; education</h2>
     </div>
     <div class="timeline">
-      <div class="tl-item reveal"><div class="tl-date">Admitted · Fall 2026</div><h4>M.S., Data Analytics (Data Engineering)</h4><div class="org">Western Governors University</div></div>
+      <div class="tl-item tl-now reveal"><div class="tl-date">Aug 2026 – Present <span class="tl-badge">Current</span></div><h4>Solutions Engineer, LATAM</h4><div class="org">Synology · Bellevue, WA</div>
+        <ul>
+          <li>Technical solutions across Synology's data-management and storage portfolio for Latin American markets.</li>
+        </ul>
+      </div>
+      <div class="tl-item tl-now reveal"><div class="tl-date">In progress · 2026</div><h4>MicroMasters, Analytics</h4><div class="org">Georgia Institute of Technology · GTx on edX</div>
+        <ul>
+          <li>Graduate-level analytics coursework, and the first step toward Georgia Tech's M.S. in Analytics (OMSA), with enrollment targeted for Fall 2027.</li>
+        </ul>
+      </div>
       <div class="tl-item reveal"><div class="tl-date">Mar 2024 – Jul 2026</div><h4>Independent Projects &amp; Continuing Education</h4><div class="org">Seattle, WA</div>
         <ul>
           <li>Built an end-to-end portfolio of SQL, Excel, Tableau, and Power BI analyses on real datasets, including a $1.76B World Bank IDA lending study and a dashboard spanning 1,800+ schools.</li>
           <li>Designed and shipped a production web platform on a Supabase/PostgreSQL backend, integrating a third-party sports-data REST API and an LLM chatbot end to end.</li>
-          <li>Paired a B.S. in Information Technology with an intensive Data Analytics Bootcamp and admission to an M.S. in Data Analytics (Data Engineering specialization).</li>
+          <li>Paired a B.S. in Information Technology with an intensive Data Analytics Bootcamp to keep deepening SQL, Python, and BI skills.</li>
         </ul>
       </div>
       <div class="tl-item reveal"><div class="tl-date">July 2026</div><h4>B.S., Information Technology</h4><div class="org">Western Governors University</div></div>
@@ -520,12 +559,12 @@
 <section id="beyond">
   <div class="wrap">
     <div class="reveal" style="text-align:center;max-width:620px;margin:0 auto 56px">
-      <div class="eyebrow">Off the clock</div>
-      <h2 class="title">Beyond the data</h2>
+      <div class="eyebrow">Personal</div>
+      <h2 class="title">My 5 to 9 after my 9 to 5</h2>
       <p class="lead" style="margin:18px auto 0">The things I enjoy most when I'm not working.</p>
     </div>
     <div class="grid-4">
-      <div class="pcell reveal"><div class="pemoji">🤺</div><h4>Fencing</h4><p>I love this sport for its blend of speed, strategy, and reading your opponent in real time. Proud registered member of USA Fencing.</p></div>
+      <div class="pcell reveal"><div class="pemoji">🤺</div><h4>Fencing</h4><p>I love this sport for its blend of speed, strategy, and reading your opponent in real time. Registered member of USA Fencing.</p></div>
       <div class="pcell reveal d2"><div class="pemoji">🎬</div><h4>Cinema</h4><p>Movies of every era, from brand-new releases to old classics. My all-time favorites: Top Gun and Drive.</p></div>
       <div class="pcell reveal d3"><div class="pemoji">🚀</div><h4>Space</h4><p>Spaceships, space exploration, and honestly anything with the word "space" in it. It even sparked my AZIMUTH launch-analytics project.</p></div>
       <div class="pcell reveal d4"><div class="pemoji">👨‍👧</div><h4>Family</h4><p>I stepped out of the corporate world for a while to witness my first daughter's earliest milestones. I wouldn't trade it for anything.</p></div>
@@ -539,23 +578,62 @@
     <div class="reveal">
       <div class="eyebrow" style="text-align:center">Get in touch</div>
       <h2>Let's connect.</h2>
-      <p class="lead">Based in Seattle, always happy to talk data, tech, and building things. If you want to trade notes, collaborate, or just say hi, my inbox is open.</p>
+      <p class="lead">Based in Seattle, always happy to talk tech, data, or whatever you're curious about. Want to trade notes, ask a question, or just say hi? My inbox is open.</p>
       <div class="cta-row" style="justify-content:center;margin:30px 0 40px">
         <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email me</a>
         <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
       </div>
-      <div class="contact-links">
-        <a class="clink" href="mailto:idepabloc@gmail.com"><span class="cl-k">Email</span><span class="cl-v">idepabloc@gmail.com</span></a>
-        <a class="clink" href="https://www.linkedin.com/in/idepabloc" target="_blank" rel="noopener"><span class="cl-k">LinkedIn</span><span class="cl-v">in/idepabloc</span></a>
-        <a class="clink" href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" rel="noopener"><span class="cl-k">Tableau</span><span class="cl-v">Public profile</span></a>
-        <a class="clink" href="https://github.com/idepablo" target="_blank" rel="noopener"><span class="cl-k">GitHub</span><span class="cl-v">github.com/idepablo</span></a>
-      </div>
+      <div class="icon-links">
+        <a class="ilink" href="mailto:idepabloc@gmail.com" aria-label="Email" title="Email"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
+        <a class="ilink" href="https://www.linkedin.com/in/idepabloc" target="_blank" rel="noopener" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.55C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
+        <a class="ilink" href="https://github.com/idepablo" target="_blank" rel="noopener" aria-label="GitHub" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.17c-3.2.7-3.87-1.36-3.87-1.36-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.76 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.23-1.28-5.23-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.78 1.05.78 2.12v3.15c0 .3.2.67.8.55A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/></svg></a>
+        <a class="ilink" href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" rel="noopener" aria-label="Tableau Public" title="Tableau Public"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11.1 2h1.8v3.3h3V6.9h-3v3.3h-1.8V6.9h-3V5.3h3V2zm-6.9 4.6h1.5v2.6H8v1.4H5.7v2.6H4.2v-2.6H1.9V9.2h2.3V6.6zm13.2 0h1.5v2.6h2.3v1.4h-2.3v2.6h-1.5v-2.6h-2.3V9.2h2.3V6.6zm-6.3 5.9h1.8v3.5h3.2v1.7h-3.2v3.5h-1.8v-3.5H7.9V16h3.2v-3.5zm-6.9 3h1.4v2.2h2.1v1.3H5.6v2.2H4.2V19H2.1v-1.3h2.1v-2.2zm13.3 0h1.4v2.2h2.1v1.3h-2.1v2.2h-1.4V19h-2.1v-1.3h2.1v-2.2z"/></svg></a>
+        <a class="ilink" href="https://x.com/idepabloc" target="_blank" rel="noopener" aria-label="X" title="X"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 1.2h3.7l-8.2 9.4L24 22.8h-7.6l-5.9-7.7-6.8 7.7H.1l8.8-10L0 1.2h7.8l5.3 7 5.8-7zm-1.3 19.4h2L6.7 3.3h-2.2l13.1 17.3z"/></svg></a>
+              </div>
     </div>
   </div>
 </section>
 
-<footer>
-  © <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript · <a href="https://idepablo.com">idepablo.com</a>
+<footer class="site-footer">
+  <div class="sf-wrap">
+    <div class="sf-grid">
+      <div class="sf-brand">
+        <div class="sf-name">Ignacio de Pablo</div>
+        <p>Solutions engineer for LATAM and data analytics builder in Seattle. Case studies in SQL, Python, R, Tableau, and Excel, plus AZIMUTH, a launch-market BI platform built in the open.</p>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Site</div>
+        <a href="/#about">About</a>
+        <a href="/#skills">Skills</a>
+        <a href="/#work">Projects</a>
+        <a href="/#certs">Certifications</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Projects</div>
+        <a href="/projects/azimuth.html">AZIMUTH · Launch BI</a>
+        <a href="/projects/nba-2026-season.html">Celtics · Tableau</a>
+        <a href="/projects/mining-flotation.html">Mining Flotation · Python</a>
+        <a href="/projects/ibm-attrition.html">IBM Attrition · R</a>
+        <a href="/projects/hospital-length-of-stay.html">Hospital Stay · SQL</a>
+        <a href="/projects/">All projects →</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Connect</div>
+        <a href="mailto:idepabloc@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/idepabloc" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/idepablo" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" rel="noopener">Tableau Public</a>
+        <a href="https://x.com/idepabloc" target="_blank" rel="noopener">X</a>
+        <a href="/resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      <span>© <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript</span>
+      <a href="https://idepablo.com">idepablo.com</a>
+    </div>
+  </div>
 </footer>
 
 <script>

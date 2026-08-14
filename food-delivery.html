@@ -112,6 +112,20 @@
     .reveal{opacity:1;transform:none;transition:none}
     html{scroll-behavior:auto}
   }
+
+  .site-footer{border-top:1px solid var(--line);margin-top:80px;padding:56px 24px 30px;font-size:.9rem}
+  .sf-wrap{max-width:1080px;margin:0 auto}
+  .sf-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:38px}
+  @media(max-width:820px){.sf-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.sf-grid{grid-template-columns:1fr}}
+  .sf-name{font-weight:650;color:var(--text);margin-bottom:10px;font-size:1rem}
+  .sf-brand p{color:var(--text-3);font-size:.84rem;line-height:1.65;max-width:300px;margin:0}
+  .sf-h{font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);margin-bottom:13px}
+  .sf-col a{display:block;color:var(--text-2);margin-bottom:9px;font-size:.87rem;text-decoration:none;transition:color .2s}
+  .sf-col a:hover{color:var(--accent)}
+  .sf-bottom{border-top:1px solid var(--line);margin-top:44px;padding-top:22px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;color:var(--text-3);font-size:.8rem}
+  .sf-bottom a{color:var(--text-3);text-decoration:none}
+  .sf-bottom a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -222,8 +236,8 @@
     <p>Fourth, the best customers are not deal hunters. They are decisive buyers who convert at higher rates without needing discounts. Rewarding them with quality and convenience rather than promotions is likely the smarter long-term strategy.</p>
 
     <div class="article-cta">
-      <h3>Seeking Data Analyst &amp; BI Analyst roles</h3>
-      <p>I would love to hear your thoughts. Do you see the data differently? Would you have approached the analysis in a different way? I am always open to feedback, conversations, and opportunities.</p>
+      <h3>Follow the work</h3>
+      <p>Every project here is written up in full, and AZIMUTH ships in public with a phase-by-phase build log. Connect on LinkedIn to catch new posts, or reach out any time. Always happy to talk data.</p>
       <div class="cta-row">
         <a class="btn btn-primary" href="mailto:idepabloc@gmail.com">Email me</a>
         <a class="btn btn-ghost" href="/resume.pdf" target="_blank" rel="noopener">Download résumé</a>
@@ -234,8 +248,46 @@
   </div>
 </article>
 
-<footer>
-  © <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript · <a href="https://idepablo.com">idepablo.com</a>
+<footer class="site-footer">
+  <div class="sf-wrap">
+    <div class="sf-grid">
+      <div class="sf-brand">
+        <div class="sf-name">Ignacio de Pablo</div>
+        <p>Solutions engineer for LATAM and data analytics builder in Seattle. Case studies in SQL, Python, R, Tableau, and Excel, plus AZIMUTH, a launch-market BI platform built in the open.</p>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Site</div>
+        <a href="/#about">About</a>
+        <a href="/#skills">Skills</a>
+        <a href="/#work">Projects</a>
+        <a href="/#certs">Certifications</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#contact">Contact</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Projects</div>
+        <a href="/projects/azimuth.html">AZIMUTH · Launch BI</a>
+        <a href="/projects/nba-2026-season.html">Celtics · Tableau</a>
+        <a href="/projects/mining-flotation.html">Mining Flotation · Python</a>
+        <a href="/projects/ibm-attrition.html">IBM Attrition · R</a>
+        <a href="/projects/hospital-length-of-stay.html">Hospital Stay · SQL</a>
+        <a href="/projects/">All projects →</a>
+      </div>
+      <div class="sf-col">
+        <div class="sf-h">Connect</div>
+        <a href="mailto:idepabloc@gmail.com">Email</a>
+        <a href="https://www.linkedin.com/in/idepabloc" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/idepablo" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://public.tableau.com/app/profile/ignacio.de.pablo/vizzes" target="_blank" rel="noopener">Tableau Public</a>
+        <a href="https://x.com/idepabloc" target="_blank" rel="noopener">X</a>
+        <a href="/resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
+      </div>
+    </div>
+    <div class="sf-bottom">
+      <span>© <span id="yr"></span> Ignacio de Pablo · Built with HTML, CSS &amp; JavaScript</span>
+      <a href="https://idepablo.com">idepablo.com</a>
+    </div>
+  </div>
 </footer>
 
 <script>
