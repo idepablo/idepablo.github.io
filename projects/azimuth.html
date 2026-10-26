@@ -212,13 +212,13 @@
     <p class="standfirst">A provider-agnostic business intelligence platform that models the global orbital launch market, built so any launch vehicle can be set as the focus and benchmarked against the full field. Built from scratch on a Databricks lakehouse, in the open, one phase at a time.</p>
     <div class="meta-row">
       <span class="meta-pill inprog">🛠️ In active development</span>
-      <span class="meta-pill">Last updated · August 29, 2026</span>
+      <span class="meta-pill">Last updated · October 25, 2026</span>
       <span class="meta-pill">Databricks</span>
       <span class="meta-pill">dbt</span>
       <span class="meta-pill">Python · SQL</span>
       <a class="meta-pill repo" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener">View repository ↗</a>
     </div>
-    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Current phase:</strong> Phase 4 · Analysis layer. <strong style="color:var(--text-2);font-weight:600">Next milestone:</strong> the maturation dataset, reliability by flight number in a vehicle's life, with cadence and market share marts.</p>
+    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Current phase:</strong> Phase 5 · Data operations. <strong style="color:var(--text-2);font-weight:600">Next milestone:</strong> incremental fetches, a scheduled refresh, and a freshness check that fails if the data gets old.</p>
   </div>
 </header>
 
@@ -245,7 +245,8 @@
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">The full launch history from Launch Library 2, landed in the bronze layer and verified idempotent.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 2 · Silver modeling</div><div class="sd">Staging model in dbt, a curated vehicle-class seed, six data-quality tests, and CI, all green.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 3 · Gold layer</div><div class="sd">Five dimensions and fct_launches in a dedicated gold schema, under referential integrity tests, rebuilt by CI.</div></div><span class="status-tag t-done">Done</span></div>
-      <div class="status-item"><span class="status-dot dot-active"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and the maturation dataset: reliability by flight number in a vehicle's life.</div></div><span class="status-tag t-active">In progress</span></div>
+      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and reliability by flight number, with Wilson intervals, a Kaplan-Meier survival model, and a per-vehicle benchmark, all in SQL and deployed through CI.</div></div><span class="status-tag t-done">Done</span></div>
+      <div class="status-item"><span class="status-dot dot-active"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Incremental fetches, a scheduled refresh, and a freshness check that fails if the data gets old.</div></div><span class="status-tag t-active">In progress</span></div>
       <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Dashboard</div><div class="sd">The four views above, built on the gold layer.</div></div><span class="status-tag t-plan">Planned</span></div>
       <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Ask AZIMUTH</div><div class="sd">Natural-language querying over the modeled data.</div></div><span class="status-tag t-plan">v2</span></div>
     </div>
@@ -354,24 +355,61 @@
         <div class="tl-phase">Gold layer</div>
         <p>Built the dimensional model: five dimensions (date, provider, vehicle, orbit, launch site) and the launch fact table, in a dedicated gold schema, under referential integrity tests, rebuilt by CI on every push. Providers enriched with country and sector, vehicles with disambiguated full names, and the orbit coverage gap made visible through an explicit "Not published" member.</p>
       </div>
-      <div class="tl-item">
-        <div class="tl-when">Phase 4 · In progress</div>
+      <div class="tl-item done">
+        <div class="tl-when">Phase 4 · Complete · Oct 2026</div>
         <div class="tl-phase">Analysis layer</div>
-        <p>Cadence, market share, and the maturation dataset: reliability by flight number in a vehicle's life, built as marts on top of the gold layer.</p>
+        <p>Cadence, market share, and reliability by flight number, by configuration and by family. Every reliability figure carries a 95% Wilson interval, plus a Kaplan-Meier survival model validated against Python's lifelines and an era-matched benchmark per vehicle. CI now deploys to production schemas after all tests pass.</p>
       </div>
       <div class="tl-item">
-        <div class="tl-when">Phase 5 · Planned</div>
+        <div class="tl-when">Phase 5 · In progress</div>
+        <div class="tl-phase">Data operations</div>
+        <p>Incremental fetches from Launch Library 2, a scheduled refresh, and a freshness check that fails if the data gets old.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-when">Phase 6 · Planned</div>
         <div class="tl-phase">Dashboard</div>
         <p>Build the three initial views on top of the gold layer: Market Overview, The Maturation Race, and the Scenario Simulator. Ask AZIMUTH follows in v2.</p>
       </div>
       <div class="tl-item">
-        <div class="tl-when">Phase 6 · Planned · v2</div>
+        <div class="tl-when">Phase 7 · Planned · v2</div>
         <div class="tl-phase">Ask AZIMUTH</div>
         <p>Layer natural-language querying over the modeled data.</p>
       </div>
     </div>
 
     <h2 class="reveal">Build log</h2>
+
+    <div class="logpost reveal">
+      <div class="lp-meta">Build log · October 25, 2026</div>
+      <h3>Phase 4: Analysis layer</h3>
+      <p>Phase 4 built the analysis tables the app will read: cadence, market share, and reliability by flight number. It also included one data correction and three statistical models. Everything is in SQL, tested, and deployed through CI.</p>
+      <h4>Configuration vs family</h4>
+      <p>The first decision was what counts as one vehicle. The source tracks Falcon 9 as five configurations (v1.0, v1.1, Full Thrust, Block 4 and Block 5), so I had to choose between treating each configuration as its own vehicle or grouping them into a family.</p>
+      <p>Families in the source turned out to be a simple hierarchy: each configuration belongs to one specific family, which can sit under a broader one. I map each configuration to its most specific family. A small reviewed seed fixes three Soyuz configurations the source leaves out of the Soyuz family, and 53 configurations with no family fall back to their own name.</p>
+      <p>The choice matters. Falcon 9 Block 5 has an almost perfect record, but it came after 57 flights of earlier versions, including their failures. Among vehicles with 20 or more orbital flights, the median number of flights to reach proven reliability is 16 by configuration and 36.5 by family. I built both views. Family is the default for comparing a new vehicle, because it includes the learning that earlier versions went through.</p>
+      <h4>Reliability with confidence intervals</h4>
+      <p>A vehicle with 3 successes in 3 flights has a 100% success rate, but that is not much evidence. Every reliability number in AZIMUTH comes with a 95% Wilson interval, and I call a vehicle proven when the lower bound reaches 80% or 90%. With a perfect record, it takes about 35 flights to get the lower bound to 90%.</p>
+      <p>Partial failures do not count as successes. They are tracked separately so the app can show them. One test failed because floating point put a perfect record's upper bound at 1.0000000000000002, so the interval is now clamped between 0 and 1.</p>
+      <h4>Failures before launch</h4>
+      <p>The source records two pre-launch events as launch failures. I handled them differently.</p>
+      <p>Apollo 1 (1967) was a fire in the command module during a ground test. The Saturn IB rocket did not cause it and never launched, so I excluded it. The record stays in the fact table with its own label so it can still be traced. The Saturn IB's orbital record is now 7 for 7.</p>
+      <p>Amos-6 (2016) was a Falcon 9 that exploded during a test before launch and destroyed the customer's satellite. Most launch logs do not count it, but it was a failure of the rocket itself, so I kept it. It lowers Falcon 9's family reliability from 99.6% to 99.4%, and the methodology page will mention it.</p>
+      <h4>Success rate by flight number</h4>
+      <p>The first model is the success rate of a vehicle's 1st, 2nd, 3rd flight and so on, across all vehicles that reached that point. By family, first flights succeed 57.8% of the time. After flight 100 it is 97.0%. By configuration, first flights succeed 78.5% of the time, because many new configurations are upgrades of vehicles that already flew. The results are also split by the era of the vehicle's first flight, so recent vehicles are compared with other recent vehicles.</p>
+      <h4>Survival analysis</h4>
+      <p>The second model estimates the share of vehicles that get through their first n flights without any failure. A simple average does not work here, because a vehicle with three clean flights so far has not proven it never fails. It just has not flown more yet. I used a Kaplan-Meier estimator, which handles those vehicles correctly. I checked the SQL results against the Python lifelines library on all eight curves and they match to within 0.00001.</p>
+      <p>Only 37.5% of vehicles get through their first five flights without a failure, and 19.4% through their first ten. More than half have had a failure by flight 3.</p>
+      <h4>Benchmark per vehicle</h4>
+      <p>The third model compares each vehicle with a typical vehicle from the same era over the same flights. It calculates how many successes a typical vehicle would have had, and the difference from the actual record shows whether the vehicle is ahead or behind.</p>
+      <p>Each vehicle's own flights are left out of its benchmark. Otherwise Soyuz, with almost 1,000 flights, would mostly be compared with itself. Atlas V is 4.5 points ahead, Falcon 9 is about even, and Proton is 5.5 points behind.</p>
+      <p>There is one limitation. Vehicles that fail often tend to get cancelled, so the later flight numbers only include vehicles that survived. That means long-running vehicles usually score above the benchmark. The comparison is most useful between vehicles with a similar number of flights.</p>
+      <h4>Bayesian model (not used)</h4>
+      <p>I also tested an empirical Bayes model, which estimates one shared starting point from all vehicles and adjusts each vehicle's record toward it. Vehicles are too different from each other for that shared starting point to add much. It was worth between 1 and 9 flights of evidence depending on the cutoff, so it barely changed any result. Flight number explains much more, which is what the first model already covers. I documented this in the scope document.</p>
+      <h4>CI deploys</h4>
+      <p>CI used to build and test in a separate schema and stop there. Now a second job deploys to the real silver and gold schemas, but only after all tests pass.</p>
+      <h4>Next</h4>
+      <p>Phase 5 is data operations: incremental fetches, a scheduled refresh, and a freshness check that fails if the data gets old. After that comes the app.</p>
+    </div>
 
     <div class="logpost reveal">
       <div class="lp-meta">Build log · August 29, 2026</div>
