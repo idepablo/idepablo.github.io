@@ -250,7 +250,7 @@
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and reliability by flight number, with Wilson intervals, a Kaplan-Meier survival model, and a per-vehicle benchmark, all in SQL and deployed through CI.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Daily incremental refresh, completeness check against the source, freshness check, and a warning for vehicles new to the classification seed.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 6 · The app</div><div class="sd">Market Overview, Maturation Race, Scenario Simulator and a Methodology page, live on Streamlit, with the simulator backtested against history.</div></div><span class="status-tag t-done">Done</span></div>
-      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Plain-language questions answered from the app's data, with vehicle pages and shareable simulator scenarios. Scored by a 36-question test after every deploy.</div></div><span class="status-tag t-done">Done</span></div>
+      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Plain-language questions answered from the app's data, with vehicle pages and shareable simulator scenarios. Scored by a 39-question test after every deploy.</div></div><span class="status-tag t-done">Done</span></div>
     </div>
 
     <h2 class="reveal">Lakehouse architecture</h2>
@@ -375,7 +375,7 @@
       <div class="tl-item done">
         <div class="tl-when">Phase 7 · Complete · Oct 2026</div>
         <div class="tl-phase">Ask AZIMUTH</div>
-        <p>Questions in plain language, answered from the same data as the app, with follow-up questions, a report button for wrong answers, and a 36-question test that runs after every deploy. The same phase added a page for every vehicle and shareable simulator scenarios.</p>
+        <p>Questions in plain language, answered from the same data as the app, with follow-up questions, a report button for wrong answers, and a 39-question test that runs after every deploy. The same phase added a page for every vehicle and shareable simulator scenarios.</p>
       </div>
     </div>
 
@@ -434,7 +434,7 @@
       <p>It only answers what the data can answer. Questions about prices, payloads, people or the reasons behind a failure get a polite message that they are out of scope. Under every answer there is a report button: if an answer looks wrong, or a question should have been answerable, the report reaches me by email.</p>
 
       <h4>Testing it</h4>
-      <p>As with the simulator, I did not want to rely on it seeming to work. A test of 36 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, and 6 that it should decline. In its first full test it answered all 30 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
+      <p>As with the simulator, I did not want to rely on it seeming to work. A test of 39 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, 3 follow-ups asked after a first question, as in a real conversation, and 6 that it should decline. In its latest run it answered all 33 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
 
       <h4>What is next</h4>
       <p>The build is complete. From here AZIMUTH maintains itself: the data refreshes every day, the tests run on every deploy, and new rockets get flagged for classification as they appear. Changes from now on will come from what people ask and report.</p>
