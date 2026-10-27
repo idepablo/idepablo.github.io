@@ -219,7 +219,7 @@
       <span class="meta-pill">Streamlit</span>
       <a class="meta-pill repo" href="https://github.com/idepablo/azimuth-launch-tool" target="_blank" rel="noopener">View repository ↗</a>
     </div>
-    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Status:</strong> Phases 0 to 6 complete. The app is live and refreshes daily. <strong style="color:var(--text-2);font-weight:600">Next:</strong> Ask AZIMUTH, natural-language questions over the data (v2).</p>
+    <p style="color:var(--text-3);font-size:.85rem;margin-top:18px;max-width:640px"><strong style="color:var(--text-2);font-weight:600">Status:</strong> All seven phases complete. The app is live, refreshes daily, and answers questions in plain language.</p>
   </div>
 </header>
 
@@ -230,17 +230,18 @@
     <p>AZIMUTH is a business intelligence platform that models the global orbital launch market. It is provider-agnostic by design: instead of tracking one company, it models the whole market, so that any launch vehicle can be set as the focus and benchmarked against the field. The same underlying model serves competitive benchmarking, program planning, and plain market research.</p>
     <p>The guiding question is a stakeholder's. If you are evaluating a new heavy-lift vehicle, how does it actually stand against the rest of the market on cadence, reliability, reuse, and mass to orbit? That question is what every part of the model is built to answer.</p>
 
-    <h2 class="reveal">The four views</h2>
-    <p>On top of the model, three views are live in the app, with a fourth planned:</p>
+    <h2 class="reveal">The views</h2>
+    <p>On top of the model, the app has five views:</p>
     <div class="views reveal">
       <div class="view"><h4>Market Overview</h4><p>The current state of the launch market across providers, vehicles, and mission types.</p></div>
       <div class="view"><h4>The Maturation Race</h4><p>How vehicles progress from first flight toward operational reliability, compared across programs.</p></div>
       <div class="view"><h4>Scenario Simulator</h4><p>Adjust assumptions and watch a program's competitive position shift.</p></div>
-      <div class="view"><h4>Ask AZIMUTH <span class="v2">v2</span></h4><p>Natural-language querying over the modeled data.</p></div>
+      <div class="view"><h4>Vehicles</h4><p>One page per rocket: its record, recent form against its lifetime, versions, and full launch history, with one click to simulate its future.</p></div>
+      <div class="view"><h4>Ask AZIMUTH</h4><p>Questions in plain language, in English or Spanish, answered from the same data as the rest of the app.</p></div>
     </div>
 
     <h2 class="reveal">Where it stands</h2>
-    <p>Phases 0 to 6 are complete and the app is live. Here is what each phase delivered and what is still to come.</p>
+    <p>All seven phases are complete and the app is live. Here is what each phase delivered.</p>
     <div class="status reveal">
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 0 · Scope &amp; data model</div><div class="sd">Grain, dimensions, outcome and censoring split, and scope decisions are locked and documented.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">The full launch history from Launch Library 2, landed in the bronze layer and verified idempotent.</div></div><span class="status-tag t-done">Done</span></div>
@@ -249,7 +250,7 @@
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and reliability by flight number, with Wilson intervals, a Kaplan-Meier survival model, and a per-vehicle benchmark, all in SQL and deployed through CI.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Daily incremental refresh, completeness check against the source, freshness check, and a warning for vehicles new to the classification seed.</div></div><span class="status-tag t-done">Done</span></div>
       <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 6 · The app</div><div class="sd">Market Overview, Maturation Race, Scenario Simulator and a Methodology page, live on Streamlit, with the simulator backtested against history.</div></div><span class="status-tag t-done">Done</span></div>
-      <div class="status-item"><span class="status-dot dot-plan"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Natural-language querying over the modeled data.</div></div><span class="status-tag t-plan">v2</span></div>
+      <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Plain-language questions answered from the app's data, with vehicle pages and shareable simulator scenarios. Scored by a 36-question test after every deploy.</div></div><span class="status-tag t-done">Done</span></div>
     </div>
 
     <h2 class="reveal">Lakehouse architecture</h2>
@@ -371,10 +372,10 @@
         <div class="tl-phase">The app</div>
         <p>Market Overview, The Maturation Race and the Scenario Simulator, plus a Methodology page, live on Streamlit. Neutral by default, with any provider selectable as the focus. The simulator is backtested against how real vehicles performed after five past dates.</p>
       </div>
-      <div class="tl-item">
-        <div class="tl-when">Phase 7 · Planned · v2</div>
+      <div class="tl-item done">
+        <div class="tl-when">Phase 7 · Complete · Oct 2026</div>
         <div class="tl-phase">Ask AZIMUTH</div>
-        <p>Layer natural-language querying over the modeled data.</p>
+        <p>Questions in plain language, answered from the same data as the app, with follow-up questions, a report button for wrong answers, and a 36-question test that runs after every deploy. The same phase added a page for every vehicle and shareable simulator scenarios.</p>
       </div>
     </div>
 
@@ -382,8 +383,8 @@
 
     <div class="logpost reveal">
       <div class="lp-meta">Build log · October 26, 2026</div>
-      <h3>Phases 5 and 6: Daily refresh and the app</h3>
-      <p>AZIMUTH is live at <a href="https://azimuth-launch.streamlit.app/" target="_blank" rel="noopener">azimuth-launch.streamlit.app</a>. This post covers the two phases that got it there: keeping the data current without running anything by hand, and building the app on top of it.</p>
+      <h3>Phases 5 to 7: Daily refresh, the app, and Ask AZIMUTH</h3>
+      <p>AZIMUTH is live at <a href="https://azimuth-launch.streamlit.app/" target="_blank" rel="noopener">azimuth-launch.streamlit.app</a>. This post covers the three phases that got it there: keeping the data current without running anything by hand, building the app on top of it, and letting people ask it questions directly.</p>
 
       <h4>Daily refresh</h4>
       <p>The Phase 1 backfill loaded the full launch history once. A scheduled GitHub Actions job now keeps it current. Each day it asks the API only for launches whose record changed since the newest one already loaded, with a one-day overlap so nothing edited mid-run is missed. Results are merged page by page, each with an audit row, so an interrupted run keeps what it loaded and the next one picks up from there.</p>
@@ -423,8 +424,20 @@
       <h4>Outside review</h4>
       <p>I asked for an outside review of the live app. The main points were to separate "first reached 80%" from "above 80% now", since a later failure can push a vehicle back below; to show where each projection starts; to allow higher launch cadences; and to explain the simulation's uncertainty more fully. All four are in the current version.</p>
 
-      <h4>Next</h4>
-      <p>Ask AZIMUTH: questions in plain language, answered from the same tables, with the query shown under every answer.</p>
+      <h4>A page for every vehicle</h4>
+      <p>The app had several ways to look at the market, but no single place to look at one rocket. Each vehicle now has its own page: its record, how its last 20 flights compare with its whole history, when it first reached proven reliability and whether it is still there, its versions, and every launch it has flown. Clicking a vehicle in any table opens its page, and one button opens the simulator with that vehicle already loaded.</p>
+      <p>Simulator scenarios can now be shared. The vehicle, cadence, performance and threshold are all kept in the page's link, so copying the address shares the exact scenario. Dates count from today by default, with the option to count from the vehicle's latest flight.</p>
+
+      <h4>Ask AZIMUTH</h4>
+      <p>The last of the four views planned at the start. You type a question in plain language, in English or Spanish, such as "which providers launched the most in 2025?" or "how many failures has Electron had?", and get a short answer.</p>
+      <p>Behind it, an AI model reads the app's table descriptions and AZIMUTH's own definitions (orbital launches only, partial failures are not successes, vehicles counted by family) and writes a query. The query runs on the same data the rest of the app shows, in a sandbox that cannot read files, reach the internet or change anything. The model then turns the result into a short answer. Follow-up questions such as "and in 2015?" or "explain that" use the earlier questions as context, and a Details section shows how the question was read and the numbers behind the answer.</p>
+      <p>It only answers what the data can answer. Questions about prices, payloads, people or the reasons behind a failure get a polite message that they are out of scope. Under every answer there is a report button: if an answer looks wrong, or a question should have been answerable, the report reaches me by email.</p>
+
+      <h4>Testing it</h4>
+      <p>As with the simulator, I did not want to rely on it seeming to work. A test of 36 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, and 6 that it should decline. In its first full test it answered all 30 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
+
+      <h4>What is next</h4>
+      <p>The build is complete. From here AZIMUTH maintains itself: the data refreshes every day, the tests run on every deploy, and new rockets get flagged for classification as they appear. Changes from now on will come from what people ask and report.</p>
     </div>
 
     <div class="logpost reveal">
