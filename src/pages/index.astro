@@ -1,0 +1,357 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import Brand from '../components/Brand.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { site } from '../data/site';
+import { intro, about, work, education, certifications, certificationsNote, personal, contact } from '../data/profile';
+import profile from '../assets/profile.jpg';
+import azimuthShot from '../assets/azimuth-market.jpg';
+
+const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const azimuth = projects.find((p) => p.id === 'azimuth')!;
+const featured = projects.filter((p) => p.data.featured && p.id !== 'azimuth');
+const posts = (await getCollection('buildlog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const caseStudyCount = projects.filter((p) => !p.data.external).length - 1;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: site.name,
+  url: site.url,
+  image: new URL('/og-image.png', site.url).href,
+  jobTitle: 'Product & Solutions Engineer',
+  worksFor: { '@type': 'Organization', name: 'Synology' },
+  address: { '@type': 'PostalAddress', addressLocality: 'Seattle', addressRegion: 'WA', addressCountry: 'US' },
+  email: `mailto:${site.email}`,
+  sameAs: [site.links.linkedin, site.links.github, site.links.tableau, site.links.x],
+  knowsLanguage: ['en', 'es'],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Western Governors University' },
+};
+---
+<Base title={site.name} jsonLd={jsonLd}>
+  <div class="wrap page">
+
+    <!-- Hero -->
+    <section class="hero" aria-label="Introduction">
+      <div class="tile intro">
+        <div class="status"><span class="dot dot-live"></span><span class="mono">{intro.status}</span></div>
+        <div>
+          <h1>{site.name}</h1>
+          <p class="role">{site.title}</p>
+          <p class="pitch">{intro.pitch}</p>
+        </div>
+        <div class="actions">
+          <a href="#projects" class="btn btn-dark">View projects <Icon name="arrow" size={16} /></a>
+          <a href={site.resume} class="btn btn-light" target="_blank" rel="noopener">Download résumé</a>
+        </div>
+      </div>
+
+      <div class="tile photo">
+        <Image src={profile} alt={`Portrait of ${site.name}`} width={440} height={440} class="portrait" loading="eager" />
+        <div class="photo-cap"><span class="label">{site.nickname}</span><span>{site.location}</span></div>
+      </div>
+
+      <div class="tile fact">
+        <span class="label">Now</span>
+        <p>{site.now}</p>
+      </div>
+      <div class="tile fact">
+        <span class="label">Next</span>
+        <p>{site.next}</p>
+      </div>
+      <div class="tile tile-dark fact auth">
+        <span class="label">Work authorization</span>
+        <div>
+          <span class="flags" aria-hidden="true">
+            <svg width="22" height="15" viewBox="0 0 22 15"><rect width="22" height="15" fill="#B22234"/><g fill="#FFFFFF"><rect y="2.3" width="22" height="1.15"/><rect y="4.6" width="22" height="1.15"/><rect y="6.9" width="22" height="1.15"/><rect y="9.2" width="22" height="1.15"/><rect y="11.5" width="22" height="1.15"/></g><rect width="9.5" height="8" fill="#3C3B6E"/></svg>
+            <svg width="22" height="15" viewBox="0 0 22 15"><rect width="22" height="15" fill="#AA151B"/><rect y="3.75" width="22" height="7.5" fill="#F1BF00"/></svg>
+          </span>
+          <p>{site.workAuthorization}</p>
+        </div>
+      </div>
+
+      <a href={site.azimuth.app} class="tile card-link live" target="_blank" rel="noopener">
+        <div class="live-copy">
+          <div class="status"><span class="dot dot-live-dark"></span><span class="label">Live app · updated daily</span></div>
+          <div>
+            <div class="live-title">AZIMUTH</div>
+            <p>{intro.azimuthBlurb}</p>
+          </div>
+          <span class="live-cta">Open the app <Icon name="external" size={14} /></span>
+        </div>
+        <Image src={azimuthShot} alt="AZIMUTH Market Overview: orbital launch attempts per year and share of attempts in 2025" width={900} class="live-img" loading="eager" />
+      </a>
+
+      <div class="tile links">
+        <span class="label">Links</span>
+        <ul>
+          <li><a href={site.links.linkedin} rel="noopener" target="_blank"><span><Brand name="linkedin" size={16} /> LinkedIn</span><span class="mono">/in/idepabloc</span></a></li>
+          <li><a href={site.links.github} rel="noopener" target="_blank"><span><Brand name="github" size={16} /> GitHub</span><span class="mono">@idepablo</span></a></li>
+          <li><a href={site.links.tableau} rel="noopener" target="_blank"><span><Brand name="tableau" size={16} /> Tableau Public</span><span class="mono">ignacio.de.pablo</span></a></li>
+          <li><a href={`mailto:${site.email}`}><span><Icon name="mail" size={16} /> Email</span><span class="mono">{site.email}</span></a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Projects -->
+    <section id="projects" class="section">
+      <div class="section-head">
+        <div><div class="eyebrow">Portfolio</div><h2 class="sec">Projects</h2></div>
+        <a href="/projects/" class="section-link">All projects <Icon name="arrow" size={16} /></a>
+      </div>
+      <ProjectCard project={azimuth} size="wide" />
+      <div class="grid-3">
+        {featured.map((p) => <ProjectCard project={p} />)}
+      </div>
+      <p class="muted">{caseStudyCount} more case studies in SQL, Python, R, Tableau and Excel on the <a href="/projects/">projects page</a>.</p>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="section">
+      <div class="section-head"><div><div class="eyebrow">About</div><h2 class="sec">About me</h2></div></div>
+      <div class="about">
+        <div class="tile about-copy">
+          {about.paragraphs.map((p) => <p>{p}</p>)}
+        </div>
+        <div class="about-cards">
+          {about.cards.map((c) => (
+            <div class="tile about-card">
+              <span class="icon"><Icon name={c.icon} size={20} /></span>
+              <h3>{c.title}</h3>
+              <p>{c.text}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Experience -->
+    <section id="experience" class="section">
+      <div class="section-head"><div><div class="eyebrow">Background</div><h2 class="sec">Experience and education</h2></div></div>
+      <div class="exp">
+        <div class="tile exp-col">
+          <span class="label">Work</span>
+          <ol class="timeline">
+            {work.map((w) => (
+              <li class:list={['tl-row', { current: w.current }]}>
+                <span class="mono when">{w.when}</span>
+                <div>
+                  <h3>{w.role}</h3>
+                  <div class="org">{w.org}</div>
+                  <p>{w.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+        <div class="tile exp-col">
+          <span class="label">Education</span>
+          <ol class="timeline">
+            {education.map((e) => (
+              <li class="tl-row">
+                <span class="mono when">{e.when}</span>
+                <div>
+                  <h3>{e.degree}</h3>
+                  <div class="org">{e.org}</div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- Credentials -->
+    <section id="credentials" class="section">
+      <div class="section-head">
+        <div><div class="eyebrow">Credentials</div><h2 class="sec">Certifications</h2></div>
+        <p class="muted">Click a badge to verify it on Credly or PeopleCert.</p>
+      </div>
+      <div class="tile certs">
+        <ul class="badges">
+          {certifications.map((c) => (
+            <li>
+              <a href={c.verify} class="badge" rel="noopener" target="_blank" title={`Verify ${c.name}`}>
+                <Image src={c.img} alt="" width={160} height={160} loading="lazy" decoding="async" />
+                <span>{c.name}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="muted certs-note">{certificationsNote}</p>
+      </div>
+    </section>
+
+    <!-- Build log -->
+    <section id="buildlog" class="section">
+      <div class="section-head">
+        <div><div class="eyebrow">Writing</div><h2 class="sec">Build log</h2></div>
+        <a href="/buildlog/" class="section-link">All posts <Icon name="arrow" size={16} /></a>
+      </div>
+      <div class="grid-3">
+        {posts.map((p) => (
+          <a href={`/buildlog/${p.id}.html`} class="tile card-link post">
+            <span class="label">{p.data.dateLabel} · AZIMUTH</span>
+            <h3>{p.data.title}</h3>
+            <p>{p.data.summary}</p>
+            <span class="card-cta">Read the post <Icon name="arrow" size={14} /></span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Personal -->
+    <section id="personal" class="section">
+      <div class="section-head"><div><div class="eyebrow">Personal</div><h2 class="sec">Outside work</h2></div></div>
+      <div class="grid-4">
+        {personal.map((p) => (
+          <div class="tile hobby">
+            <span class="icon"><Icon name={p.icon} size={20} /></span>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="tile tile-dark contact">
+      <div class="status"><span class="dot dot-live-dark"></span><span class="label">Contact</span></div>
+      <h2>{contact.text}</h2>
+      <div class="actions">
+        <a href={`mailto:${site.email}`} class="btn btn-white">Email me</a>
+        <a href={site.links.linkedin} class="btn btn-ghost" rel="noopener" target="_blank">LinkedIn</a>
+        <a href={site.resume} class="btn btn-ghost" rel="noopener" target="_blank">Résumé (PDF)</a>
+      </div>
+    </section>
+
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 24px; }
+  .status { display: flex; align-items: center; gap: 10px; }
+  .status .mono { font-size: 12.5px; color: var(--ink-2); letter-spacing: 0.02em; }
+  .dot { width: 8px; height: 8px; border-radius: 999px; flex-shrink: 0; }
+  .dot-live { background: var(--live); }
+  .dot-live-dark { background: var(--live-dot); }
+  .muted { color: var(--ink-3); font-size: 14.5px; }
+
+  /* Hero grid: explicit placement so every tile lands where the mockup put it. */
+  .hero { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: minmax(136px, auto); gap: 16px; }
+  .intro { grid-column: 1 / 8; grid-row: 1 / 4; padding: 44px; display: flex; flex-direction: column; justify-content: space-between; gap: 28px; }
+  h1 { font-size: clamp(38px, 5vw, 56px); line-height: 1.02; letter-spacing: -0.035em; font-weight: 800; margin-bottom: 10px; }
+  .role { font-size: clamp(18px, 2vw, 22px); font-weight: 600; letter-spacing: -0.015em; margin-bottom: 16px; }
+  .pitch { font-size: 17.5px; line-height: 1.55; color: var(--ink-2); max-width: 50ch; }
+  .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  .photo { grid-column: 8 / 11; grid-row: 1 / 4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; padding: 28px; }
+  .portrait { width: min(200px, 100%); height: auto; aspect-ratio: 1; border-radius: 50%; object-fit: cover; display: block; border: 1px solid var(--line); }
+  .photo-cap { display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 14px; color: var(--ink-2); }
+
+  .fact { grid-column: 11 / 13; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; gap: 14px; }
+  .fact:nth-of-type(3) { grid-row: 1; }
+  .fact:nth-of-type(4) { grid-row: 2; }
+  .fact:nth-of-type(5) { grid-row: 3; }
+  .fact p { font-size: 15px; font-weight: 600; line-height: 1.3; }
+  .auth .label { color: var(--on-dark-3); }
+  .auth p { color: var(--on-dark); }
+  .flags { display: inline-flex; gap: 5px; margin-bottom: 8px; }
+  .flags svg { border-radius: 3px; display: block; }
+
+  .live { grid-column: 1 / 9; grid-row: 4 / 6; display: grid; grid-template-columns: 300px minmax(0, 1fr); overflow: hidden; background: var(--dark-2); border-color: var(--dark-2); color: var(--on-dark); min-height: 300px; }
+  .live:hover { color: var(--on-dark); border-color: var(--ink-3); }
+  .live-copy { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; }
+  .live-copy .label { color: var(--on-dark-3); }
+  .live-title { font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .live-copy p { font-size: 14px; line-height: 1.45; color: var(--on-dark-2); }
+  .live-cta { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; }
+  .live-img { width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; }
+
+  .links { grid-column: 9 / 13; grid-row: 4 / 6; padding: 28px; display: flex; flex-direction: column; justify-content: space-between; gap: 20px; }
+  .links ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+  .links a { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line-soft); color: var(--ink); font-size: 15px; font-weight: 500; }
+  .links li:last-child a { border-bottom: 0; }
+  .links a > span:first-child { display: inline-flex; align-items: center; gap: 10px; }
+  .links a .mono { font-size: 13px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .links a:hover { color: var(--accent); }
+
+  /* Sections */
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .section-head .muted { max-width: 36ch; text-align: right; }
+
+  .about { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .about-copy { padding: 36px; display: flex; flex-direction: column; gap: 16px; font-size: 17px; line-height: 1.6; color: var(--ink-2); }
+  .about-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .about-card, .hobby { padding: 22px; display: flex; flex-direction: column; gap: 10px; }
+  .icon { width: 38px; height: 38px; border-radius: 12px; background: var(--chip-bg); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; }
+  .about-card h3, .hobby h3 { font-size: 16.5px; font-weight: 650; }
+  .about-card p, .hobby p { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+
+  .exp { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+  .exp-col { padding: 28px; display: flex; flex-direction: column; gap: 22px; }
+  .timeline { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .tl-row { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 16px; padding: 18px 0; border-top: 1px solid var(--line-soft); }
+  .tl-row:first-child { border-top: 0; padding-top: 0; }
+  .tl-row:last-child { padding-bottom: 0; }
+  .when { font-size: 12.5px; color: var(--ink-3); padding-top: 3px; }
+  .tl-row.current .when { color: var(--live); }
+  .tl-row h3 { font-size: 16.5px; font-weight: 650; }
+  .org { font-size: 14px; color: var(--ink-3); margin: 3px 0 8px; }
+  .tl-row p { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); }
+
+  .certs { padding: 32px; display: flex; flex-direction: column; gap: 24px; }
+  .badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 16px; }
+  .badge { display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; color: var(--ink); }
+  .badge img { width: 80px; height: 80px; object-fit: contain; display: block; }
+  .badge span { font-size: 12.5px; font-weight: 500; line-height: 1.3; }
+  .badge:hover span { color: var(--accent); }
+  .certs-note { max-width: 80ch; }
+
+  .post { padding: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .post h3 { font-size: 18px; font-weight: 650; line-height: 1.25; }
+  .post p { font-size: 14.5px; line-height: 1.5; color: var(--ink-2); flex: 1; }
+  .post .card-cta { display: inline-flex; align-items: center; gap: 6px; }
+
+  .contact { padding: 48px; display: flex; flex-direction: column; gap: 24px; }
+  .contact .label { color: var(--on-dark-3); }
+  .contact h2 { font-size: clamp(22px, 2.6vw, 30px); font-weight: 600; letter-spacing: -0.02em; line-height: 1.25; max-width: 30ch; }
+
+  @media (max-width: 1100px) {
+    .hero { grid-auto-rows: auto; }
+    .intro { grid-column: 1 / 9; grid-row: 1; }
+    .photo { grid-column: 9 / 13; grid-row: 1; }
+    .fact, .fact:nth-of-type(3), .fact:nth-of-type(4), .fact:nth-of-type(5) { grid-column: span 4; grid-row: auto; }
+    .live { grid-column: 1 / 13; grid-row: auto; }
+    .links { grid-column: 1 / 13; grid-row: auto; }
+    .badges { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+    .grid-4 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 900px) {
+    .intro, .photo { grid-column: 1 / 13; grid-row: auto; }
+    .intro { padding: 28px; }
+    .photo { padding: 24px; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .about, .exp { grid-template-columns: 1fr; }
+    .section-head .muted { text-align: left; max-width: none; }
+    .live { grid-template-columns: 1fr; }
+    .live-img { max-height: 240px; object-position: left top; }
+    .live-copy { order: 1; }
+    .live-img { order: 0; }
+  }
+  @media (max-width: 640px) {
+    .fact, .fact:nth-of-type(3), .fact:nth-of-type(4), .fact:nth-of-type(5) { grid-column: 1 / 13; }
+    .about-copy { padding: 24px; font-size: 16px; }
+    .about-cards, .grid-4 { grid-template-columns: 1fr; }
+    .exp-col, .certs { padding: 20px; }
+    .tl-row { grid-template-columns: 1fr; gap: 6px; }
+    .badges { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .badge img { width: 64px; height: 64px; }
+    .contact { padding: 28px; }
+    .links { padding: 20px; }
+  }
+</style>
