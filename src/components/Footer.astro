@@ -1,0 +1,21 @@
+---
+import { site } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="wrap footer">
+  <span>© {year} {site.name} · No cookies, no trackers; page counts via GoatCounter.</span>
+  <div class="foot-links">
+    <a href="/projects/">Projects</a>
+    <a href="/buildlog/">Build log</a>
+    <a href="/rss.xml">RSS</a>
+    <a href="/sitemap-index.xml">Sitemap</a>
+    <a href={site.links.github + '/idepablo.github.io'} rel="noopener" target="_blank">Source</a>
+  </div>
+</footer>
+
+<style>
+  .footer { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--ink-3); padding-top: 32px; padding-bottom: 32px; }
+  .foot-links { display: flex; gap: 18px; flex-wrap: wrap; }
+  .foot-links a { color: var(--ink-3); }
+  .foot-links a:hover { color: var(--ink); }
+</style>

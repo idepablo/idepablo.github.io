@@ -1,0 +1,66 @@
+---
+import { site, nav } from '../data/site';
+const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html';
+---
+<header class="nav-wrap">
+  <nav class="wrap nav" aria-label="Site">
+    <a href="/" class="brand">{site.name}</a>
+    <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="nav-links">
+      <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+    <div class="links" id="nav-links">
+      {nav.map((n) => <a href={n.href}>{n.label}</a>)}
+      <a href="/#contact" class="btn btn-light btn-sm">Contact</a>
+      <button class="theme-btn" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+        <svg class="moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <svg class="sun" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav-wrap { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px); border-bottom: 1px solid transparent; }
+  .nav { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+  .brand { color: var(--ink); font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+  .links { display: flex; align-items: center; gap: 28px; }
+  .links a { color: var(--ink-2); font-size: 14px; font-weight: 500; }
+  .links a:hover { color: var(--ink); }
+  .btn-sm { height: 38px; padding: 0 16px; font-size: 14px; }
+  .links .btn-sm { color: var(--ink); }
+  .theme-btn, .menu-btn { width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--btn-border); background: var(--tile); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
+  .menu-btn { display: none; }
+  .sun { display: none; }
+  :global(:root[data-theme='dark']) .sun { display: block; }
+  :global(:root[data-theme='dark']) .moon { display: none; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .sun { display: block; }
+    :global(:root:not([data-theme='light'])) .moon { display: none; }
+  }
+  @media (max-width: 860px) {
+    .menu-btn { display: inline-flex; }
+    .links { display: none; position: absolute; left: 0; right: 0; top: 72px; flex-direction: column; align-items: stretch; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 16px 16px; }
+    .links.open { display: flex; }
+    .links a { padding: 12px 4px; font-size: 16px; border-bottom: 1px solid var(--line-soft); }
+    .links .btn-sm { margin-top: 12px; height: 44px; justify-content: center; border-bottom: 0; }
+    .theme-btn { margin-top: 12px; width: 100%; border-radius: 999px; height: 44px; }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  const themeBtn = document.querySelector('.theme-btn');
+  themeBtn?.addEventListener('click', () => {
+    const dark = root.getAttribute('data-theme') === 'dark' || (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+    const next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('theme', next); } catch {}
+  });
+  const menuBtn = document.querySelector('.menu-btn');
+  const links = document.getElementById('nav-links');
+  menuBtn?.addEventListener('click', () => {
+    const open = links?.classList.toggle('open');
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  links?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => { links.classList.remove('open'); menuBtn?.setAttribute('aria-expanded', 'false'); }));
+</script>

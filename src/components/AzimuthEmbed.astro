@@ -1,0 +1,50 @@
+---
+// Click-to-load Streamlit embed. Nothing from streamlit.app loads until the visitor asks for it,
+// which keeps the page fast and avoids third-party requests by default.
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import shot from '../assets/azimuth-market.jpg';
+const embedSrc = `${site.azimuth.app}?embed=true`;
+---
+<div class="embed tile" data-embed data-src={embedSrc}>
+  <div class="poster">
+    <Image src={shot} alt="AZIMUTH Market Overview: orbital launch attempts per year and share of attempts in 2025" width={1200} loading="lazy" />
+    <div class="overlay">
+      <div class="status"><span class="dot"></span><span class="label">Live app · updated daily</span></div>
+      <button type="button" class="btn btn-white" data-load>Load the app here <Icon name="play" size={14} /></button>
+      <a href={site.azimuth.app} class="btn btn-ghost" rel="noopener" target="_blank">Open full app <Icon name="external" size={14} /></a>
+    </div>
+  </div>
+  <p class="note">The app runs on Streamlit Community Cloud. Loading it here embeds that page; it works best on a desktop screen.</p>
+</div>
+
+<style>
+  .embed { overflow: hidden; }
+  .poster { position: relative; background: var(--dark-2); aspect-ratio: 16 / 9; }
+  .poster img { width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; opacity: 0.55; }
+  .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
+  .status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--live-dot); }
+  .overlay .label { color: #C5CBD4; }
+  .embed iframe { width: 100%; height: min(78vh, 820px); border: 0; display: block; background: var(--dark-2); }
+  .note { font-size: 13px; color: var(--ink-3); padding: 12px 16px; border-top: 1px solid var(--line); }
+  .embed.loaded .note { display: none; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-embed]').forEach((box) => {
+    box.querySelector('[data-load]')?.addEventListener('click', () => {
+      const src = box.dataset.src;
+      if (!src) return;
+      const frame = document.createElement('iframe');
+      frame.src = src;
+      frame.title = 'AZIMUTH launch market intelligence app';
+      frame.loading = 'lazy';
+      frame.setAttribute('allow', 'clipboard-write');
+      frame.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+      box.querySelector('.poster')?.replaceWith(frame);
+      box.classList.add('loaded');
+    });
+  });
+</script>

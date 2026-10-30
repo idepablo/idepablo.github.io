@@ -1,0 +1,58 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+  size?: 'wide' | 'half';
+}
+const { project, size = 'half' } = Astro.props;
+const d = project.data;
+const href = d.external ?? `/projects/${project.id}.html`;
+const cta = d.external ? 'View on the App Store' : d.status === 'live' ? 'Project page and build log' : 'Read the case study';
+---
+<a href={href} class={`tile card-link pcard pcard-${size}`} rel={d.external ? 'noopener' : undefined} target={d.external ? '_blank' : undefined}>
+  {d.cover && (
+    <div class="pcard-img">
+      <Image src={d.cover} alt="" widths={[480, 760, 1200]} sizes={size === 'wide' ? '(max-width: 900px) 100vw, 640px' : '(max-width: 900px) 100vw, 420px'} loading="lazy" />
+    </div>
+  )}
+  <div class="pcard-body">
+    <div class="chips">{d.tools.map((t) => <span class="chip">{t}</span>)}</div>
+    <h3 class="pcard-title">{d.title}</h3>
+    <p class="pcard-summary">{d.summary}</p>
+    {size === 'wide' && d.stats.length > 0 && (
+      <div class="pcard-stats">
+        {d.stats.slice(0, 3).map((s) => (
+          <div><b>{s.num}</b><span>{s.cap}</span></div>
+        ))}
+      </div>
+    )}
+    <span class="card-cta">{cta}
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </span>
+  </div>
+</a>
+
+<style>
+  .pcard { overflow: hidden; display: flex; flex-direction: column; }
+  .pcard-wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); }
+  .pcard-img { background: var(--chip-bg); overflow: hidden; }
+  .pcard-img img { width: 100%; height: 100%; object-fit: cover; display: block; aspect-ratio: 16 / 10; }
+  .pcard-wide .pcard-img img { aspect-ratio: auto; min-height: 100%; }
+  .pcard-body { padding: 24px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .pcard-wide .pcard-body { padding: 32px; }
+  .pcard-title { font-size: 20px; font-weight: 700; line-height: 1.2; }
+  .pcard-wide .pcard-title { font-size: 24px; }
+  .pcard-summary { color: var(--ink-2); font-size: 15px; line-height: 1.5; flex: 1; }
+  .pcard-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 14px 0 4px; border-top: 1px solid var(--line-soft); }
+  .pcard-stats b { display: block; font-size: 20px; letter-spacing: -0.02em; line-height: 1.1; }
+  .pcard-stats span { font-size: 12.5px; color: var(--ink-3); line-height: 1.3; display: block; margin-top: 3px; }
+  .card-cta { display: inline-flex; align-items: center; gap: 6px; }
+  @media (max-width: 900px) {
+    .pcard-wide { grid-template-columns: 1fr; }
+    .pcard-wide .pcard-img img { aspect-ratio: 16 / 9; min-height: 0; }
+    .pcard-wide .pcard-body { padding: 24px; }
+  }
+  @media (max-width: 480px) { .pcard-stats { grid-template-columns: 1fr; gap: 8px; } }
+</style>
