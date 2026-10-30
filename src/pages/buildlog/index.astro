@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Icon from '../../components/Icon.astro';
+import { site } from '../../data/site';
+
+const posts = (await getCollection('buildlog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+<Base title="Build log" description="Build-log posts on AZIMUTH, a launch-market BI platform built in the open by Ignacio de Pablo: one post per phase, from scoping to the live app.">
+  <div class="wrap page">
+    <header class="head">
+      <div class="eyebrow">Writing</div>
+      <h1>Build log</h1>
+      <p>Notes written while building <a href={site.azimuth.page}>AZIMUTH</a>: what each phase set out to do, what the data turned out to support, and what changed along the way. Also available as an <a href="/rss.xml">RSS feed</a>.</p>
+    </header>
+    <ol class="posts">
+      {posts.map((p) => (
+        <li>
+          <a href={`/buildlog/${p.id}.html`} class="tile card-link post">
+            <span class="label">{p.data.dateLabel} · AZIMUTH</span>
+            <h2>{p.data.title}</h2>
+            <p>{p.data.summary}</p>
+            <span class="card-cta">Read the post <Icon name="arrow" size={14} /></span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: 40px; gap: 40px; }
+  .head { max-width: 640px; display: flex; flex-direction: column; gap: 10px; }
+  h1 { font-size: clamp(34px, 4.5vw, 48px); font-weight: 800; letter-spacing: -0.03em; }
+  .head p { color: var(--ink-2); font-size: 17px; line-height: 1.55; }
+  .posts { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 760px; }
+  .post { padding: 24px 28px; display: flex; flex-direction: column; gap: 8px; }
+  .post h2 { font-size: 21px; font-weight: 650; line-height: 1.25; }
+  .post p { color: var(--ink-2); font-size: 15px; line-height: 1.5; }
+  .post .card-cta { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; }
+</style>
