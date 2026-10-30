@@ -1,0 +1,117 @@
+---
+title: "The Column You Test Decides the Answer"
+eyebrow: "Case Study · R · Statistical Analysis"
+byline: "Ignacio de Pablo · May 2026"
+description: "A statistical analysis of IBM employee attrition in R: three noise columns caught early, a statistically valid wrong answer, and a pay structure explained to 90.5% by job level. By Ignacio de Pablo."
+stats:
+  - num: "16%"
+    cap: "Attrition rate: 237 of 1,470 employees left"
+  - num: "3 of 10"
+    cap: "Numeric columns turned out to be pure noise, caught in the first ten minutes"
+  - num: "0.677 vs <0.001"
+    cap: "The same claim tested on the wrong column, then on the right one"
+  - num: "90.5%"
+    cap: "Of income variation explained once job level enters the model"
+date: 2026-05-15
+category: "Case study"
+area: "Statistical analysis"
+cover: "../../assets/covers/attrition_cover.jpg"
+summary: "Employee attrition in R: three noise columns caught early, a statistically valid wrong answer from testing an ID number, and pay explained to 90.5% by job level."
+tools:
+  - "R"
+  - "t-tests"
+  - "Regression"
+pills:
+  - "R · base R statistics"
+  - "1,470 employees · 35 columns"
+links:
+  - label: "Kaggle dataset"
+    href: "https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset"
+---
+
+<p>IBM's HR department was losing people and nobody could say why. I took the question to the data: 1,470 employees, 35 columns describing each one, and a single yes/no flag recording whether they left.</p>
+<p>The interesting part of this analysis was not the answer. It was discovering how easily you can produce a confident, statistically valid, completely wrong one.</p>
+<hr/>
+<h2>The data</h2>
+<p>The dataset is IBM's HR Analytics Employee Attrition set, published on <a href="https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset" rel="noopener" style="color:var(--accent)" target="_blank">Kaggle</a>. It was built by IBM data scientists as a synthetic dataset rather than real employee records, which matters for interpretation: the relationships in it are cleaner than anything a real HR team would encounter.</p>
+<p>Each row is one employee, described across demographics, job details, compensation, and tenure. Of the 1,470 employees, 237 left and 1,233 stayed, an attrition rate of 16%.</p>
+<p>The documentation does not specify whether attrition covers voluntary departures, layoffs, or both. This analysis treats it as voluntary.</p>
+<p>All work was done in R.</p>
+<pre>hrdata &lt;- read.csv("HR-Employee-Attrition.csv")
+dim(hrdata)</pre>
+<hr/>
+<h2>Three columns that mean nothing</h2>
+<p>Before asking why people left, I checked how the numeric columns behave among themselves.</p>
+<pre>round(cor(hrdata_num), 2)</pre>
+<p>Only two pairs cleared a correlation of 0.5. Total working years and monthly income sit at 0.77, and age and total working years at 0.68. Both are unsurprising: experience accumulates with age, and pay accumulates with experience.</p>
+<p>The useful finding was in what came back empty. <code>DailyRate</code>, <code>HourlyRate</code>, and <code>MonthlyRate</code> correlate with nothing at all, including each other and including <code>MonthlyIncome</code>. In any real payroll system a daily rate is an arithmetic multiple of an hourly rate. Here they are unrelated, which tells you they were generated randomly when the dataset was synthesised.</p>
+<p><strong>Three of the ten numeric columns are noise.</strong> Finding that out in the first ten minutes is worth more than any chart produced afterward, because it prevents an entire section of analysis built on nothing.</p>
+<hr/>
+<h2>What the numbers hide</h2>
+<p>Correlation gives you a number. It does not tell you the shape of the relationship behind it.</p>
+<pre>pairs(~ MonthlyIncome + Age + TotalWorkingYears,
+      data = hrdata,
+      main = "Scatterplot Matrix")</pre>
+<p>Three things showed up that the correlation coefficient had flattened out.</p>
+<p><strong>Income fans outward with experience.</strong> Employees with under five years of experience cluster tightly around 2,700 a month. Past twenty years, the spread is more than three times wider. Experience raises the floor of what someone earns far more reliably than it raises the ceiling.</p>
+<p><strong>Income falls into horizontal bands.</strong> Rather than spreading smoothly, the points stack into distinct stripes. Those stripes are job levels, and they occupy nearly separate pay ranges: level 1 tops out below 5,000 while level 5 starts above 18,000. This observation turned out to matter later.</p>
+<p><strong>Income is capped at 19,999.</strong> An artifact of the synthetic data, and a reminder not to read anything into the top of the range.</p>
+<hr/>
+<h2>Education explains less than expected</h2>
+<p>Education is stored as codes 1 through 5, from Below College to Doctor. Codes are not measurements, so a scatterplot renders them as vertical strands. Boxplots are the right tool.</p>
+<pre>hrdata$EducationLabel &lt;- factor(hrdata$Education,
+  levels = 1:5,
+  labels = c("Below College", "College", "Bachelor", "Master", "Doctor"),
+  ordered = TRUE)
+
+boxplot(MonthlyIncome ~ EducationLabel, data = hrdata,
+        main = "Monthly Income by Education Level",
+        xlab = "Education", ylab = "Monthly Income")</pre>
+<p>The expected result is a staircase. What appears is one step and then a plateau.</p>
+<div class="tbl-wrap"><table>
+<tr><th>Education</th><th>Median age</th><th>Median working years</th><th>Median income</th></tr>
+<tr><td>Below College</td><td>30</td><td>6</td><td>3,849</td></tr>
+<tr><td>College</td><td>36</td><td>9</td><td>4,892</td></tr>
+<tr><td>Bachelor</td><td>35</td><td>10</td><td>4,762</td></tr>
+<tr><td>Master</td><td>37</td><td>10</td><td>5,342</td></tr>
+<tr><td>Doctor</td><td>38</td><td>10</td><td>6,203</td></tr>
+</table></div>
+<p>Median working years is identical at 10 for Bachelor, Master, and Doctor. College out-earns Bachelor, breaking the expected order. And the boxes overlap so heavily that plenty of employees without a degree earn more than the typical Doctor.</p>
+<p>Education separates the least-educated group from everyone else. Above that line it tells you very little. The Doctor group also contains only 48 of 1,470 employees, so its position is provisional.</p>
+<hr/>
+<h2>Testing two claims</h2>
+<p>Two accusations were on the table, each one testable rather than arguable.</p>
+<h3>"Older employees were pushed out"</h3>
+<pre>yes_age &lt;- hrdata[(hrdata$Attrition == "Yes"), 'Age']
+no_age  &lt;- hrdata[(hrdata$Attrition != "Yes"), 'Age']
+t.test(yes_age, no_age)</pre>
+<p>The result is significant and points the other way. Employees who left averaged 33.6 years against 37.6 for those who stayed, with the entire confidence interval below zero. The people leaving are younger, not older.</p>
+<p>Worth adding that four years is a modest gap and the distributions overlap substantially. Significant does not mean large.</p>
+<h3>"Newer employees were pushed out"</h3>
+<p>The obvious test uses <code>EmployeeNumber</code>, and it comes back with a p-value of 0.677. No evidence of any difference. Claim dismissed.</p>
+<p>Except the test is meaningless. <code>EmployeeNumber</code> is a unique identifier running from 1 to 2068 with no repeated values. It correlates with age at -0.01, with years at company at -0.01, and with total working years at -0.01. It contains no information about an employee, so a null result is the only outcome the test could have produced.</p>
+<p>Testing the column that actually measures tenure gives the opposite answer:</p>
+<pre>yes_tenure &lt;- hrdata[(hrdata$Attrition == "Yes"), 'YearsAtCompany']
+no_tenure  &lt;- hrdata[(hrdata$Attrition != "Yes"), 'YearsAtCompany']
+t.test(yes_tenure, no_tenure)</pre>
+<p>Employees who left averaged 5.1 years at the company against 7.4 for those who stayed, significant well beyond the 0.05 threshold. The claim holds. It was only dismissed because the first test asked about an ID number rather than about tenure.</p>
+<p><strong>A statistically valid test on the wrong column produces a statistically valid wrong answer. Nothing in the output warns you.</strong></p>
+<hr/>
+<h2>What actually determines pay</h2>
+<p>The last question was whether monthly income can be predicted.</p>
+<p><strong>Age alone</strong> explains 24.8% of the variation, with each year of age associated with about 257 more per month.</p>
+<p><strong>Age plus total working years</strong> raises that to 59.9%. Experience is worth about 489 per year. Age turns slightly negative at -27, statistically significant at p = 0.021 but practically negligible against a mean income near 6,500. This is multicollinearity: age and experience correlate at 0.68, so in the first model age was standing in for experience it does not directly measure.</p>
+<p><strong>Adding job level</strong> raises it to 90.5%.</p>
+<pre>model3 &lt;- lm(MonthlyIncome ~ Age + TotalWorkingYears + JobLevel, data = hrdata)
+summary(model3)</pre>
+<p>Each job level is worth roughly 3,785 per month. Experience collapses from 489 to 53. Age loses significance entirely at p = 0.18.</p>
+<p>This is the horizontal banding from the scatterplot, confirmed numerically. Pay at this company is set almost mechanically by job level. Experience matters because it leads to promotion, not because it earns raises within a grade. An employee who accumulates years without moving up is on a nearly flat pay curve, which is a plausible reason to leave and connects directly to the tenure finding above.</p>
+<hr/>
+<h2>Limitations</h2>
+<p>The dataset is synthetic, so the relationships in it are cleaner and more deterministic than real HR data would be, and three of its columns are outright noise. Nothing here establishes causation: every model describes association only. And no model in this analysis predicts attrition itself, since linear regression requires a continuous target and attrition is binary. Logistic regression would be the correct next step.</p>
+<hr/>
+<h2>Conclusions</h2>
+<p>The employees leaving IBM skew younger and shorter-tenured. They also earn less: 4,787 a month on average against 6,833 for those who stayed.</p>
+<p>Those three facts are one fact. Pay is determined by job level, level comes from promotion, and promotion takes time. Early-career employees sit at the bottom of a pay structure where waiting is the only mechanism for advancement, and a meaningful share of them decline to wait.</p>
+<p>The methodological lesson was sharper than the finding. The <code>EmployeeNumber</code> test was correctly specified, correctly executed, and correctly interpreted. It was also worthless, because the column had nothing to do with the question. <strong>Statistics validates the test you ran, never the question you meant to ask.</strong></p>
+<p style="color:var(--text-3);font-size:.85rem;margin-top:26px">Data: IBM HR Analytics Employee Attrition, Kaggle. Analysis in R using base R statistical functions.</p>

@@ -1,0 +1,83 @@
+---
+title: "What 2,000 Food Delivery Customers Reveal about Spending and Marketing"
+eyebrow: "Case Study · Excel · Marketing Analytics"
+byline: "Ignacio de Pablo · March 2026"
+description: "An Excel analysis of 2,021 food delivery customers: income explains 67% of spending variation, wine and meat drive revenue, and the best customers don't rely on discounts. By Ignacio de Pablo."
+stats:
+  - num: "0.67"
+    cap: "R²: income vs. total spend"
+  - num: "$306"
+    cap: "Average customer spend on wine"
+  - num: "311"
+    cap: "Buyers reached by Campaign 6"
+  - num: "$1,537"
+    cap: "Average spend: Campaign 5"
+date: 2026-03-01
+category: "Case study"
+area: "Marketing analytics"
+cover: "../../assets/covers/food_cover.png"
+summary: "Income explains 67% of spending variation, and discount-heavy campaigns underperform for high-value segments."
+tools:
+  - "Excel"
+  - "Correlation"
+pills:
+  - "Excel"
+  - "iFood dataset · 2,021 records"
+links:
+  - label: "Also published on LinkedIn"
+    href: "https://www.linkedin.com/pulse/what-2000-food-delivery-customers-reveal-spending-ignacio-de-pablo-bfoac"
+---
+
+<p>Like many people nowadays, I use food delivery apps regularly, maybe even too often. So, when I came across a real dataset from a food delivery company as part of my data analytics bootcamp, I knew immediately that this was a project I would enjoy. What makes it special is that this is not a made-up classroom exercise; it is a modified version of an actual case study that DoorDash gives candidates during their hiring process.</p>
+<p>As a data enthusiast, I always wonder about the hows and whys of everything. For this one, my questions were simple: who are these customers? What are they buying? Do people spend more the more they earn? And do marketing campaigns actually work?</p>
+<h2>Key Findings (TL;DR)</h2>
+<ul>
+<li>Income explains <strong>67%</strong> of the variation in customer spending.</li>
+<li><strong>Wine and meat</strong> drive most revenue.</li>
+<li>No campaign achieved both <strong>high reach and high spending</strong> at the same time.</li>
+<li>The best customers <strong>don't rely on discounts</strong>.</li>
+</ul>
+<p>For this analysis, I chose Excel, a tool used by virtually every company on the planet and the perfect foundation before moving into more advanced tools.</p>
+<p>Quick note: the dataset is from iFood, the Brazilian equivalent of DoorDash, publicly available on GitHub with over 2,000 rows of real customer data, slightly modified for educational purposes.</p>
+<hr/>
+<h2>The Dataset</h2>
+<p>The dataset used in this analysis originally contained 2,205 customer records and 36 variables, covering everything from income and age to purchasing behavior and marketing campaign responses.</p>
+<p>Before diving into the analysis, the data required some preparation. I removed the duplicate records, reducing the 2,205 rows to 2,021 clean records. I also created four new columns, including a unique Customer ID, percentage of income spent, age groups, and month joined, bringing the total to 40 variables. The cleaned dataset was then used as the foundation for all analysis that follows.</p>
+<p>The analysis involved data cleaning, exploratory data analysis, correlation analysis, and data visualization to understand customer behavior and marketing performance.</p>
+<hr/>
+<h2>The Analysis</h2>
+<h3>Does Income Predict Spending?</h3>
+<p>The first question I wanted to answer was simple: Does earning more money mean spending more on food delivery? To find out, I plotted income against total spend for all 2,021 customers.</p>
+<figure><img loading="lazy" decoding="async" alt="Scatter plot of income vs. total spend with trendline, R-squared 0.67" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-01-income-scatter.png"/><figcaption>Income vs. total spend across all 2,021 customers</figcaption></figure>
+<p>The result was clear. I added a trendline to the chart, along with an R-squared value of 0.67. For those unfamiliar with R-squared, think of it as a score between 0 and 1 that measures how much of the variation in one variable a model explains using the other. At 0.67, income explains approximately 67% of the observed variation in customer spending, and since the trendline slope is positive, the relationship between income and spending is a strong positive one.</p>
+<p>In plain English: the more someone earns, the more they tend to spend on food delivery. Not a shocking finding, but having the data to quantify that relationship is what turns an assumption into an insight.</p>
+<p>One interesting detail worth noting: at higher income levels, the data fans out significantly, meaning high earners vary much more in their spending habits than lower-income customers. Some spend heavily, others barely engage at all. That gap at the top is actually an opportunity worth exploring for any marketing team.</p>
+<h3>How Are Customers Spending?</h3>
+<p>Now that we know income drives spending, the next question is: how is that money actually being distributed? Two charts help answer this.</p>
+<figure><img loading="lazy" decoding="async" alt="Histogram of total spend distribution across all customers" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-02-spend-distribution.png"/><figcaption>Total spend distribution across all customers</figcaption></figure>
+<p>First, looking at the overall spending distribution across all customers, the pattern is heavily skewed towards the lower end. Nearly 900 out of 2,021 customers spent under $254 in total. The numbers drop off steadily from there, with only a small group of high-value customers spending over $1,500. This is a classic pattern in retail and food delivery data, where a small percentage of customers generate a disproportionate amount of revenue.</p>
+<figure><img loading="lazy" decoding="async" alt="Bar chart of average spend by product category" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-03-category-spend.png"/><figcaption>Average spend by product category</figcaption></figure>
+<p>Second, when breaking down spending by product category, one thing becomes immediately clear: wine and meat dominate everything else. The average customer spent $306 on wine and $166 on meat, dwarfing every other category. Fruits, sweets, fish, and other products all came in well under $50 on average.</p>
+<p>For any marketing team, this is actionable. The majority of revenue comes from two categories and a small group of high-spending customers. Protecting and growing that segment should be the priority.</p>
+<h3>Which Campaign Actually Worked?</h3>
+<p>This is where things get really interesting. The company ran 6 marketing campaigns across its customer base. Looking at the results, no single campaign managed to achieve both high reach and high average spend at the same time, and that tension is exactly where the business opportunity lies.</p>
+<figure><img loading="lazy" decoding="async" alt="Campaign performance: reach vs. average spend across six campaigns" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-04-campaign-performance.png"/><figcaption>Campaign performance: reach vs. average spend</figcaption></figure>
+<p>Campaign 6 reached the most customers by far with 311 buyers, more than double any other campaign. However, its average spend of $917 was not the highest. That title belongs to Campaign 5, which attracted customers who spent an average of $1,537 but reached only 146 people.</p>
+<p>On the other end of the spectrum, Campaign 3 is worth flagging. It reached 151 customers but had the lowest average spend of all six campaigns at just $652. High reach, low value, a combination that should raise questions about who that campaign was targeting and whether the offer was attracting the wrong audience.</p>
+<figure><img loading="lazy" decoding="async" alt="Campaign 6 buyers by age group" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-05-campaign6-age.png"/><figcaption>Campaign 6 reach by age group</figcaption></figure>
+<p>Digging deeper into Campaign 6 specifically, the age group breakdown reveals exactly who responded. The 45 to 54 age group dominated with 97 buyers, followed by the 35 to 44 age group with 72. Together, those two groups accounted for 54% of all Campaign 6 conversions. Notably, the 18- to 24-year-old group was virtually absent, with only 1 customer responding.</p>
+<p>The recommendation here is clear: Campaign 6 found the right audience in terms of volume. The next step would be testing Campaign 5's offer with Campaign 6's distribution strategy to see if we can get both high reach and high spend at the same time.</p>
+<h3>How Are Customers Buying?</h3>
+<p>The final piece of the puzzle was understanding how customers actually make their purchases. Are they browsing the app without buying? Are they deal hunters waiting for discounts? Or are they decisive buyers who know what they want?</p>
+<figure><img loading="lazy" decoding="async" alt="Purchase behavior comparison: Campaign 6 customers vs. overall average" onerror="this.closest('figure').style.display='none'" src="/projects/img/food-06-purchase-behavior.png"/><figcaption>Purchase behavior: Campaign 6 customers vs. average</figcaption></figure>
+<p>Looking at the data, a few things stand out. Campaign 6 customers visit the app almost exactly as often as the average customer, 5.3 visits per month versus 5.3 overall. However, they make significantly more web purchases, averaging 5.1 per customer compared to 4.1 overall. That is a 23% higher conversion rate from the same amount of browsing.</p>
+<p>Store purchases also showed a slight increase for Campaign 6 customers, 6.0 versus 5.8 overall.</p>
+<p>Perhaps the most telling finding is around deal purchases. Campaign 6 customers used deals at a rate virtually identical to the average customer's, at approximately 2.33. They are not bargain hunters. They are not waiting for discounts to make a decision. They browse the same amount as everyone else, they just convert more and spend more when they do.</p>
+<p>That is the profile of a high-quality customer segment. They are decisive, engaged, and do not need discounts to buy.</p>
+<hr/>
+<h2>What Did I Learn?</h2>
+<p>After analyzing over 2,000 customer records, four key takeaways stand out.</p>
+<p>First, income is the strongest predictor of spending. With an R² of 0.67, knowing a customer's income level gives a meaningful head start in predicting their value to the business.</p>
+<p>Second, wine and meat drive the majority of revenue. Any campaign or promotion strategy that does not account for these two categories is leaving money on the table.</p>
+<p>Third, Campaign 6 reached the most people but not the highest spenders. The 35 to 54 age group is the core audience and should be the primary target for future campaigns.</p>
+<p>Fourth, the best customers are not deal hunters. They are decisive buyers who convert at higher rates without needing discounts. Rewarding them with quality and convenience rather than promotions is likely the smarter long-term strategy.</p>

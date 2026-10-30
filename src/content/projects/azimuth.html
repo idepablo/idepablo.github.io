@@ -1,0 +1,180 @@
+---
+title: "AZIMUTH · Launch Market Intelligence Platform"
+eyebrow: "Self-directed project · Live"
+byline: ""
+description: "AZIMUTH: a provider-agnostic business intelligence platform modeling the global orbital launch market on a Databricks lakehouse. In-progress build log, architecture, and scope decisions by Ignacio de Pablo."
+stats:
+  - num: "7,659"
+    cap: "orbital launches, 1957 to today"
+  - num: "2,352"
+    cap: "historical flights in the simulator backtest"
+  - num: "0 to 7"
+    cap: "phases, each with a build-log post"
+  - num: "39"
+    cap: "questions in the Ask AZIMUTH test"
+date: 2026-10-26
+category: "Self-directed"
+area: "BI platform"
+cover: "../../assets/covers/azimuth_cover.jpg"
+summary: "A BI platform that models the global orbital launch market and compares any rocket against the field. The pipeline refreshes, tests and deploys itself every day."
+tools:
+  - "Databricks"
+  - "dbt"
+  - "Python"
+  - "SQL"
+  - "Streamlit"
+  - "GitHub Actions"
+pills:
+  - "Databricks"
+  - "dbt"
+  - "Python · SQL"
+  - "Streamlit"
+featured: true
+status: live
+---
+
+<h2>What AZIMUTH is</h2>
+<p>AZIMUTH is a business intelligence platform that models the global orbital launch market. It is provider-agnostic by design: instead of tracking one company, it models the whole market, so that any launch vehicle can be set as the focus and benchmarked against the field. The same underlying model serves competitive benchmarking, program planning, and plain market research.</p>
+<p>The guiding question is a stakeholder's. If you are evaluating a new heavy-lift vehicle, how does it actually stand against the rest of the market on cadence, reliability, reuse, and mass to orbit? That question is what every part of the model is built to answer.</p>
+<h2>The views</h2>
+<p>On top of the model, the app has five views:</p>
+<div class="views">
+<div class="view"><h4>Market Overview</h4><p>The current state of the launch market across providers, vehicles, and mission types.</p></div>
+<div class="view"><h4>The Maturation Race</h4><p>How vehicles progress from first flight toward operational reliability, compared across programs.</p></div>
+<div class="view"><h4>Scenario Simulator</h4><p>Adjust assumptions and watch a program's competitive position shift.</p></div>
+<div class="view"><h4>Vehicles</h4><p>One page per rocket: its record, recent form against its lifetime, versions, and full launch history, with one click to simulate its future.</p></div>
+<div class="view"><h4>Ask AZIMUTH</h4><p>Questions in plain language, in English or Spanish, answered from the same data as the rest of the app.</p></div>
+</div>
+<h2>Where it stands</h2>
+<p>All seven phases are complete and the app is live. Here is what each phase delivered.</p>
+<div class="status">
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 0 · Scope &amp; data model</div><div class="sd">Grain, dimensions, outcome and censoring split, and scope decisions are locked and documented.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">The full launch history from Launch Library 2, landed in the bronze layer and verified idempotent.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 2 · Silver modeling</div><div class="sd">Staging model in dbt, a curated vehicle-class seed, six data-quality tests, and CI, all green.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 3 · Gold layer</div><div class="sd">Five dimensions and fct_launches in a dedicated gold schema, under referential integrity tests, rebuilt by CI.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and reliability by flight number, with Wilson intervals, a Kaplan-Meier survival model, and a per-vehicle benchmark, all in SQL and deployed through CI.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Daily incremental refresh, completeness check against the source, freshness check, and a warning for vehicles new to the classification seed.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 6 · The app</div><div class="sd">Market Overview, Maturation Race, Scenario Simulator and a Methodology page, live on Streamlit, with the simulator backtested against history.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Plain-language questions answered from the app's data, with vehicle pages and shareable simulator scenarios. Scored by a 39-question test after every deploy.</div></div><span class="status-tag t-done">Done</span></div>
+</div>
+<h2>Lakehouse architecture</h2>
+<p>The platform will follow a medallion architecture on Databricks: raw launch data will land in bronze, get cleaned and conformed in silver, and be modeled into an analytics-ready star schema in gold with dbt, with data-quality tests guarding every layer boundary.</p>
+<div class="diagram-shell">
+<svg aria-label="Medallion architecture: bronze, silver, gold layers" role="img" viewbox="0 0 900 150" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="arr" markerheight="7" markerwidth="7" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0,0L10,5L0,10z" fill="var(--accent)"></path></marker></defs>
+<rect class="svg-stage" height="90" rx="16" width="180" x="20" y="30"></rect>
+<text class="svg-stagename" text-anchor="middle" x="110" y="62">Source data</text>
+<text class="svg-stagedesc" text-anchor="middle" x="110" y="82">Launch Library 2 ·</text>
+<text class="svg-stagedesc" text-anchor="middle" x="110" y="97">Python ingestion</text>
+<line class="svg-arrow" x1="204" x2="240" y1="75" y2="75"></line>
+<rect class="svg-stage" height="90" rx="16" width="180" x="244" y="30"></rect>
+<text class="svg-stagename" text-anchor="middle" x="334" y="62">🥉 Bronze</text>
+<text class="svg-stagedesc" text-anchor="middle" x="334" y="82">raw, as-landed</text>
+<text class="svg-stagedesc" text-anchor="middle" x="334" y="97">Delta tables</text>
+<line class="svg-arrow" x1="428" x2="464" y1="75" y2="75"></line>
+<rect class="svg-stage" height="90" rx="16" width="180" x="468" y="30"></rect>
+<text class="svg-stagename" text-anchor="middle" x="558" y="62">🥈 Silver</text>
+<text class="svg-stagedesc" text-anchor="middle" x="558" y="82">cleaned &amp; conformed</text>
+<text class="svg-stagedesc" text-anchor="middle" x="558" y="97">dbt tests</text>
+<line class="svg-arrow" x1="652" x2="688" y1="75" y2="75"></line>
+<rect class="svg-stage" height="90" rx="16" width="188" x="692" y="30"></rect>
+<text class="svg-stagename" text-anchor="middle" x="786" y="62">🥇 Gold</text>
+<text class="svg-stagedesc" text-anchor="middle" x="786" y="82">star schema · dbt</text>
+<text class="svg-stagedesc" text-anchor="middle" x="786" y="97">dashboard-ready</text>
+</svg>
+<div class="diagram-cap">Medallion flow: ingestion → bronze → silver → gold</div>
+</div>
+<h2>The data model</h2>
+<p>The gold layer is dimensionally modeled around a single fact table, <strong>fct_launches</strong>. The grain is one row per launch attempt, keyed on the launch UUID. Five conformed dimensions hang off it: date, provider, vehicle, orbit, and launch site. The mission attributes landed on the fact itself as degenerate attributes rather than a dimension of their own. Every question the platform answers (cadence per provider, reliability by vehicle, reuse rates over time, mass to orbit by destination) resolves to measures on that grain sliced by these dimensions.</p>
+<p class="section-note">Two relationships in the source are genuinely many-to-many, program and configuration families, so they are parked for a later version rather than forced into v1.</p>
+<div class="diagram-shell">
+<svg aria-label="Star schema centered on fct_launches with five dimensions" role="img" viewbox="0 0 900 560" xmlns="http://www.w3.org/2000/svg">
+<line class="svg-line" x1="450" x2="150" y1="280" y2="105"></line>
+<line class="svg-line" x1="450" x2="750" y1="280" y2="105"></line>
+<line class="svg-line" x1="450" x2="110" y1="280" y2="430"></line>
+<line class="svg-line" x1="450" x2="790" y1="280" y2="430"></line>
+<line class="svg-line" x1="450" x2="450" y1="280" y2="490"></line>
+<rect class="svg-box" height="130" rx="16" width="220" x="40" y="40"></rect>
+<text class="svg-title" text-anchor="middle" x="150" y="68">dim_date</text>
+<text class="svg-field" x="60" y="94">date_key</text>
+<text class="svg-field" x="60" y="112">year · quarter · month</text>
+<text class="svg-field" x="60" y="130">day · decade</text>
+<text class="svg-field" x="60" y="148">is_weekend</text>
+<rect class="svg-box" height="130" rx="16" width="220" x="640" y="40"></rect>
+<text class="svg-title" text-anchor="middle" x="750" y="68">dim_provider</text>
+<text class="svg-field" x="660" y="94">provider_key · provider_name</text>
+<text class="svg-field" x="660" y="112">sector · country</text>
+<text class="svg-field" x="660" y="130">founding_year</text>
+<text class="svg-field" x="660" y="148">launch_count</text>
+<rect class="svg-fact" height="180" rx="18" width="280" x="310" y="195"></rect>
+<text class="svg-titlefact" text-anchor="middle" x="450" y="222">fct_launches</text>
+<text class="svg-field" x="332" y="248">date_key · provider_key · vehicle_key</text>
+<text class="svg-field" x="332" y="266">orbit_key · location_key</text>
+<text class="svg-field" x="332" y="284">launched_at · net_precision</text>
+<text class="svg-field" x="332" y="302">mission_name · orbit_name · pad_name</text>
+<text class="svg-field" x="332" y="320">status_id · status_name</text>
+<text class="svg-field" x="332" y="338">scope_class · is_outcome_known</text>
+<text class="svg-field" x="332" y="356">is_success</text>
+<rect class="svg-box" height="148" rx="16" width="220" x="20" y="370"></rect>
+<text class="svg-title" text-anchor="middle" x="130" y="398">dim_vehicle</text>
+<text class="svg-field" x="40" y="424">vehicle_key · vehicle_name</text>
+<text class="svg-field" x="40" y="442">vehicle_full_name · variant</text>
+<text class="svg-field" x="40" y="460">manufacturer · vehicle_class</text>
+<text class="svg-field" x="40" y="478">is_reusable · maiden_flight</text>
+<text class="svg-field" x="40" y="496">launch_count</text>
+<rect class="svg-box" height="130" rx="16" width="220" x="660" y="370"></rect>
+<text class="svg-title" text-anchor="middle" x="770" y="398">dim_launch_site</text>
+<text class="svg-field" x="680" y="424">location_key · location_name</text>
+<text class="svg-field" x="680" y="442">country · celestial_body</text>
+<text class="svg-field" x="680" y="460">coordinates · pad_count</text>
+<text class="svg-field" x="680" y="478">launch_count</text>
+<rect class="svg-box" height="80" rx="16" width="220" x="340" y="470"></rect>
+<text class="svg-title" text-anchor="middle" x="450" y="498">dim_orbit</text>
+<text class="svg-field" x="360" y="520">orbit_key · orbit_name</text>
+<text class="svg-field" x="360" y="538">orbit_class (incl. "Not published")</text>
+</svg>
+<div class="diagram-cap">Star schema · one row per launch attempt in fct_launches · built and tested</div>
+</div>
+<h2>Timeline</h2>
+<div class="tl">
+<div class="tl-item done">
+<div class="tl-when">Phase 0 · Complete · Aug 2026</div>
+<div class="tl-phase">Scoping &amp; data audit</div>
+<p>Read the Launch Library 2 API closely, drafted the medallion schema, made the scope decisions in writing, and ran a first data-integrity check. Deliverable: a written scope document in the repo.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 1 · Complete · Aug 2026</div>
+<div class="tl-phase">Production backfill</div>
+<p>Pulled the full launch history from Launch Library 2: 76 pages, 7,598 records, throttled to the API's rate limit over roughly five hours. Built the loader to be resumable and idempotent, with a load audit table recording every run. Verified by running the same load twice: the second run inserted 0 rows and updated 0 rows.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 2 · Complete · Aug 2026</div>
+<div class="tl-phase">Silver modeling</div>
+<p>Re-ran the Phase 0 data checks against all 7,598 launches, which overturned the orbital-scope rule and produced a curated, human-reviewed vehicle classification seed (485 configurations). Built the dbt staging model, six data-quality tests, and CI on GitHub Actions, green on the first real run.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 3 · Complete · Aug 2026</div>
+<div class="tl-phase">Gold layer</div>
+<p>Built the dimensional model: five dimensions (date, provider, vehicle, orbit, launch site) and the launch fact table, in a dedicated gold schema, under referential integrity tests, rebuilt by CI on every push. Providers enriched with country and sector, vehicles with disambiguated full names, and the orbit coverage gap made visible through an explicit "Not published" member.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 4 · Complete · Oct 2026</div>
+<div class="tl-phase">Analysis layer</div>
+<p>Cadence, market share, and reliability by flight number, by configuration and by family. Every reliability figure carries a 95% Wilson interval, plus a Kaplan-Meier survival model validated against Python's lifelines and an era-matched benchmark per vehicle. CI now deploys to production schemas after all tests pass.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 5 · Complete · Oct 2026</div>
+<div class="tl-phase">Data operations</div>
+<p>A daily scheduled refresh that loads only launches changed since the last run, then rebuilds, tests and deploys the models. Every run checks completeness against the source's own count and data freshness, and names any new vehicle that needs classifying.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 6 · Complete · Oct 2026</div>
+<div class="tl-phase">The app</div>
+<p>Market Overview, The Maturation Race and the Scenario Simulator, plus a Methodology page, live on Streamlit. Neutral by default, with any provider selectable as the focus. The simulator is backtested against how real vehicles performed after five past dates.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Phase 7 · Complete · Oct 2026</div>
+<div class="tl-phase">Ask AZIMUTH</div>
+<p>Questions in plain language, answered from the same data as the app, with follow-up questions, a report button for wrong answers, and a 39-question test that runs after every deploy. The same phase added a page for every vehicle and shareable simulator scenarios.</p>
+</div>
+</div>

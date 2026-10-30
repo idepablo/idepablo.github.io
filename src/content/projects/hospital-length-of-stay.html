@@ -1,0 +1,245 @@
+---
+title: "One Hospital Resource Limits Everything: Beds. A SQL Deep Dive"
+eyebrow: "Case Study · SQL · Healthcare Analytics"
+byline: "Ignacio de Pablo · April 2026"
+description: "A SQL analysis of 101,766 hospital encounters: how long patients stay, what tracks with longer stays, and where the number-two diabetes medication flips. By Ignacio de Pablo."
+stats:
+  - num: "101,766"
+    cap: "Hospital encounters analyzed"
+  - num: "79%"
+    cap: "Of stays end within a week"
+  - num: "43.5%"
+    cap: "Of bed-days from just 21% of visits"
+  - num: "80+"
+    cap: "The age where the #2 diabetes med flips"
+date: 2026-04-15
+category: "Case study"
+area: "Healthcare analytics"
+cover: "../../assets/covers/hospital_cover.jpg"
+summary: "101,766 hospital encounters: the 21% of stays lasting 7+ days consumed 43.5% of all bed-days."
+tools:
+  - "MySQL"
+  - "CTEs"
+  - "Window functions"
+pills:
+  - "MySQL"
+  - "Diabetes 130-US Hospitals · 101,766 encounters"
+  - "UCI ML Repository · 1999–2008"
+featured: true
+---
+
+<p>Every hospital runs on the same constraint. If a hospital has 100 beds, it can help 100 people. The 101st patient waits, gets transferred, or goes somewhere else.</p>
+<p>Adding beds takes years and serious capital. The faster lever is time: if patients who no longer need a bed go home sooner, that bed goes to someone who does. That is why length of stay is one of the most watched numbers in hospital operations. It is a care problem and a financial problem at the same time.</p>
+<p>I wanted to see what that looks like in real data. So I took a well-known public healthcare dataset, the Diabetes 130-US Hospitals dataset from the UCI Machine Learning Repository, and loaded it into MySQL. It contains 101,766 hospital encounters from 130 US hospitals between 1999 and 2008.</p>
+<p>One detail matters before any query runs: <strong>each row is an encounter, not a patient</strong>. The same person can appear more than once if they were hospitalized more than once. Every number in this analysis counts hospital visits, not people.</p>
+<p>With the data loaded, I asked five questions about time in the hospital. Here's what I found.</p>
+<hr/>
+<h2>About the Dataset &amp; Tools</h2>
+<p>The Diabetes 130-US Hospitals dataset covers diabetes-related hospital encounters across 130 US facilities from 1999 to 2008. I loaded it into a MySQL database as two related tables: <strong>health</strong> (encounter-level clinical data: length of stay, procedures, medications) and <strong>demographics</strong> (patient attributes: race, gender, age), joined on the patient number.</p>
+<p>Tools: MySQL · Data: Diabetes 130-US Hospitals for Years 1999–2008 (101,766 encounters), UCI Machine Learning Repository</p>
+<hr/>
+<h2>Business Questions I Explored</h2>
+<p>Before writing a single query, I framed five questions:</p>
+<ol>
+<li>How long do patients actually stay, and do most stays end within a week?</li>
+<li>Do encounters with more lab procedures also run longer?</li>
+<li>Which medical specialties drive the most procedures per encounter?</li>
+<li>Does the average number of lab procedures differ by race?</li>
+<li>How do the three main diabetes medications rank within each age group?</li>
+</ol>
+<hr/>
+<h2>Q1 - How Long Do Patients Actually Stay?</h2>
+<p class="qsub">What does the distribution of hospital stays look like, and do most end within a week?</p>
+<p>SQL has no charts. But it can fake one. With ROUND to create buckets, COUNT to fill them, and RPAD to print one star per 100 encounters, you get a histogram made of text:</p>
+<pre><code><span class="cm">-- Q1: Length-of-stay distribution (1 star = 100 encounters)</span>
+
+<span class="kw">SELECT</span> <span class="kw">ROUND</span>(time_in_hospital, 1) <span class="kw">AS</span> stay_length_days,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count,
+<span class="kw">RPAD</span>(<span class="st">''</span>, <span class="kw">COUNT</span>(*)/100, <span class="st">'*'</span>) <span class="kw">AS</span> bar
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> stay_length_days
+<span class="kw">ORDER BY</span> stay_length_days;</code></pre>
+<div class="tbl-wrap"><table>
+<tr><th>stay_length_days</th><th>encounter_count</th><th>bar</th></tr>
+<tr><td>1</td><td>14,208</td><td class="bar">**********************************************************************************************************************************************</td></tr>
+<tr><td>2</td><td>17,224</td><td class="bar">****************************************************************************************************************************************************************************</td></tr>
+<tr><td>3</td><td class="hi">17,756</td><td class="bar">**********************************************************************************************************************************************************************************</td></tr>
+<tr><td>4</td><td>13,924</td><td class="bar">*******************************************************************************************************************************************</td></tr>
+<tr><td>5</td><td>9,966</td><td class="bar">****************************************************************************************************</td></tr>
+<tr><td>6</td><td>7,539</td><td class="bar">***************************************************************************</td></tr>
+<tr><td>7</td><td>5,859</td><td class="bar">***********************************************************</td></tr>
+<tr><td>8</td><td>4,391</td><td class="bar">********************************************</td></tr>
+<tr><td>9</td><td>3,002</td><td class="bar">******************************</td></tr>
+<tr><td>10</td><td>2,342</td><td class="bar">***********************</td></tr>
+<tr><td>11</td><td>1,855</td><td class="bar">*******************</td></tr>
+<tr><td>12</td><td>1,448</td><td class="bar">**************</td></tr>
+<tr><td>13</td><td>1,210</td><td class="bar">************</td></tr>
+<tr><td>14</td><td>1,042</td><td class="bar">**********</td></tr>
+</table></div>
+<p>The shape tells the story before any percentage does. Stays climb fast, peak at 3 days, then fall off in a long tail out to 14 days.</p>
+<p>The numbers behind the shape: <strong>80,617 encounters lasted less than 7 days. That is 79% of all hospital visits</strong> in the data, roughly four out of five.</p>
+<p>For a hospital, that is mostly good news. Beds turn over quickly for the typical patient. But the tail is where the operational attention goes. I summed total bed-days on each side of the 7-day line:</p>
+<pre><code><span class="cm">-- Q1b: Bed-days consumed on each side of the 7-day line</span>
+
+<span class="kw">SELECT</span>
+<span class="kw">CASE</span> <span class="kw">WHEN</span> time_in_hospital &lt; 7 <span class="kw">THEN</span> <span class="st">'under 7 days'</span> <span class="kw">ELSE</span> <span class="st">'7 days or more'</span> <span class="kw">END</span> <span class="kw">AS</span> stay_group,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count,
+<span class="kw">SUM</span>(time_in_hospital) <span class="kw">AS</span> total_bed_days,
+<span class="kw">ROUND</span>(<span class="kw">SUM</span>(time_in_hospital) * 100.0 / (<span class="kw">SELECT</span> <span class="kw">SUM</span>(time_in_hospital) <span class="kw">FROM</span> health), 1) <span class="kw">AS</span> pct_of_all_bed_days
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> stay_group;</code></pre>
+<div class="tbl-wrap"><table>
+<tr><th>stay_group</th><th>encounter_count</th><th>total_bed_days</th><th>pct_of_all_bed_days</th></tr>
+<tr><td>under 7 days</td><td>80,617</td><td>252,684</td><td>56.5</td></tr>
+<tr><td>7 days or more</td><td>21,149</td><td>194,678</td><td class="hi">43.5</td></tr>
+</table></div>
+<p>The 21% of encounters lasting 7 days or more consumed <strong>43.5% of all bed-days</strong> in the dataset. One in five visits used almost half the beds. Those long stays are exactly where a hospital wants to confirm the patient truly needs to be there.</p>
+<hr/>
+<h2>Q2 - Do More Lab Procedures Mean Longer Stays?</h2>
+<p class="qsub">Do encounters with more lab procedures also have a higher average time in the hospital?</p>
+<p>The raw number of lab procedures per encounter ranges widely, so comparing it directly to length of stay is noisy. Instead, I binned encounters into three buckets with a CASE WHEN: fewer than 25 lab procedures ("few"), 25 to 54 ("average"), and 55 or more ("many"). These cutoffs are analysis buckets, not clinical thresholds.</p>
+<pre><code><span class="cm">-- Q2: Lab procedure buckets vs. average time in hospital</span>
+
+<span class="kw">SELECT</span>
+<span class="kw">CASE</span> <span class="kw">WHEN</span> num_lab_procedures &gt;= 0 <span class="kw">AND</span> num_lab_procedures &lt; 25 <span class="kw">THEN</span> <span class="st">'few'</span>
+     <span class="kw">WHEN</span> num_lab_procedures &gt;= 25 <span class="kw">AND</span> num_lab_procedures &lt; 55 <span class="kw">THEN</span> <span class="st">'average'</span>
+     <span class="kw">ELSE</span> <span class="st">'many'</span>
+<span class="kw">END</span> <span class="kw">AS</span> procedure_frequency,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(time_in_hospital), 2) <span class="kw">AS</span> avg_time_in_hospital_days,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> procedure_frequency
+<span class="kw">ORDER BY</span> avg_time_in_hospital_days <span class="kw">DESC</span>;</code></pre>
+<div class="tbl-wrap"><table>
+<tr><th>procedure_frequency</th><th>avg_time_in_hospital_days</th><th>encounter_count</th></tr>
+<tr><td>many</td><td class="hi">5.66</td><td>29,779</td></tr>
+<tr><td>average</td><td>4.07</td><td>54,501</td></tr>
+<tr><td>few</td><td>3.28</td><td>17,486</td></tr>
+</table></div>
+<p>The pattern is consistent across all three groups. Encounters in the "many" bucket stayed <strong>2.4 days longer on average</strong> than the "few" bucket, a 73% longer stay.</p>
+<p>One caution before reading too much into this. <strong>This is a correlation, not a cause.</strong> Lab procedures probably don't make patients stay longer; sicker, more complex patients likely need more lab work and more time in a bed. But for operations, the pattern is still useful: lab procedure volume early in an encounter could serve as a rough signal for which patients are headed toward longer stays.</p>
+<hr/>
+<h2>Q3 - Which Specialties Drive the Most Procedures?</h2>
+<p class="qsub">Which medical specialties average the most procedures per encounter, at meaningful volume?</p>
+<p>Procedures are a major cost driver. If a hospital wants to review procedure use, staffing, or scheduling, it shouldn't start with a list of every specialty in the building. It should start where procedures concentrate.</p>
+<p>Two filters make that list trustworthy. First, only specialties averaging more than 2.5 procedures per encounter. Second, only specialties with more than 50 encounter records, because an average built on a handful of visits isn't an average worth acting on. Filtering on aggregated values is what HAVING does; WHERE can't touch them.</p>
+<pre><code><span class="cm">-- Q3: High-procedure specialties with real volume</span>
+
+<span class="kw">SELECT</span> medical_specialty,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(num_procedures), 1) <span class="kw">AS</span> avg_procedures_per_encounter,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health
+<span class="kw">GROUP BY</span> medical_specialty
+<span class="kw">HAVING</span> encounter_count &gt; 50 <span class="kw">AND</span> avg_procedures_per_encounter &gt; 2.5
+<span class="kw">ORDER BY</span> avg_procedures_per_encounter <span class="kw">DESC</span>;</code></pre>
+<div class="tbl-wrap"><table>
+<tr><th>medical_specialty</th><th>avg_procedures_per_encounter</th><th>encounter_count</th></tr>
+<tr><td>Surgery-Thoracic</td><td class="hi">3.5</td><td>109</td></tr>
+<tr><td>Surgery-Cardiovascular/Thoracic</td><td>3.2</td><td>652</td></tr>
+<tr><td>Radiologist</td><td>3.2</td><td>1,140</td></tr>
+<tr><td>Cardiology</td><td>2.7</td><td class="hi">5,352</td></tr>
+<tr><td>Surgery-Vascular</td><td>2.6</td><td>533</td></tr>
+</table></div>
+<p>Out of dozens of specialties in the data, only five clear both bars. No surprises in who made the list: surgical and cardiac specialties are procedure-heavy by nature. The value isn't the surprise, it's the shortlist. Instead of reviewing every department, the hospital now has five places to look first, and one of them, <strong>cardiology, combines a high average with real volume: over 5,000 encounters</strong>.</p>
+<hr/>
+<h2>Q4 - An Early Equity Check: Lab Procedures by Race</h2>
+<p class="qsub">Does the average number of lab procedures per encounter differ by race?</p>
+<p>Healthcare equity questions deserve serious analysis, and serious analysis starts with simple checks. Race lives in the demographics table and lab procedures live in the health table, so answering this requires a JOIN on the patient number:</p>
+<pre><code><span class="cm">-- Q4: Average lab procedures by race</span>
+
+<span class="kw">SELECT</span> d.race,
+<span class="kw">ROUND</span>(<span class="kw">AVG</span>(h.num_lab_procedures), 1) <span class="kw">AS</span> avg_lab_procedures,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_count
+<span class="kw">FROM</span> health <span class="kw">AS</span> h
+<span class="kw">JOIN</span> demographics <span class="kw">AS</span> d <span class="kw">ON</span> h.patient_nbr = d.patient_nbr
+<span class="kw">GROUP BY</span> d.race
+<span class="kw">ORDER BY</span> avg_lab_procedures <span class="kw">DESC</span>;</code></pre>
+<div class="tbl-wrap"><table>
+<tr><th>race</th><th>avg_lab_procedures</th><th>encounter_count</th></tr>
+<tr><td>AfricanAmerican</td><td>44.1</td><td>19,198</td></tr>
+<tr><td>?</td><td>44.0</td><td>2,280</td></tr>
+<tr><td>Other</td><td>43.7</td><td>1,524</td></tr>
+<tr><td>Caucasian</td><td>42.8</td><td>76,107</td></tr>
+<tr><td>Hispanic</td><td>42.7</td><td>2,019</td></tr>
+<tr><td>Asian</td><td>40.9</td><td>638</td></tr>
+</table></div>
+<p>The averages land in a narrow band: from 40.9 (Asian) to 44.1 (AfricanAmerican), a spread of about 3 lab procedures against averages in the low 40s. On this first look, there are no glaring gaps.</p>
+<p>Three honest caveats about what this query can and cannot say:</p>
+<ul>
+<li><strong>Group sizes are very unequal.</strong> Caucasian encounters number 76,107 while Asian encounters number 638, so the smaller groups carry more noise.</li>
+<li><strong>2,280 encounters have race recorded as '?'.</strong> Missing demographic data is itself worth flagging in any equity review.</li>
+<li><strong>A similar average doesn't rule out differences.</strong> Groups could differ in age, diagnosis mix, or severity in ways a single average hides.</li>
+</ul>
+<p>So the takeaway isn't "treatment is equal." It's narrower and more defensible: this simple screen found no large raw differences in lab procedure counts by race. A real equity analysis would control for clinical factors before drawing conclusions, and that's beyond a single GROUP BY.</p>
+<hr/>
+<h2>Q5 - Ranking Diabetes Medications by Age Group</h2>
+<p class="qsub">How do insulin, metformin, and glipizide rank by usage within each age group?</p>
+<p>This dataset stores each medication in its own column: one for insulin, one for metformin, one for glipizide. That wide format makes ranking awkward, because the thing I want to rank, the medication name, is trapped in column headers instead of living in a column of its own.</p>
+<p>The fix is to reshape the data from wide to long: stack the three medication columns into one, using UNION ALL. Then wrap that reshaped table in a CTE, join it to demographics to get age, and rank within each age group using a window function.</p>
+<pre><code><span class="cm">-- Q5: Reshape wide to long, then rank medications within each age group</span>
+
+<span class="kw">WITH</span> long_health_cte <span class="kw">AS</span> (
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'metformin'</span> <span class="kw">AS</span> medication, metformin <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'glipizide'</span> <span class="kw">AS</span> medication, glipizide <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+<span class="kw">UNION ALL</span>
+<span class="kw">SELECT</span> patient_nbr, <span class="st">'insulin'</span> <span class="kw">AS</span> medication, insulin <span class="kw">AS</span> med_usage <span class="kw">FROM</span> health
+)
+<span class="kw">SELECT</span> demographics.age,
+long_health_cte.medication,
+<span class="kw">COUNT</span>(*) <span class="kw">AS</span> encounter_use_count,
+<span class="kw">RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> demographics.age <span class="kw">ORDER BY</span> <span class="kw">COUNT</span>(*) <span class="kw">DESC</span>) <span class="kw">AS</span> medication_rank
+<span class="kw">FROM</span> long_health_cte
+<span class="kw">JOIN</span> demographics <span class="kw">ON</span> long_health_cte.patient_nbr = demographics.patient_nbr
+<span class="kw">WHERE</span> med_usage <span class="kw">NOT IN</span> (<span class="st">'No'</span>)
+<span class="kw">GROUP BY</span> medication, age
+<span class="kw">ORDER BY</span> age, medication_rank;</code></pre>
+<p>Two details matter here. <strong>UNION ALL, not UNION</strong>, because we're counting encounter records and don't want duplicates silently removed before the count. And <strong>PARTITION BY age</strong>, which restarts the ranking inside each age bracket instead of ranking across the whole table.</p>
+<div class="tbl-wrap"><table>
+<tr><th>age</th><th>medication</th><th>encounter_use_count</th><th>medication_rank</th></tr>
+<tr><td>[0-10)</td><td>insulin</td><td>132</td><td>1</td></tr>
+<tr><td>[10-20)</td><td>insulin</td><td>598</td><td>1</td></tr>
+<tr><td>[10-20)</td><td>metformin</td><td>46</td><td>2</td></tr>
+<tr><td>[10-20)</td><td>glipizide</td><td>3</td><td>3</td></tr>
+<tr><td>[20-30)</td><td>insulin</td><td>1,208</td><td>1</td></tr>
+<tr><td>[20-30)</td><td>metformin</td><td>170</td><td>2</td></tr>
+<tr><td>[20-30)</td><td>glipizide</td><td>58</td><td>3</td></tr>
+<tr><td>[30-40)</td><td>insulin</td><td>2,302</td><td>1</td></tr>
+<tr><td>[30-40)</td><td>metformin</td><td>765</td><td>2</td></tr>
+<tr><td>[30-40)</td><td>glipizide</td><td>293</td><td>3</td></tr>
+<tr><td>[40-50)</td><td>insulin</td><td>5,569</td><td>1</td></tr>
+<tr><td>[40-50)</td><td>metformin</td><td>2,303</td><td>2</td></tr>
+<tr><td>[40-50)</td><td>glipizide</td><td>1,021</td><td>3</td></tr>
+<tr><td>[50-60)</td><td>insulin</td><td>9,496</td><td>1</td></tr>
+<tr><td>[50-60)</td><td>metformin</td><td>4,181</td><td>2</td></tr>
+<tr><td>[50-60)</td><td>glipizide</td><td>2,076</td><td>3</td></tr>
+<tr><td>[60-70)</td><td>insulin</td><td>12,113</td><td>1</td></tr>
+<tr><td>[60-70)</td><td>metformin</td><td>5,051</td><td>2</td></tr>
+<tr><td>[60-70)</td><td>glipizide</td><td>2,905</td><td>3</td></tr>
+<tr><td>[70-80)</td><td>insulin</td><td>13,185</td><td>1</td></tr>
+<tr><td>[70-80)</td><td>metformin</td><td>4,950</td><td>2</td></tr>
+<tr><td>[70-80)</td><td>glipizide</td><td>3,593</td><td>3</td></tr>
+<tr><td>[80-90)</td><td>insulin</td><td>8,445</td><td>1</td></tr>
+<tr><td>[80-90)</td><td class="hi">glipizide</td><td>2,364</td><td class="hi">2</td></tr>
+<tr><td>[80-90)</td><td>metformin</td><td>2,296</td><td>3</td></tr>
+<tr><td>[90-100)</td><td>insulin</td><td>1,335</td><td>1</td></tr>
+<tr><td>[90-100)</td><td class="hi">glipizide</td><td>373</td><td class="hi">2</td></tr>
+<tr><td>[90-100)</td><td>metformin</td><td>226</td><td>3</td></tr>
+</table></div>
+<p>Insulin ranks first in every single age group, usually by a wide margin. No surprise in a dataset of diabetes-related hospital encounters: inpatient settings lean heavily on insulin.</p>
+<p>The interesting movement is underneath. <strong>Metformin holds second place through every age bracket from the teens to the seventies. Then, at ages 80–89, glipizide overtakes it</strong>, and the flip holds again for 90–99. In the two oldest brackets, the number-two diabetes medication changes.</p>
+<p>I'll stay in my lane on the why: this is usage data, not clinical reasoning, and prescribing decisions for elderly patients involve factors this table doesn't capture. But finding the flip is exactly what this query structure is for. A wide table hides it; a long, ranked table surfaces it in one read.</p>
+<hr/>
+<h2>Key Findings</h2>
+<ul>
+<li><strong>79%</strong> of hospital encounters end in under 7 days, peaking at a 3-day stay</li>
+<li>The <strong>21%</strong> of stays lasting 7+ days consumed <strong>43.5%</strong> of all bed-days</li>
+<li>Encounters with 55+ lab procedures averaged <strong>5.66 days</strong> in the hospital vs. 3.28 for low-procedure encounters, a 73% longer stay</li>
+<li>Only <strong>5 specialties</strong> average more than 2.5 procedures per encounter at meaningful volume, led by thoracic surgery and anchored by cardiology's 5,352 encounters</li>
+<li>Average lab procedures by race sit in a narrow band (<strong>40.9 to 44.1</strong>), with no large raw gaps on a first-pass screen</li>
+<li>Insulin ranks <strong>#1 in every age group</strong>; at ages <strong>80+</strong>, glipizide overtakes metformin as the #2 medication</li>
+</ul>
+<hr/>
+<h2>Closing Thoughts</h2>
+<p>Start to finish, this analysis moved from a simple distribution to a windowed ranking, and each query narrowed the picture. None of these findings required anything exotic: GROUP BY, HAVING, a JOIN, a CASE WHEN, a CTE, and one window function. The skill isn't the syntax; it's knowing which question each tool answers, and what the result doesn't prove.</p>
+<p>This dataset is best known for one column I barely touched: <strong>readmitted</strong>. Every encounter records whether the patient came back within 30 days, after 30 days, or not at all. Readmissions are the other side of the bed problem: discharging patients quickly frees beds, but discharging them too quickly sends them back. Whether short stays predict readmission is the natural next question, and it's where this analysis goes next.</p>
