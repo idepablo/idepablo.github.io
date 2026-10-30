@@ -1,0 +1,36 @@
+---
+title: "Phase 4: Analysis layer"
+dateLabel: "October 2026"
+date: 2026-10-01
+order: 1
+project: azimuth
+summary: "Configuration vs family, Wilson intervals, two pre-launch failures handled differently, and a Bayesian model that was tested and not used."
+---
+
+<p>Phase 4 built the analysis tables the app will read: cadence, market share, and reliability by flight number. It also included one data correction and three statistical models. Everything is in SQL, tested, and deployed through CI.</p>
+<h4>Configuration vs family</h4>
+<p>The first decision was what counts as one vehicle. The source tracks Falcon 9 as five configurations (v1.0, v1.1, Full Thrust, Block 4 and Block 5), so I had to choose between treating each configuration as its own vehicle or grouping them into a family.</p>
+<p>Families in the source turned out to be a simple hierarchy: each configuration belongs to one specific family, which can sit under a broader one. I map each configuration to its most specific family. A small reviewed seed fixes three Soyuz configurations the source leaves out of the Soyuz family, and 53 configurations with no family fall back to their own name.</p>
+<p>The choice matters. Falcon 9 Block 5 has an almost perfect record, but it came after 57 flights of earlier versions, including their failures. Among vehicles with 20 or more orbital flights, the median number of flights to reach proven reliability is 16 by configuration and 36.5 by family. I built both views. Family is the default for comparing a new vehicle, because it includes the learning that earlier versions went through.</p>
+<h4>Reliability with confidence intervals</h4>
+<p>A vehicle with 3 successes in 3 flights has a 100% success rate, but that is not much evidence. Every reliability number in AZIMUTH comes with a 95% Wilson interval, and I call a vehicle proven when the lower bound reaches 80% or 90%. With a perfect record, it takes about 35 flights to get the lower bound to 90%.</p>
+<p>Partial failures do not count as successes. They are tracked separately so the app can show them. One test failed because floating point put a perfect record's upper bound at 1.0000000000000002, so the interval is now clamped between 0 and 1.</p>
+<h4>Failures before launch</h4>
+<p>The source records two pre-launch events as launch failures. I handled them differently.</p>
+<p>Apollo 1 (1967) was a fire in the command module during a ground test. The Saturn IB rocket did not cause it and never launched, so I excluded it. The record stays in the fact table with its own label so it can still be traced. The Saturn IB's orbital record is now 7 for 7.</p>
+<p>Amos-6 (2016) was a Falcon 9 that exploded during a test before launch and destroyed the customer's satellite. Most launch logs do not count it, but it was a failure of the rocket itself, so I kept it. It lowers Falcon 9's family reliability from 99.6% to 99.4%, and the methodology page will mention it.</p>
+<h4>Success rate by flight number</h4>
+<p>The first model is the success rate of a vehicle's 1st, 2nd, 3rd flight and so on, across all vehicles that reached that point. By family, first flights succeed 57.8% of the time. After flight 100 it is 97.0%. By configuration, first flights succeed 78.5% of the time, because many new configurations are upgrades of vehicles that already flew. The results are also split by the era of the vehicle's first flight, so recent vehicles are compared with other recent vehicles.</p>
+<h4>Survival analysis</h4>
+<p>The second model estimates the share of vehicles that get through their first n flights without any failure. A simple average does not work here, because a vehicle with three clean flights so far has not proven it never fails. It just has not flown more yet. I used a Kaplan-Meier estimator, which handles those vehicles correctly. I checked the SQL results against the Python lifelines library on all eight curves and they match to within 0.00001.</p>
+<p>Only 37.5% of vehicles get through their first five flights without a failure, and 19.4% through their first ten. More than half have had a failure by flight 3.</p>
+<h4>Benchmark per vehicle</h4>
+<p>The third model compares each vehicle with a typical vehicle from the same era over the same flights. It calculates how many successes a typical vehicle would have had, and the difference from the actual record shows whether the vehicle is ahead or behind.</p>
+<p>Each vehicle's own flights are left out of its benchmark. Otherwise Soyuz, with almost 1,000 flights, would mostly be compared with itself. Atlas V is 4.5 points ahead, Falcon 9 is about even, and Proton is 5.5 points behind.</p>
+<p>There is one limitation. Vehicles that fail often tend to get cancelled, so the later flight numbers only include vehicles that survived. That means long-running vehicles usually score above the benchmark. The comparison is most useful between vehicles with a similar number of flights.</p>
+<h4>Bayesian model (not used)</h4>
+<p>I also tested an empirical Bayes model, which estimates one shared starting point from all vehicles and adjusts each vehicle's record toward it. Vehicles are too different from each other for that shared starting point to add much. It was worth between 1 and 9 flights of evidence depending on the cutoff, so it barely changed any result. Flight number explains much more, which is what the first model already covers. I documented this in the scope document.</p>
+<h4>CI deploys</h4>
+<p>CI used to build and test in a separate schema and stop there. Now a second job deploys to the real silver and gold schemas, but only after all tests pass.</p>
+<h4>Next</h4>
+<p>Phase 5 is data operations: incremental fetches, a scheduled refresh, and a freshness check that fails if the data gets old. After that comes the app.</p>

@@ -1,0 +1,53 @@
+---
+title: "Phase 1: Bronze ingestion"
+dateLabel: "August 2026"
+date: 2026-08-08
+order: 4
+project: azimuth
+summary: "All 7,598 historical launches out of the Launch Library 2 API and into a Delta table, with \"done\" defined as running the same load twice and getting the same result."
+---
+
+<p>Phase 1 was getting all 7,598 historical launches out of the Launch Library 2 API and into a Delta table. The test for "done" was not that the script ran. It was running the same load twice and having nothing change.</p>
+<h4>Splitting fetch from load</h4>
+<p>The API allows about 15 calls an hour, so pulling the full history takes around five hours. I split ingestion into two jobs instead of one.</p>
+<p>Job one calls the API and saves each response to disk exactly as it arrived. Job two reads those files and merges them into the warehouse.</p>
+<p>Reasons:</p>
+<ul>
+<li>If load logic has a bug and both jobs are one script, fixing it costs another five hours of fetching. Split apart, I re-run the load against files already on disk in seconds.</li>
+<li>Databricks Free Edition cuts off compute for the day if you exceed quota. Running a five hour job on it is a bad bet.</li>
+<li>The raw files are a record of what the API returned on a given day, so if a number looks wrong later I can check whether the source was wrong or my code was.</li>
+</ul>
+<h4>Building against the dev mirror</h4>
+<p>The Space Devs run a development mirror without the rate limit. I built the whole pipeline against that first.</p>
+<p>It has 354 records where production has 7,589, so it works for testing code but not for anything quantitative. Every null rate I checked in Phase 0 had to be rechecked against production.</p>
+<h4>Checkpointing</h4>
+<p>76 pages over five hours means the job has to survive interruption. It writes a state file after each page: the next URL, the page number, and the ingest date of the original run.</p>
+<p>The ingest date is in there so that a run starting on the 11th and resuming on the 12th still stamps every file with the 11th. They belong to one run.</p>
+<p>State is saved after the file is written, not before. That way a crash between those two lines costs me a repeated page rather than a skipped one.</p>
+<h4>The config mistake</h4>
+<p><strong>PAGE_SIZE</strong> and <strong>SLEEP_SECONDS</strong> sit next to each other at the top of the file. Switching to the production API, I meant to set the sleep to 240 seconds. I set the page size to 240 instead.</p>
+<p>Nothing errored. The API capped the page size silently and kept serving pages with no delay, because the sleep was still zero. Ten pages went through in about twenty seconds before I noticed and killed it. Then I got a 429.</p>
+<p>The fix was retry logic: catch a 429, wait ten minutes, retry the same page, give up after five attempts. I also want to add a startup check that validates the page size against the documented maximum, since the API will accept a value it has no intention of honouring.</p>
+<h4>Both safety nets fired during the real run</h4>
+<p>At page 10 I closed the laptop lid by accident and the process died. Restarting picked up at page 11 from the state file.</p>
+<p>At page 40 the API rate limited me again, unattended. The retry logic waited ten minutes and carried on. I found out afterwards by scrolling back through the log.</p>
+<h4>.venv in git history</h4>
+<p>Running <strong>git ls-files</strong> before pushing turned up several hundred megabytes of virtual environment tracked in the repo.</p>
+<p>The folder had a <strong>.git</strong> in it from an earlier experiment and <strong>.venv</strong> had been committed then. Adding it to <strong>.gitignore</strong> afterwards does nothing, because <strong>.gitignore</strong> only stops git tracking files it is not already tracking. Nothing had been pushed, so I deleted the history and started clean.</p>
+<h4>What landed</h4>
+<p>76 pages, 7,598 records, all with unique launch ids.</p>
+<p>The loader merges on launch id: update if the incoming record is newer, insert if it is new. Every column is stored as a string on purpose. If I cast dates and numbers in bronze, one malformed value fails the load and I lose the row. I would rather cast in silver, where a bad value shows up as a failed test.</p>
+<p>There is a load audit table: one row per run with run id, timestamp, source file, rows in source, rows inserted, rows updated, duration, and status. It writes a row whether the merge succeeds or fails, so failed runs are still on the record.</p>
+<p>That is how I can show the pipeline is idempotent rather than assert it:</p>
+<div class="mini-stats">
+<div class="mini-stat"><b>7,598</b><span>run 1 · inserted</span></div>
+<div class="mini-stat"><b>0</b><span>run 2 · inserted</span></div>
+<div class="mini-stat"><b>0</b><span>run 2 · updated</span></div>
+<div class="mini-stat"><b>7,598</b><span>rows either way</span></div>
+</div>
+<h4>What I have not proven</h4>
+<p>Matching row counts rule out duplicates. They do not rule out gaps.</p>
+<p>The API paginates by offset. If records are inserted while a five hour run is in progress, offsets shift and a record can be pushed past a boundary already read. It would get skipped and the row count would not show it.</p>
+<p>The count came back as 7,598 when the API reported 7,589 earlier the same day. My guess is launches that flew and were confirmed during the run, but I have not verified that. A completeness comparison against the source count is going on the data quality list.</p>
+<h4>Next</h4>
+<p>Phase 2 is the silver layer in dbt. First task is rerunning the Phase 0 null checks against all 7,598 records rather than the most recent hundred. Launches from the 1960s will be sparser than launches from last month, and that may change a scope decision I have already written down.</p>

@@ -1,0 +1,45 @@
+---
+title: "Phase 2: The audit that overturned my own scope document"
+dateLabel: "August 2026"
+date: 2026-08-15
+order: 3
+project: azimuth
+summary: "dbt, the first silver model, tests and CI, plus a re-run of the Phase 0 data checks that overturned part of the scope document."
+---
+
+<p>Phase 2 was supposed to be plumbing: set up dbt, build the first silver model, add tests, wire up CI. All of that happened. But the first task of the phase was re-running the Phase 0 data checks against the full history instead of the 100 most recent launches, and what came back forced me to rewrite a scoping decision I had already committed to the repo.</p>
+<h4>The numbers that did it</h4>
+<p>Three SQL queries against bronze:</p>
+<ul>
+<li>517 of 7,598 launches have no mission record at all. 530 have no orbit. About 7% of the dataset. My scope document said zero and zero, because on the 100 most recent launches it was zero and zero.</li>
+<li>The missing orbits are not concentrated in early history, which is what I expected. The 1950s are complete. The 2010s are missing 28%, the worst decade in the entire dataset and three times worse than anything around it.</li>
+<li>Broken down by provider, the pattern is obvious: 55% of CASC's 2010s launches have no orbit. ILS 61%. Kosmotras 100%. Sea Launch 78%. Arianespace: 3%.</li>
+</ul>
+<p>The gap tracks how transparent the launching organization is. Chinese, Russian, and classified military missions do not publish orbital parameters. Even ULA sits at 15%, which fits: NRO payloads.</p>
+<p>The scope document drew the orbital/suborbital boundary on the mission's orbit field. That filter would have silently deleted half of China's launch activity in the 2010s, which is exactly the market share the platform exists to measure. The field reflects what organizations publish, not what they flew.</p>
+<h4>The fix, and the fix for the fix</h4>
+<p>The replacement rule: classify by vehicle. A Long March with no published orbit is still an orbital launch, because Long March is an orbital-class vehicle.</p>
+<p>I tried to derive the classification automatically from the configurations endpoint and the data would not support it. <strong>leo_capacity = 0</strong> covers both New Shepard (genuinely suborbital) and GSLV Mk II (obviously orbital, zero apparently meaning "nobody typed the LEO number for a GTO-focused vehicle"). The apogee field records Ariane 5 ECA at 40,000 km because someone entered its GTO apogee. Any rule built on those fields inherits their inconsistency silently.</p>
+<p>So the classification is a curated seed: a CSV in the repo, one row per launcher configuration that appears in the launch data, 485 rows. I generated the initial classification with AI assistance, flagged 25 rows as uncertain, and verified every flagged row against the actual launch records in bronze.</p>
+<p>Six of the 25 changed on review. Two whole categories appeared that neither I nor the model anticipated:</p>
+<ul>
+<li>The BOR-4 flights on K65M-RB were orbital spaceplane tests, not suborbital probes.</li>
+<li>Blue Scout II's single flight was Mercury-Scout 1, an orbital attempt.</li>
+<li>Two Scout variants went the other way: their flights were reentry tests the API itself marks Suborbital.</li>
+<li>Five records are launches from the surface of the Moon. Luna 16, 20, 24 and Chang'e 5, 6: sample return missions whose ascent stages lifting off from the lunar surface are tracked as launches, dated at lunar liftoff. The dataset contains a launch market I was not modeling. They got their own class and an exclusion.</li>
+<li>One record called "Mir (3 stage)" turned out to be South Korea's military solid-fuel launcher, now named Mir, no relation to the space station.</li>
+</ul>
+<p>The classification is honest to describe as AI-assisted and human-reviewed. The review is what makes the second half true: six errors in 25 flags would all be in the warehouse now if I had skipped it.</p>
+<h4>One config, both regimes</h4>
+<p>The seed alone is not enough, because a handful of configurations genuinely flew both orbital and suborbital missions. Scout X-1 flew five orbital attempts and one suborbital probe. Electron may carry HASTE's suborbital flights. The earliest Mercury-Atlas flights were suborbital.</p>
+<p>So the silver rule is two steps: the vehicle class from the seed is the default, and the per-launch orbit field overrides it where it explicitly says Suborbital. When the first version of the model ran, the override moved zero launches, which was wrong. The reason was a bug worth writing down.</p>
+<h4>The 15.0 bug</h4>
+<p>Bronze stores every column as a string, and my flatten goes through pandas. The orbit_id column has nulls, and pandas silently promotes an integer column with nulls to float. So orbit id 15 was stringified as "15.0", and the model's comparison against "15" never matched. The status_id column, which has no nulls, stayed integer and stringified cleanly. Same pipeline, different null profile, different format.</p>
+<p>The fix lives in the staging model, which is the layer whose job is absorbing source formatting: cast the string to double, the double to int, the int back to string. After the fix, the override moved 48 launches: suborbital flights on orbital-class vehicles that would otherwise have counted toward orbital reliability.</p>
+<h4>The rest of the phase</h4>
+<p>dbt is set up against Databricks, the seed loads as a dbt seed, and the staging model casts types, derives the outcome flags from Phase 0's censoring split, and joins the classification.</p>
+<p>Six tests now run on every build: launch ids unique and never null, the scope class always one of five allowed values, every config id present in the seed. They passed first try, because they encode checks I had been running by eye all week. The point is that they now run without me.</p>
+<p>CI runs the same build on GitHub Actions on every push, into an isolated schema, with credentials in repo secrets. It went green on the first real run.</p>
+<p>Two smaller catches along the way, both variations on lessons I apparently need to learn twice. The first seed load pulled a stale pre-review copy of the CSV. The load reported success, and only the verification query showed three classes instead of four. And the staging models turned out to have never been committed at all: the <strong>staging/</strong> line in my Phase 1 gitignore, written for the parquet folder, matches a folder of that name at any depth, so it was silently swallowing <strong>models/staging/</strong> too. One anchoring slash fixed it. <strong>git check-ignore -v</strong> is the diagnostic, and <strong>git ls-files</strong> is the difference between a commit message that claims something and a repo that contains it.</p>
+<h4>Next</h4>
+<p>Phase 3 is the gold layer: the star schema, for real. The first open question is already interesting: the "Falcon 9" display name covers five separate configurations in the source, so the maturation analysis has to decide whether a vehicle is a configuration or a family, and the answer changes what the reliability curves mean.</p>

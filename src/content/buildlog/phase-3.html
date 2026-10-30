@@ -1,0 +1,44 @@
+---
+title: "Phase 3: The gold layer, and finding the Moon twice"
+dateLabel: "August 2026"
+date: 2026-08-22
+order: 2
+project: azimuth
+summary: "The star schema, an orbit dimension with a \"Not published\" member, and a recurring bug that earned a name."
+---
+
+<p>Phase 3 was the star schema: the dimensional model that every dashboard view will sit on. Most of the hard decisions were already made in Phases 0 through 2, so this phase was about building what those decisions implied, and finding out where they were still wrong.</p>
+<h4>What got built</h4>
+<p>Five dimensions and a fact table, all in a gold schema, all under tests, all rebuilt by CI on every push:</p>
+<ul>
+<li><strong>dim_date</strong>, generated from SQL, 1957 through 2030, with the end date hardcoded and a note saying so.</li>
+<li><strong>dim_provider</strong>, 99 providers, enriched with country, sector, and founding year from the agencies endpoint.</li>
+<li><strong>dim_vehicle</strong>, 485 configurations, carrying the classification seed, plus full names and variants from the configurations endpoint.</li>
+<li><strong>dim_orbit</strong>, with the source's 25+ orbit values grouped into analytic classes.</li>
+<li><strong>dim_launch_site</strong>, 59 sites with countries, coordinates, and celestial bodies.</li>
+<li><strong>fct_launches</strong>, one row per launch attempt, five dimension keys, the outcome flags, and <strong>net_precision</strong> riding along so time-series views can exclude coarse historical dates on purpose instead of by accident.</li>
+</ul>
+<p>The referential integrity is tested: every fact row must point at an existing row in every dimension, and the build fails if one does not. That test on the date key is also the answer to a question I asked myself early: what happens to a launch after 2030? It goes red instead of silently vanishing from joins.</p>
+<h4>The unknown member</h4>
+<p>The interesting design problem was the orbit dimension, because 530 launches, about 7%, have no orbit at all. Phase 2 established why: the gap tracks provider transparency, and it concentrates in Chinese, Russian, and classified missions.</p>
+<p>A dimension where 7% of the keys are missing would silently drop those launches from every orbit view through the join. The standard fix is called an unknown member: the dimension gets an explicit row for "Not published," and the fact table maps null orbits to it. The result is that the gap shows up as a visible category in every orbit breakdown by default. The transparency finding is now a row in a table.</p>
+<p>For contrast: zero launches are missing a launch site. Where a launch happens is never a secret. Where it goes often is.</p>
+<h4>Finding the Moon twice</h4>
+<p>The scope document said the dataset contained five launches from the lunar surface: the Luna and Chang'e sample-return ascent stages, found during the seed review.</p>
+<p>Phase 3 added the pad's location and celestial body to bronze. This required no new API calls: the raw JSON archive from Phase 1 already contained everything, so it was a re-flatten of files on disk plus a rebuild of the bronze table. The immutable raw archive is a design decision that has now paid for itself twice.</p>
+<p>The new column said eleven Moon launches, not five.</p>
+<p>The other six are the Apollo Lunar Module ascents. The seed had classified Apollo LM as <strong>not_a_launch_vehicle</strong>, reasoning that it is a spacecraft. That was imprecise: the LM ascent stage is a launch vehicle, it just launches from the Moon. July 21, 1969, in this dataset, is Eagle lifting off from Tranquility Base.</p>
+<p>After reclassifying it, the two derivations agree exactly: 11 launches where <strong>vehicle_class = 'non_earth_launch'</strong>, 11 launches where the pad's celestial body is the Moon. Two independent paths to the same boundary, one from human judgment in the seed, one from the source's own geography, and each can now serve as a test of the other.</p>
+<h4>The float artifact's third bite</h4>
+<p>A recurring bug earned a name this phase. In Phase 2, orbit id 15 arrived in bronze as "15.0" because pandas promotes integer columns containing nulls to float before my flatten stringifies them. I fixed it in staging and thought I understood it.</p>
+<p>Building the reference ingestion, I claimed converting the DataFrame to pandas string dtype would prevent the artifact at the source. Wrong, and the provider dimension failed on a founding year of "2020.0" to prove it. The promotion happens when the DataFrame is constructed, before any conversion runs. Nullable integers become floats at birth unless you reach for pandas' nullable integer dtype explicitly.</p>
+<p>So the artifact is now a documented pattern in the scope document rather than a bug I fix wherever it appears: any nullable numeric field flattened through pandas gets checked for it, and the normalization lives in staging.</p>
+<h4>Reference data, and admitting a shortcut</h4>
+<p>The provider and vehicle enrichment needed two more endpoints: agencies and launcher configurations. Production is rate limited to about 15 calls an hour, and the two endpoints together are about 18 pages.</p>
+<p>I fetched them from the development mirror instead, which has no rate limit, and then verified the shortcut: every one of the 99 provider ids and 485 configuration ids appearing in launch data was checked against the mirror snapshots. Zero missing on both counts. The scope document records the shortcut and its justification together, and if a future check finds a gap, the missing records get fetched from production.</p>
+<p>One simplification came along with the agencies data: an agency's country is a list in the source, because agencies can be multinational. The flatten keeps the first country plus a count, and any agency where the count is greater than one is carrying a known simplification.</p>
+<h4>Where the display names ended</h4>
+<p>Phase 2 left an open item: the name "Falcon 9" covers five separate configurations in the source, and "Delta II" covers twenty-five. The configurations endpoint resolved it without any string surgery, because the source already maintains disambiguated full names. The vehicle dimension now shows Falcon 9 Block 5 with 619 launches, Full Thrust with 25, v1.1 with 15, Block 4 with 12, and v1.0 with 5.</p>
+<p>The true duplicates, Soyuz U and Soyuz-U as two records for one vehicle, are still two rows. Collapsing them needs a canonical id mapping, and I am deferring that until the maturation analysis actually needs it, because that analysis also has to answer a harder version of the same question: whether a vehicle is a configuration or a family. Five Falcon 9 curves and one Falcon 9 curve tell different stories, and choosing is Phase 4's first decision.</p>
+<h4>Next</h4>
+<p>Phase 4 is the analysis layer: cadence, market share, and the maturation dataset with reliability by flight number in a vehicle's life. The plumbing is done. What comes next is the part the plumbing was for.</p>

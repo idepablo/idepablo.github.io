@@ -1,0 +1,31 @@
+---
+title: "Phase 0: Scoping what the data can honestly support"
+dateLabel: "August 2026"
+date: 2026-08-01
+order: 5
+project: azimuth
+summary: "Reading the Launch Library 2 API closely, sketching the model, and deciding what the data can and cannot support before writing a single transformation."
+---
+
+<p>Before writing a single transformation, I wanted to know what this dataset can and cannot honestly support. Phase 0 was entirely about scope: reading the Launch Library 2 API closely, sketching the model, and making the judgment calls in writing so I am not tempted to hand-wave them later.</p>
+<p>The grain is one row per launch, keyed on the launch UUID. Everything else hangs off that. Five nested objects came out of the API cleanly: provider, rocket configuration, mission, pad, and status. Which of these become conformed dimensions, and which end up as fact attributes, is a Phase 3 decision. Status in particular is more likely a degenerate attribute than a dimension. Two relationships are genuinely many-to-many (program and configuration families), so I parked them for a later version rather than forcing them into v1.</p>
+<p>A few decisions were less obvious and worth writing down:</p>
+<ul>
+<li><strong>Vehicle identity.</strong> A "rocket" in the API is an instance; the thing I actually want to compare is the configuration. So vehicle identity is <strong>rocket.configuration.id</strong>, and configurations get their own load.</li>
+<li><strong>Outcomes and censoring.</strong> There are nine statuses. They collapse into four real outcomes and five schedule states. That split is the censoring boundary for any later reliability or maturation analysis, so I keep it explicit rather than flattening everything to success or failure.</li>
+<li><strong>Partial failures.</strong> These are ambiguous by design. My working call is to keep partial failure as its own outcome rather than force it into success or failure, and to document the reasoning so the choice is defensible.</li>
+<li><strong>Dates.</strong> <strong>net</strong> is the launch date, and its precision varies for older records, so I anchor on net rather than a window start.</li>
+<li><strong>Orbital scope.</strong> I scope to orbital launches using <strong>mission.orbit</strong>, and I treat Unknown as its own third category instead of silently assuming orbital. Suborbital is cleanly excluded.</li>
+</ul>
+<p>Then I ran a data-integrity check on the most recent 100 launches to see how bad the missing-data problem is:</p>
+<div class="mini-stats">
+<div class="mini-stat"><b>0</b><span>missing mission</span></div>
+<div class="mini-stat"><b>0</b><span>missing orbit</span></div>
+<div class="mini-stat"><b>91</b><span>orbital</span></div>
+<div class="mini-stat"><b>5</b><span>Unknown</span></div>
+<div class="mini-stat"><b>4</b><span>suborbital</span></div>
+</div>
+<p>Every record had a mission and an orbit, so mission.orbit is a clean filter with no missing-data judgment call on this sample. The orbit split: 60 Low Earth, 11 Sun-Synchronous, 10 Polar, 7 Geostationary Transfer, 2 Elliptical, and 1 Medium Earth, plus 4 suborbital and 5 Unknown.</p>
+<p>One honest caveat I am carrying forward: this is the most recent 100 launches, which is the best case. Historical records from the 1960s and 70s are far more likely to have gaps, so I will re-run this same check against the full backfill in Phase 1 rather than assuming it holds.</p>
+<p>The deliverable for this phase is a <a href="https://github.com/idepablo/azimuth-launch-tool/blob/main/docs/scope.md" rel="noopener" target="_blank">written scope document in the repo</a>: the grain, which statuses count as success, how partial failures are handled and why, how the orbital scope is drawn, and what I am deliberately not modeling in v1. If someone asks me one question about this project, it will probably be answered there.</p>
+<p>Next: Phase 1, the full production backfill from Launch Library 2, landing into bronze.</p>

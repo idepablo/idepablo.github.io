@@ -1,0 +1,53 @@
+---
+title: "Phases 5 to 7: Daily refresh, the app, and Ask AZIMUTH"
+dateLabel: "October 26, 2026"
+date: 2026-10-26
+order: 0
+project: azimuth
+summary: "A scheduled refresh with completeness and freshness checks, why the app reads a snapshot, the simulator backtest, and the 39-question test."
+---
+
+<p>AZIMUTH is live at <a href="https://azimuth-launch.streamlit.app/" rel="noopener" target="_blank">azimuth-launch.streamlit.app</a>. This post covers the three phases that got it there: keeping the data current without running anything by hand, building the app on top of it, and letting people ask it questions directly.</p>
+<h4>Daily refresh</h4>
+<p>The Phase 1 backfill loaded the full launch history once. A scheduled GitHub Actions job now keeps it current. Each day it asks the API only for launches whose record changed since the newest one already loaded, with a one-day overlap so nothing edited mid-run is missed. Results are merged page by page, each with an audit row, so an interrupted run keeps what it loaded and the next one picks up from there.</p>
+<p>After loading, the refresh runs the same path as a code change: build and test in an isolated schema, then deploy to the production schemas only if every test passes.</p>
+<p>Three checks run every time:</p>
+<ul>
+<li><strong>Completeness.</strong> The number of launches loaded is compared with the source's own count. This closes an open item from Phase 1: matching row counts ruled out duplicates but not gaps. On the first run both sides agreed at 7,659 launches.</li>
+<li><strong>Freshness.</strong> Something launches almost every day, so if the newest launch in the data is more than a week old, the check warns, and after two weeks it fails.</li>
+<li><strong>New vehicles.</strong> A rocket that is not yet in the hand-reviewed classification list used to fail the build. Now it raises a warning that names the vehicle, and its launches stay out of the orbital figures until it is reviewed. The first run found one, Galactic Energy's Pallas-1, which is now classified.</li>
+</ul>
+<h4>Why the app reads a snapshot</h4>
+<p>The app does not query Databricks. After each successful deploy, CI exports the tables the app needs (about 1.4 MB) to a separate branch of the repository, and the app reads those files. That keeps credentials out of the app, keeps visitors from using the workspace's free compute allowance, and makes every chart load from memory. Databricks remains the core of the pipeline, and the app is a read-only layer on top of it.</p>
+<h4>The app</h4>
+<ul>
+<li><strong>Market Overview:</strong> launches per year by provider, share of attempts, and the active vehicles with their reliability.</li>
+<li><strong>The Maturation Race:</strong> the lower bound on reliability flight by flight for any set of vehicles, counted by family or by configuration, with the success rate by flight number and the clean-opening-run survival curve.</li>
+<li><strong>Scenario Simulator:</strong> for any active vehicle, when it becomes proven at 80% or 90% if it flies like a typical vehicle of its era, and how cadence and better or worse performance change that.</li>
+<li><strong>Methodology:</strong> every definition, decision and limitation in plain language.</li>
+</ul>
+<p>The app is neutral by default: no provider is highlighted. Choosing a provider as the focus puts its own numbers first, highlights it on every chart and keeps it in the share ranking with its real position even when it is small. The choice carries across pages and into the link, so a view can be shared.</p>
+<h4>The simulator</h4>
+<p>The simulator runs 4,000 possible futures for the chosen vehicle. Each future flight succeeds with the probability that vehicles of the same era had at that point in their life, adjusted by the chosen performance. Two kinds of uncertainty are included: randomness in the outcomes, and uncertainty in those historical rates themselves, since some are based on few flights. The result is a range of dates, not a single one, and the page shows where the projection starts and what share of futures reach the target at all.</p>
+<h4>Testing it against history</h4>
+<p>A simulator that behaves sensibly is not the same as one that is right, so I backtested it. The data is frozen on 1 January of 2000, 2005, 2010, 2015 and 2020. At each date the success rates are rebuilt from earlier flights only, the model is run for every vehicle active at the time, and its predictions are compared with what those vehicles did next.</p>
+<ul>
+<li>Across 2,352 later flights, the model predicted an average success rate of 94.4%. The real rate was 95.2%, and every probability range was within 4.4 points of its prediction.</li>
+<li>It predicted better than each vehicle's own record so far, and slightly better than the market's overall success rate.</li>
+<li>Mixing in each vehicle's own record did not improve the predictions at any weight I tried. Where a vehicle is in its life says more about its next flights than its record does.</li>
+<li>The 80% range for when a vehicle becomes proven contained the real answer 27 times out of 30. The sample is small, and the range may be slightly wide.</li>
+</ul>
+<p>The backtest reruns with every daily refresh, and the results are on the app's Methodology page.</p>
+<h4>Outside review</h4>
+<p>I asked for an outside review of the live app. The main points were to separate "first reached 80%" from "above 80% now", since a later failure can push a vehicle back below; to show where each projection starts; to allow higher launch cadences; and to explain the simulation's uncertainty more fully. All four are in the current version.</p>
+<h4>A page for every vehicle</h4>
+<p>The app had several ways to look at the market, but no single place to look at one rocket. Each vehicle now has its own page: its record, how its last 20 flights compare with its whole history, when it first reached proven reliability and whether it is still there, its versions, and every launch it has flown. Clicking a vehicle in any table opens its page, and one button opens the simulator with that vehicle already loaded.</p>
+<p>Simulator scenarios can now be shared. The vehicle, cadence, performance and threshold are all kept in the page's link, so copying the address shares the exact scenario. Dates count from today by default, with the option to count from the vehicle's latest flight.</p>
+<h4>Ask AZIMUTH</h4>
+<p>The last of the four views planned at the start. You type a question in plain language, in English or Spanish, such as "which providers launched the most in 2025?" or "how many failures has Electron had?", and get a short answer.</p>
+<p>Behind it, an AI model reads the app's table descriptions and AZIMUTH's own definitions (orbital launches only, partial failures are not successes, vehicles counted by family) and writes a query. The query runs on the same data the rest of the app shows, in a sandbox that cannot read files, reach the internet or change anything. The model then turns the result into a short answer. Follow-up questions such as "and in 2015?" or "explain that" use the earlier questions as context, and a Details section shows how the question was read and the numbers behind the answer.</p>
+<p>It only answers what the data can answer. Questions about prices, payloads, people or the reasons behind a failure get a polite message that they are out of scope. Under every answer there is a report button: if an answer looks wrong, or a question should have been answerable, the report reaches me by email.</p>
+<h4>Testing it</h4>
+<p>As with the simulator, I did not want to rely on it seeming to work. A test of 39 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, 3 follow-ups asked after a first question, as in a real conversation, and 6 that it should decline. In its latest run it answered all 33 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
+<h4>What is next</h4>
+<p>The build is complete. From here AZIMUTH maintains itself: the data refreshes every day, the tests run on every deploy, and new rockets get flagged for classification as they appear. Changes from now on will come from what people ask and report.</p>
