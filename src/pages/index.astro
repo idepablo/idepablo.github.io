@@ -14,7 +14,6 @@ const projects = (await getCollection('projects', ({ data }) => !data.draft)).so
 const azimuth = projects.find((p) => p.id === 'azimuth')!;
 const featured = projects.filter((p) => p.data.featured && p.id !== 'azimuth');
 const posts = (await getCollection('buildlog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
-const caseStudyCount = projects.filter((p) => !p.data.external && !p.data.featured).length;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -106,7 +105,6 @@ const jsonLd = {
       <div class="grid-3">
         {featured.map((p) => <ProjectCard project={p} />)}
       </div>
-      <p class="muted">{caseStudyCount} more case studies in SQL, Python, R, Tableau and Excel on the <a href="/projects/">projects page</a>.</p>
     </section>
 
     <!-- About -->
@@ -141,7 +139,7 @@ const jsonLd = {
                 <div>
                   <h3>{w.role}</h3>
                   <div class="org">{w.org}</div>
-                  <p>{w.text}</p>
+                  {w.text && <p>{w.text}</p>}
                 </div>
               </li>
             ))}
@@ -196,7 +194,6 @@ const jsonLd = {
           <a href={`/buildlog/${p.id}.html`} class="tile card-link post">
             <span class="label">{p.data.dateLabel} · AZIMUTH</span>
             <h3>{p.data.title}</h3>
-            <p>{p.data.summary}</p>
             <span class="card-cta">Read the post <Icon name="arrow" size={14} /></span>
           </a>
         ))}
