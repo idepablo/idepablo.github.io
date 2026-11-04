@@ -14,6 +14,13 @@ function splitFrontmatter(src: string): { data: Record<string, unknown>; body: s
   return { data: (parseYaml(m[1]) as Record<string, unknown>) ?? {}, body: src.slice(m[0].length) };
 }
 
+// Code blocks and wide tables scroll horizontally; tabindex lets keyboard users reach them.
+function focusableScrollRegions(html: string): string {
+  return html
+    .replace(/<pre(?![^>]*tabindex)/g, '<pre tabindex="0"')
+    .replace(/<div class="tbl-wrap"(?![^>]*tabindex)/g, '<div class="tbl-wrap" tabindex="0"');
+}
+
 export function pages(options: { base: string }): Loader {
   return {
     name: 'pages-loader',
@@ -28,7 +35,7 @@ export function pages(options: { base: string }): Loader {
         const id = file.replace(/\.(html|md)$/i, '');
         const filePath = path.posix.relative(fileURLToPath(config.root), abs).split(path.sep).join('/');
         const data = await parseData({ id, data: raw, filePath });
-        const rendered = file.endsWith('.md') ? await renderMarkdown(body) : { html: body };
+        const rendered = file.endsWith('.md') ? await renderMarkdown(body) : { html: focusableScrollRegions(body) };
         store.set({ id, data, body, filePath, digest: generateDigest(src), rendered });
       }
       logger.info(`Loaded ${files.length} entries from ${options.base}`);
