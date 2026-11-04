@@ -8,6 +8,7 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  imageSize?: { width: number; height: number };
   type?: 'website' | 'article';
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
@@ -17,6 +18,7 @@ const {
   title,
   description = site.description,
   image = '/og-image.png',
+  imageSize = { width: 1200, height: 630 },
   type = 'website',
   jsonLd,
   noindex = false,
@@ -24,7 +26,7 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(image, Astro.site);
-const fullTitle = title === site.name ? `${site.name} | ${site.tagline}` : `${title} | ${site.name}`;
+const fullTitle = title === site.name ? `${site.name} | ${site.shortTitle}` : `${title} | ${site.name}`;
 ---
 <!doctype html>
 <html lang="en">
@@ -50,8 +52,8 @@ const fullTitle = title === site.name ? `${site.name} | ${site.tagline}` : `${ti
   <meta property="og:description" content={description} />
   <meta property="og:url" content={canonical} />
   <meta property="og:image" content={ogImage} />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
+  <meta property="og:image:width" content={String(imageSize.width)} />
+  <meta property="og:image:height" content={String(imageSize.height)} />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content={fullTitle} />
   <meta name="twitter:description" content={description} />
