@@ -97,12 +97,9 @@ export const certificationsNote =
   'Plus four CompTIA stackable certifications. PMI member.';
 
 export const personal = [
-  { icon: 'sword', title: 'Fencing', text: 'Registered member of USA Fencing.' },
-  { icon: 'film', title: 'Cinema', text: 'All-time favorites: Top Gun and Drive.' },
-  { icon: 'rocket', title: 'Space', text: 'Where AZIMUTH came from.' },
-  { icon: 'heart', title: 'Family', text: "Took time off to be there for my daughter's first milestones." },
+  { icon: 'sword', title: 'Fencing', text: 'Passionate about this complete sport, which trains body and mind at the same time. Registered member of USA Fencing.' },
+  { icon: 'film', title: 'Cinema', text: 'I love cinema and try to watch as many movies as I can, old and new. My top favorites are Top Gun and Drive.' },
+  { icon: 'rocket', title: 'Space', text: 'I love everything about it: rockets, planets, space engineering, and following every launch and mission as it happens.' },
+  { icon: 'heart', title: 'Family', text: "The most important piece in my life puzzle. I took some time off work to be with my daughter through her first milestones, and I would do it again." },
 ];
 
-export const contact = {
-  text: 'Based in Seattle. Happy to talk about solutions engineering, data or space.',
-};
