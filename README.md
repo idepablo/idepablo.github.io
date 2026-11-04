@@ -68,5 +68,5 @@ npm run build     # production build in dist/
 - GitHub Pages serves the `dist/` output that the workflow builds. Repository settings > Pages > Source must be **GitHub Actions**.
 - The workflow has read-only access to the repository contents; it only needs to write the Pages deployment.
 - The site is static files only: no server code, no database, no forms, no login, so there is nothing to inject into or take over. The remaining risks are the GitHub account and the DNS for the domain. Keep two-factor authentication on for both, and enable branch protection on `main` so that changes go through a pull request.
-- Third-party code loads only on demand (the AZIMUTH and Tableau embeds appear when a visitor clicks "Load"), and the only script fetched on every page is the GoatCounter counter, which sets no cookies.
+- Third-party code loads only on demand (the Tableau dashboard appears when a visitor clicks "Load"; the AZIMUTH app opens in its own tab), and the only script fetched on every page is the GoatCounter counter, which sets no cookies.
 - Dependencies are pinned in `package-lock.json`. Running `npm audit` after `npm install` shows whether anything needs an update.
