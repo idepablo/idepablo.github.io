@@ -4,10 +4,10 @@ dateLabel: "August 2026"
 date: 2026-08-08
 order: 4
 project: azimuth
-summary: "All 7,598 historical launches out of the Launch Library 2 API and into a Delta table, with \"done\" defined as running the same load twice and getting the same result."
+summary: "All 7,598 launches from the Launch Library 2 API into a Delta table, and the problems along the way."
 ---
 
-<p>Phase 1 was getting all 7,598 historical launches out of the Launch Library 2 API and into a Delta table. The test for "done" was not that the script ran. It was running the same load twice and having nothing change.</p>
+<p>Phase 1 was getting all 7,598 launches out of the Launch Library 2 API and into a Delta table. Done meant running the same load twice with nothing changing the second time.</p>
 <h2>Splitting fetch from load</h2>
 <p>The API allows about 15 calls an hour, so pulling the full history takes around five hours. I split ingestion into two jobs instead of one.</p>
 <p>Job one calls the API and saves each response to disk exactly as it arrived. Job two reads those files and merges them into the warehouse.</p>
@@ -28,7 +28,7 @@ summary: "All 7,598 historical launches out of the Launch Library 2 API and into
 <p><strong>PAGE_SIZE</strong> and <strong>SLEEP_SECONDS</strong> sit next to each other at the top of the file. Switching to the production API, I meant to set the sleep to 240 seconds. I set the page size to 240 instead.</p>
 <p>Nothing errored. The API capped the page size silently and kept serving pages with no delay, because the sleep was still zero. Ten pages went through in about twenty seconds before I noticed and killed it. Then I got a 429.</p>
 <p>The fix was retry logic: catch a 429, wait ten minutes, retry the same page, give up after five attempts. I also want to add a startup check that validates the page size against the documented maximum, since the API will accept a value it has no intention of honouring.</p>
-<h2>Both safety nets fired during the real run</h2>
+<h2>The real run</h2>
 <p>At page 10 I closed the laptop lid by accident and the process died. Restarting picked up at page 11 from the state file.</p>
 <p>At page 40 the API rate limited me again, unattended. The retry logic waited ten minutes and carried on. I found out afterwards by scrolling back through the log.</p>
 <h2>.venv in git history</h2>
@@ -38,14 +38,14 @@ summary: "All 7,598 historical launches out of the Launch Library 2 API and into
 <p>76 pages, 7,598 records, all with unique launch ids.</p>
 <p>The loader merges on launch id: update if the incoming record is newer, insert if it is new. Every column is stored as a string on purpose. If I cast dates and numbers in bronze, one malformed value fails the load and I lose the row. I would rather cast in silver, where a bad value shows up as a failed test.</p>
 <p>There is a load audit table: one row per run with run id, timestamp, source file, rows in source, rows inserted, rows updated, duration, and status. It writes a row whether the merge succeeds or fails, so failed runs are still on the record.</p>
-<p>That is how I can show the pipeline is idempotent rather than assert it:</p>
+<p>Two runs, same result:</p>
 <div class="mini-stats">
 <div class="mini-stat"><b>7,598</b><span>run 1 · inserted</span></div>
 <div class="mini-stat"><b>0</b><span>run 2 · inserted</span></div>
 <div class="mini-stat"><b>0</b><span>run 2 · updated</span></div>
 <div class="mini-stat"><b>7,598</b><span>rows either way</span></div>
 </div>
-<h2>What I have not proven</h2>
+<h2>What is still open</h2>
 <p>Matching row counts rule out duplicates. They do not rule out gaps.</p>
 <p>The API paginates by offset. If records are inserted while a five hour run is in progress, offsets shift and a record can be pushed past a boundary already read. It would get skipped and the row count would not show it.</p>
 <p>The count came back as 7,598 when the API reported 7,589 earlier the same day. My guess is launches that flew and were confirmed during the run, but I have not verified that. A completeness comparison against the source count is going on the data quality list.</p>

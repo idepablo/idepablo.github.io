@@ -1,13 +1,13 @@
 ---
-title: "Phases 5 to 7: Daily refresh, the app, and Ask AZIMUTH"
+title: "Phases 5 to 7: Daily refresh, the app and Ask AZIMUTH"
 dateLabel: "October 26, 2026"
 date: 2026-10-26
 order: 0
 project: azimuth
-summary: "A scheduled refresh with completeness and freshness checks, why the app reads a snapshot, the simulator backtest, and the 39-question test."
+summary: "The data now refreshes itself every day, the app is live, and you can ask it questions. How each part works and how it was tested."
 ---
 
-<p>AZIMUTH is live at <a href="https://azimuth-launch.streamlit.app/" rel="noopener" target="_blank">azimuth-launch.streamlit.app</a>. This post covers the three phases that got it there: keeping the data current without running anything by hand, building the app on top of it, and letting people ask it questions directly.</p>
+<p>AZIMUTH is live at <a href="https://azimuth-launch.streamlit.app/" rel="noopener" target="_blank">azimuth-launch.streamlit.app</a>. This post covers the three phases that got it there: keeping the data current, building the app, and letting people ask it questions.</p>
 <h2>Daily refresh</h2>
 <p>The Phase 1 backfill loaded the full launch history once. A scheduled GitHub Actions job now keeps it current. Each day it asks the API only for launches whose record changed since the newest one already loaded, with a one-day overlap so nothing edited mid-run is missed. Results are merged page by page, each with an audit row, so an interrupted run keeps what it loaded and the next one picks up from there.</p>
 <p>After loading, the refresh runs the same path as a code change: build and test in an isolated schema, then deploy to the production schemas only if every test passes.</p>
@@ -29,8 +29,8 @@ summary: "A scheduled refresh with completeness and freshness checks, why the ap
 <p>The app is neutral by default: no provider is highlighted. Choosing a provider as the focus puts its own numbers first, highlights it on every chart and keeps it in the share ranking with its real position even when it is small. The choice carries across pages and into the link, so a view can be shared.</p>
 <h2>The simulator</h2>
 <p>The simulator runs 4,000 possible futures for the chosen vehicle. Each future flight succeeds with the probability that vehicles of the same era had at that point in their life, adjusted by the chosen performance. Two kinds of uncertainty are included: randomness in the outcomes, and uncertainty in those historical rates themselves, since some are based on few flights. The result is a range of dates, not a single one, and the page shows where the projection starts and what share of futures reach the target at all.</p>
-<h2>Testing it against history</h2>
-<p>A simulator that behaves sensibly is not the same as one that is right, so I backtested it. The data is frozen on 1 January of 2000, 2005, 2010, 2015 and 2020. At each date the success rates are rebuilt from earlier flights only, the model is run for every vehicle active at the time, and its predictions are compared with what those vehicles did next.</p>
+<h2>Backtest</h2>
+<p>I tested the simulator against history. The data is frozen on 1 January of 2000, 2005, 2010, 2015 and 2020. At each date the success rates are rebuilt from earlier flights only, the model is run for every vehicle active at the time, and its predictions are compared with what those vehicles did next.</p>
 <ul>
 <li>Across 2,352 later flights, the model predicted an average success rate of 94.4%. The real rate was 95.2%, and every probability range was within 4.4 points of its prediction.</li>
 <li>It predicted better than each vehicle's own record so far, and slightly better than the market's overall success rate.</li>
@@ -47,7 +47,7 @@ summary: "A scheduled refresh with completeness and freshness checks, why the ap
 <p>The last of the four views planned at the start. You type a question in plain language, in English or Spanish, such as "which providers launched the most in 2025?" or "how many failures has Electron had?", and get a short answer.</p>
 <p>Behind it, an AI model reads the app's table descriptions and AZIMUTH's own definitions (orbital launches only, partial failures are not successes, vehicles counted by family) and writes a query. The query runs on the same data the rest of the app shows, in a sandbox that cannot read files, reach the internet or change anything. The model then turns the result into a short answer. Follow-up questions such as "and in 2015?" or "explain that" use the earlier questions as context, and a Details section shows how the question was read and the numbers behind the answer.</p>
 <p>It only answers what the data can answer. Questions about prices, payloads, people or the reasons behind a failure get a polite message that they are out of scope. Under every answer there is a report button: if an answer looks wrong, or a question should have been answerable, the report reaches me by email.</p>
-<h2>Testing it</h2>
-<p>As with the simulator, I did not want to rely on it seeming to work. A test of 39 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, 3 follow-ups asked after a first question, as in a real conversation, and 6 that it should decline. In its latest run it answered all 33 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
+<h2>Testing Ask AZIMUTH</h2>
+<p>A test of 39 questions runs after every deploy: 30 that the data can answer, each checked against a query I wrote by hand on the same data, 3 follow-ups asked after a first question, as in a real conversation, and 6 that it should decline. In its latest run it answered all 33 correctly and declined all 6. The latest score is shown on the Ask AZIMUTH page, and it updates as the data changes.</p>
 <h2>What is next</h2>
-<p>The build is complete. From here AZIMUTH maintains itself: the data refreshes every day, the tests run on every deploy, and new rockets get flagged for classification as they appear. Changes from now on will come from what people ask and report.</p>
+<p>The build is complete. The data refreshes every day, the tests run on every deploy, and new rockets get flagged for classification as they appear. Changes from here will come from what people ask and report.</p>
