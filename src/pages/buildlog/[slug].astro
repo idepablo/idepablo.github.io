@@ -20,7 +20,7 @@ const jsonLd = {
   datePublished: d.date.toISOString().slice(0, 10),
   url: new URL(`/buildlog/${post.id}.html`, site.url).href,
   author: { '@type': 'Person', name: site.name, url: site.url },
-  isPartOf: { '@type': 'Blog', name: `${site.name} build log`, url: new URL('/buildlog', site.url).href },
+  isPartOf: { '@type': 'Blog', name: `${site.name} build log`, url: new URL('/buildlog/', site.url).href },
 };
 ---
 <Base title={d.title} description={d.summary} type="article" jsonLd={jsonLd}>

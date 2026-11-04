@@ -11,7 +11,7 @@ const posts = (await getCollection('buildlog', ({ data }) => !data.draft)).sort(
     <header class="head">
       <div class="eyebrow">Writing</div>
       <h1>Build log</h1>
-      <p>Notes written while building <a href={site.azimuth.page}>AZIMUTH</a>: what each phase set out to do, what the data turned out to support, and what changed along the way. Also available as an <a href="/rss.xml">RSS feed</a>.</p>
+      <p>Notes written while building <a href={site.azimuth.page} class="prose-link">AZIMUTH</a>: what each phase set out to do, what the data turned out to support, and what changed along the way. Also available as an <a href="/rss.xml" class="prose-link">RSS feed</a>.</p>
     </header>
     <ol class="posts">
       {posts.map((p) => (
