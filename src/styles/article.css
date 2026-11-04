@@ -15,6 +15,11 @@
 .article hr { border: 0; border-top: 1px solid var(--line); margin: 44px 0; }
 .article img { max-width: 100%; height: auto; }
 .article .btn { text-decoration: none; margin: 6px 6px 0 0; }
+.article a.btn-dark { color: var(--bg); }
+.article a.btn-dark:hover { color: #FFFFFF; }
+.article a.btn-light { color: var(--ink); }
+.article a.btn-white { color: #0E1116; }
+.article .muted a, .article .viz-note a { text-decoration: underline; }
 
 .article .qsub { color: var(--ink-3); font-size: 15.5px; font-style: italic; margin: -6px 0 18px; }
 .article .qtag { display: block; font-family: var(--mono); font-size: 11.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; }
@@ -37,7 +42,7 @@
 .article .mini-stat span { font-size: 12.5px; color: var(--ink-3); }
 .article .views, .article .explore-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 8px 0 12px; }
 .article .view, .article .cell { background: var(--tile); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 18px 20px; }
-.article .view h4, .article .cell h4 { margin: 0 0 5px; font-size: 16px; }
+.article .view h3, .article .cell h3 { margin: 0 0 5px; font-size: 16px; }
 .article .view p, .article .cell p { font-size: 15px; margin: 0; }
 
 /* Status list and timeline (AZIMUTH) */
@@ -49,7 +54,7 @@
 .article .status-body .sl { font-weight: 600; color: var(--ink); }
 .article .status-body .sd { color: var(--ink-2); font-size: 15px; }
 .article .status-tag { font-family: var(--mono); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: 7px; white-space: nowrap; }
-.article .t-done { background: color-mix(in srgb, var(--live) 14%, transparent); color: var(--live); }
+.article .t-done { background: color-mix(in srgb, var(--live) 10%, transparent); color: var(--live-strong); }
 .article .tl { position: relative; margin: 6px 0 0; padding-left: 26px; border-left: 2px solid var(--line); display: flex; flex-direction: column; gap: 24px; }
 .article .tl-item { position: relative; }
 .article .tl-item::before { content: ''; position: absolute; left: -33px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
