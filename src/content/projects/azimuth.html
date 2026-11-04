@@ -2,7 +2,7 @@
 title: "AZIMUTH · Launch Market Intelligence Platform"
 eyebrow: "Self-directed project · Live"
 byline: ""
-description: "AZIMUTH: a provider-agnostic business intelligence platform modeling the global orbital launch market on a Databricks lakehouse. In-progress build log, architecture, and scope decisions by Ignacio de Pablo."
+description: "AZIMUTH models the global orbital launch market on a Databricks lakehouse and benchmarks any rocket against the field. Architecture, decisions and build log."
 stats:
   - num: "7,659"
     cap: "orbital launches, 1957 to today"
@@ -39,14 +39,14 @@ status: live
 <h2>The views</h2>
 <p>On top of the model, the app has five views:</p>
 <div class="views">
-<div class="view"><h4>Market Overview</h4><p>The current state of the launch market across providers, vehicles, and mission types.</p></div>
-<div class="view"><h4>The Maturation Race</h4><p>How vehicles progress from first flight toward operational reliability, compared across programs.</p></div>
-<div class="view"><h4>Scenario Simulator</h4><p>Adjust assumptions and watch a program's competitive position shift.</p></div>
-<div class="view"><h4>Vehicles</h4><p>One page per rocket: its record, recent form against its lifetime, versions, and full launch history, with one click to simulate its future.</p></div>
-<div class="view"><h4>Ask AZIMUTH</h4><p>Questions in plain language, in English or Spanish, answered from the same data as the rest of the app.</p></div>
+<div class="view"><h3>Market Overview</h3><p>The current state of the launch market across providers, vehicles, and mission types.</p></div>
+<div class="view"><h3>The Maturation Race</h3><p>How vehicles progress from first flight toward operational reliability, compared across programs.</p></div>
+<div class="view"><h3>Scenario Simulator</h3><p>Adjust assumptions and watch a program's competitive position shift.</p></div>
+<div class="view"><h3>Vehicles</h3><p>One page per rocket: its record, recent form against its lifetime, versions, and full launch history, with one click to simulate its future.</p></div>
+<div class="view"><h3>Ask AZIMUTH</h3><p>Questions in plain language, in English or Spanish, answered from the same data as the rest of the app.</p></div>
 </div>
 <h2>Where it stands</h2>
-<p>All seven phases are complete and the app is live. Here is what each phase delivered.</p>
+<p>All eight phases, 0 to 7, are complete and the app is live. Here is what each phase delivered.</p>
 <div class="status">
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 0 · Scope &amp; data model</div><div class="sd">Grain, dimensions, outcome and censoring split, and scope decisions are locked and documented.</div></div><span class="status-tag t-done">Done</span></div>
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 1 · Production backfill</div><div class="sd">The full launch history from Launch Library 2, landed in the bronze layer and verified idempotent.</div></div><span class="status-tag t-done">Done</span></div>
