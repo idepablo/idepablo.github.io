@@ -26,11 +26,11 @@ summary: "All 7,598 launches from the Launch Library 2 API into a Delta table, a
 <p>State is saved after the file is written, not before. That way a crash between those two lines costs me a repeated page rather than a skipped one.</p>
 <h2>The config mistake</h2>
 <p><strong>PAGE_SIZE</strong> and <strong>SLEEP_SECONDS</strong> sit next to each other at the top of the file. Switching to the production API, I meant to set the sleep to 240 seconds. I set the page size to 240 instead.</p>
-<p>Nothing errored. The API capped the page size silently and kept serving pages with no delay, because the sleep was still zero. Ten pages went through in about twenty seconds before I noticed and killed it. Then I got a 429.</p>
+<p>Nothing errored. The API capped the page size silently and kept serving pages with no delay, because the sleep was still zero. Ten pages went through in about twenty seconds before I noticed and killed it, and the API returned a 429.</p>
 <p>The fix was retry logic: catch a 429, wait ten minutes, retry the same page, give up after five attempts. I also want to add a startup check that validates the page size against the documented maximum, since the API will accept a value it has no intention of honouring.</p>
 <h2>The real run</h2>
 <p>At page 10 I closed the laptop lid by accident and the process died. Restarting picked up at page 11 from the state file.</p>
-<p>At page 40 the API rate limited me again, unattended. The retry logic waited ten minutes and carried on. I found out afterwards by scrolling back through the log.</p>
+<p>At page 40 the API rate limited me again. The retry logic waited ten minutes and carried on; I only saw it afterwards in the log.</p>
 <h2>.venv in git history</h2>
 <p>Running <strong>git ls-files</strong> before pushing turned up several hundred megabytes of virtual environment tracked in the repo.</p>
 <p>The folder had a <strong>.git</strong> in it from an earlier experiment and <strong>.venv</strong> had been committed then. Adding it to <strong>.gitignore</strong> afterwards does nothing, because <strong>.gitignore</strong> only stops git tracking files it is not already tracking. Nothing had been pushed, so I deleted the history and started clean.</p>

@@ -7,7 +7,7 @@ project: azimuth
 summary: "dbt, the first silver model, tests and CI. Also: 7% of launches have no orbit, which changed how orbital launches are defined."
 ---
 
-<p>Phase 2 was meant to be plumbing: set up dbt, build the first silver model, add tests, wire up CI. All of that happened. But the first task was re-running the Phase 0 checks against the full history instead of the 100 most recent launches, and the result changed a scope decision.</p>
+<p>Phase 2: set up dbt, build the first silver model, add tests, wire up CI. The first task was re-running the Phase 0 checks against the full history instead of the 100 most recent launches, and the result changed a scope decision.</p>
 <h2>The missing orbits</h2>
 <p>Three SQL queries against bronze:</p>
 <ul>
@@ -15,7 +15,7 @@ summary: "dbt, the first silver model, tests and CI. Also: 7% of launches have n
 <li>The missing orbits are not in the early history, as I expected. The 1950s are complete. The 2010s are missing 28%, the worst decade in the dataset.</li>
 <li>By provider: 55% of CASC's 2010s launches have no orbit. ILS 61%. Kosmotras 100%. Sea Launch 78%. Arianespace 3%.</li>
 </ul>
-<p>The gap depends on how much the provider publishes. Chinese, Russian and classified military missions do not publish orbital parameters. ULA sits at 15%, which fits: NRO payloads.</p>
+<p>The gap depends on how much the provider publishes. Chinese, Russian and classified military missions do not publish orbital parameters. ULA sits at 15%, mostly NRO payloads.</p>
 <p>The scope document used the mission's orbit field to decide what is orbital. That filter would have dropped half of China's launches in the 2010s, which is exactly the market share the platform is meant to measure. The field reflects what providers publish, not what they flew.</p>
 <h2>Classifying by vehicle</h2>
 <p>The replacement rule: classify by vehicle. A Long March with no published orbit is still an orbital launch, because Long March is an orbital-class vehicle.</p>
@@ -27,7 +27,7 @@ summary: "dbt, the first silver model, tests and CI. Also: 7% of launches have n
 <li>Blue Scout II's single flight was Mercury-Scout 1, an orbital attempt.</li>
 <li>Two Scout variants went the other way: their flights were reentry tests the API itself marks Suborbital.</li>
 <li>Five records are launches from the surface of the Moon: Luna 16, 20, 24 and Chang'e 5 and 6, sample return missions whose ascent stages are tracked as launches, dated at lunar liftoff. They got their own class and are excluded from the orbital figures.</li>
-<li>One record called "Mir (3 stage)" turned out to be South Korea's military solid-fuel launcher, now named Mir, no relation to the space station.</li>
+<li>One record called "Mir (3 stage)" is South Korea's military solid-fuel launcher, not the space station.</li>
 </ul>
 <p>So the classification is AI-assisted and human-reviewed. Without the review, six errors would be in the warehouse now.</p>
 <h2>One config, both regimes</h2>

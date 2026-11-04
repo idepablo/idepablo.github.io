@@ -7,7 +7,7 @@ project: azimuth
 summary: "The star schema, a \"Not published\" row for launches with no orbit, six more Moon launches, and the same float bug again."
 ---
 
-<p>Phase 3 was the star schema that the app reads from. Most decisions were made in Phases 0 to 2, so this phase was about building them and finding where they were still wrong.</p>
+<p>Phase 3 was the star schema that the app reads from.</p>
 <h2>What got built</h2>
 <p>Five dimensions and a fact table, all in a gold schema, all under tests, all rebuilt by CI on every push:</p>
 <ul>
@@ -27,8 +27,8 @@ summary: "The star schema, a \"Not published\" row for launches with no orbit, s
 <p>The scope document said the dataset contained five launches from the lunar surface: the Luna and Chang'e sample-return ascent stages, found during the seed review.</p>
 <p>Phase 3 added the pad's location and celestial body to bronze. No new API calls were needed: the raw JSON files from Phase 1 already had everything, so it was a re-flatten of files on disk and a rebuild of the bronze table.</p>
 <p>The new column said eleven Moon launches, not five.</p>
-<p>The other six are the Apollo Lunar Module ascents. The seed had classified Apollo LM as <strong>not_a_launch_vehicle</strong>, reasoning that it is a spacecraft. But the LM ascent stage is a launch vehicle; it just launches from the Moon. July 21, 1969, in this dataset, is Eagle lifting off from Tranquility Base.</p>
-<p>After reclassifying it, the two derivations agree exactly: 11 launches where <strong>vehicle_class = 'non_earth_launch'</strong>, 11 launches where the pad's celestial body is the Moon. Two independent ways to get the same number, and each can now be used to test the other.</p>
+<p>The other six are the Apollo Lunar Module ascents. The seed had classified Apollo LM as <strong>not_a_launch_vehicle</strong>, reasoning that it is a spacecraft. But the LM ascent stage is a launch vehicle; it just launches from the Moon.</p>
+<p>After reclassifying it, the two derivations agree exactly: 11 launches where <strong>vehicle_class = 'non_earth_launch'</strong>, 11 launches where the pad's celestial body is the Moon. Each can now be used to test the other.</p>
 <h2>The float bug again</h2>
 <p>In Phase 2, orbit id 15 arrived in bronze as "15.0" because pandas turns integer columns with nulls into floats before my flatten stringifies them. I fixed it in staging and thought I understood it.</p>
 <p>Building the reference ingestion, I assumed converting the DataFrame to the pandas string dtype would prevent it at the source. It did not: the provider dimension failed on a founding year of "2020.0". The conversion to float happens when the DataFrame is constructed, before any later conversion runs, unless you use the nullable integer dtype explicitly.</p>
