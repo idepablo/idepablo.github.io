@@ -15,6 +15,7 @@ export async function GET(context: APIContext) {
       pubDate: p.data.date,
       link: `/buildlog/${p.id}.html`,
     })),
-    customData: '<language>en-us</language>',
+    xmlns: { atom: 'http://www.w3.org/2005/Atom' },
+    customData: `<language>en-us</language><atom:link href="${new URL('/rss.xml', context.site!).href}" rel="self" type="application/rss+xml"/>`,
   });
 }
