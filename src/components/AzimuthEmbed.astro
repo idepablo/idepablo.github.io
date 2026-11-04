@@ -10,7 +10,7 @@ import shot from '../assets/azimuth-market.jpg';
 <a href={site.azimuth.app} class="preview tile card-link" rel="noopener" target="_blank">
   <Image src={shot} alt="AZIMUTH Market Overview: orbital launch attempts per year and share of attempts in 2025" widths={[480, 760, 1200]} sizes="(max-width: 800px) 100vw, 760px" loading="eager" fetchpriority="high" />
   <div class="overlay">
-    <div class="status"><span class="dot"></span><span class="label">Live app · updated daily</span></div>
+    <div class="status"><span class="label">Live app · updated daily</span></div>
     <span class="btn btn-white">Open the app <Icon name="external" size={14} /></span>
     <span class="note">Opens azimuth-launch.streamlit.app in a new tab. Best on a desktop screen.</span>
   </div>
@@ -22,7 +22,6 @@ import shot from '../assets/azimuth-market.jpg';
   .preview:hover img { opacity: 0.7; }
   .overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 24px; text-align: center; }
   .status { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  .dot { width: 8px; height: 8px; border-radius: 999px; background: var(--live-dot); }
   .overlay .label { color: #C5CBD4; }
   .note { font-size: 13px; color: #C5CBD4; }
 </style>
