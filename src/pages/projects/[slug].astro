@@ -20,6 +20,7 @@ const posts = isAzimuth
   ? (await getCollection('buildlog', ({ data }) => !data.draft && data.project === 'azimuth')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   : [];
 const ogImage = d.cover ? d.cover.src : '/og-image.png';
+const ogSize = d.cover ? { width: d.cover.width, height: d.cover.height } : undefined;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -27,13 +28,14 @@ const jsonLd = {
   name: d.title,
   headline: d.title,
   description: d.description,
+  image: new URL(ogImage, site.url).href,
   url: new URL(`/projects/${project.id}.html`, site.url).href,
   datePublished: d.date.toISOString().slice(0, 10),
   author: { '@type': 'Person', name: site.name, url: site.url },
   ...(isAzimuth ? { applicationCategory: 'BusinessApplication', operatingSystem: 'Web', codeRepository: site.azimuth.repo } : {}),
 };
 ---
-<Base title={d.title} description={d.description} image={ogImage} type="article" jsonLd={jsonLd}>
+<Base title={d.title} description={d.description} image={ogImage} imageSize={ogSize} type="article" jsonLd={jsonLd}>
   <div class="wrap">
     <header class="hero">
       <a href="/projects/" class="back"><Icon name="arrow" size={14} class="flip" /> All projects</a>
@@ -160,8 +162,10 @@ const jsonLd = {
       viz.setAttribute('src', src);
       viz.setAttribute('toolbar', 'bottom');
       viz.setAttribute('hide-tabs', '');
+      viz.tabIndex = -1;
       box.querySelector('.viz-poster')?.replaceWith(viz);
       box.classList.add('loaded');
+      viz.focus();
     });
   });
 </script>
