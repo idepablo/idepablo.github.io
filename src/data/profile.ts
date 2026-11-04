@@ -12,7 +12,7 @@ import capm from '../assets/badges/capm.png';
 import itil from '../assets/badges/itil.png';
 
 export const intro = {
-  status: 'Seattle, WA · Open to conversations',
+  status: 'Seattle, WA',
   pitch:
     'I help organizations across Latin America store, protect, and access their data anywhere. Outside work I build data projects end to end, from the pipeline to the app, and document the process at idepablo.com.',
   azimuthBlurb:

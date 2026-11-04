@@ -6,8 +6,9 @@ export const site = {
   nickname: 'Nacho',
   title: 'Product & Solutions Engineer at Synology',
   tagline: 'Product & Solutions Engineer · Data analytics builder',
+  shortTitle: 'Product & Solutions Engineer',
   description:
-    'Ignacio de Pablo, Product & Solutions Engineer at Synology and data analytics builder in Seattle. Projects in SQL, Python, Tableau, Databricks and Swift, including AZIMUTH, a launch-market BI platform.',
+    'Ignacio de Pablo, Product & Solutions Engineer at Synology in Seattle. Data projects in SQL, Python, Tableau and Databricks, including AZIMUTH, a launch-market BI platform.',
   url: 'https://idepablo.com',
   email: 'idepabloc@gmail.com',
   location: 'Seattle, WA',
