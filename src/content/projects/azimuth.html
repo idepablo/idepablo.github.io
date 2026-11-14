@@ -2,7 +2,7 @@
 title: "AZIMUTH · Launch Market Intelligence Platform"
 eyebrow: "Self-directed project · Live"
 byline: ""
-description: "AZIMUTH models the global orbital launch market on a Databricks lakehouse and benchmarks any rocket against the field. Architecture, decisions and build log."
+description: "AZIMUTH models the global orbital launch market and benchmarks any rocket against the field. Built on Databricks with dbt, refreshed daily on DuckDB. Architecture, decisions and build log."
 stats:
   - num: "7,659"
     cap: "orbital launches, 1957 to today"
@@ -20,6 +20,7 @@ summary: "A BI platform that models the global orbital launch market and compare
 tools:
   - "Databricks"
   - "dbt"
+  - "DuckDB"
   - "Python"
   - "SQL"
   - "Streamlit"
@@ -53,12 +54,13 @@ status: live
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 2 · Silver modeling</div><div class="sd">Staging model in dbt, a curated vehicle-class seed, six data-quality tests, and CI, all green.</div></div><span class="status-tag t-done">Done</span></div>
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 3 · Gold layer</div><div class="sd">Five dimensions and fct_launches in a dedicated gold schema, under referential integrity tests, rebuilt by CI.</div></div><span class="status-tag t-done">Done</span></div>
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 4 · Analysis</div><div class="sd">Cadence, market share, and reliability by flight number, with Wilson intervals, a Kaplan-Meier survival model, and a per-vehicle benchmark, all in SQL and deployed through CI.</div></div><span class="status-tag t-done">Done</span></div>
-<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Daily incremental refresh, completeness check against the source, freshness check, and a warning for vehicles new to the classification seed.</div></div><span class="status-tag t-done">Done</span></div>
+<div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 5 · Data operations</div><div class="sd">Daily incremental refresh, completeness check against the source, freshness check, and a warning for vehicles new to the classification seed. Runs on DuckDB in GitHub Actions since November 2026.</div></div><span class="status-tag t-done">Done</span></div>
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 6 · The app</div><div class="sd">Market Overview, Maturation Race, Scenario Simulator and a Methodology page, live on Streamlit, with the simulator backtested against history.</div></div><span class="status-tag t-done">Done</span></div>
 <div class="status-item"><span class="status-dot dot-done"></span><div class="status-body"><div class="sl">Phase 7 · Ask AZIMUTH</div><div class="sd">Plain-language questions answered from the app's data, with vehicle pages and shareable simulator scenarios. Scored by a 39-question test after every deploy.</div></div><span class="status-tag t-done">Done</span></div>
 </div>
 <h2>Lakehouse architecture</h2>
 <p>The platform will follow a medallion architecture on Databricks: raw launch data will land in bronze, get cleaned and conformed in silver, and be modeled into an analytics-ready star schema in gold with dbt, with data-quality tests guarding every layer boundary.</p>
+<p>Since November 2026 the daily refresh runs the same dbt project on DuckDB inside GitHub Actions, because Databricks Free Edition stopped reliably starting compute for scheduled jobs. The layers, models and tests are unchanged, and the output was checked identical before the switch. The build log post <a href="/buildlog/daily-refresh-duckdb.html">Moving the daily refresh off Databricks</a> explains why and how.</p>
 <div class="diagram-shell">
 <svg aria-label="Medallion architecture: bronze, silver, gold layers" role="img" viewbox="0 0 900 150" xmlns="http://www.w3.org/2000/svg">
 <defs><marker id="arr" markerheight="7" markerwidth="7" orient="auto-start-reverse" refx="9" refy="5" viewbox="0 0 10 10"><path d="M0,0L10,5L0,10z" fill="var(--accent)"></path></marker></defs>
@@ -176,5 +178,10 @@ status: live
 <div class="tl-when">Phase 7 · Complete · Oct 2026</div>
 <div class="tl-phase">Ask AZIMUTH</div>
 <p>Questions in plain language, answered from the same data as the app, with follow-up questions, a report button for wrong answers, and a 39-question test that runs after every deploy. The same phase added a page for every vehicle and shareable simulator scenarios.</p>
+</div>
+<div class="tl-item done">
+<div class="tl-when">Nov 2026</div>
+<div class="tl-phase">Daily refresh moved to DuckDB</div>
+<p>Databricks Free Edition stopped starting compute for the scheduled refresh. The same dbt project now runs daily on DuckDB in GitHub Actions, with raw data kept as parquet in the repository. Output verified identical to Databricks before switching.</p>
 </div>
 </div>
