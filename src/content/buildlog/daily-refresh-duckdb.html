@@ -1,0 +1,29 @@
+---
+title: "Moving the daily refresh off Databricks"
+dateLabel: "November 13, 2026"
+date: 2026-11-13
+order: 0
+project: azimuth
+summary: "Databricks Free Edition stopped starting compute for the scheduled refresh. The same pipeline now runs every day on DuckDB inside GitHub Actions, with identical results."
+---
+
+<p>AZIMUTH refreshes its data every day. Until this month that ran on Databricks Free Edition, where the project was built. In November the refresh started failing, and this post covers why and what replaced it.</p>
+<h2>What went wrong</h2>
+<p>Each run starts a SQL warehouse, loads the new launches and rebuilds the models. Databricks began refusing to start the warehouse for the scheduled job, with the message "Cannot create the resource, please try again later." Starting it by hand from the web page worked. Starting it from the pipeline did not, on every run for several days in a row.</p>
+<p>The first fixes were on my side: retrying each step, then starting the warehouse explicitly before connecting, then retrying the start every 20 minutes for up to three hours. None of it helped. Free Edition does not promise compute availability, and its documented limits allow compute to be switched off for the rest of a day. That is a reasonable trade for a free tier, but it means a scheduled job cannot depend on it.</p>
+<h2>The options</h2>
+<ul>
+<li><strong>Keep it and restart by hand.</strong> Free, but the app would go stale for days at a time.</li>
+<li><strong>Pay for Databricks.</strong> Reliable, at roughly $15 to $30 a month for a job this size.</li>
+<li><strong>Run the same pipeline somewhere free and reliable.</strong> The data is small (a few MB), so a full rebuild fits easily inside a GitHub Actions job using DuckDB, an embedded database that needs no server.</li>
+</ul>
+<p>I chose the third.</p>
+<h2>How it moved</h2>
+<p>The dbt project did not need rewriting. Out of every model and test, only five spots used Databricks-specific SQL: date formatting, month and day names, the weekend flag, and the generator for the date table. Each is now a small macro that writes the right SQL for whichever engine runs it, so the same project still builds on Databricks too.</p>
+<p>The raw layer now lives as parquet files on a separate branch of the repository, with an archive of every raw page fetched from the API. The ingestion keeps the same rules as before: ask the API only for launches changed since the last run, and replace a record only with a newer version. The updated files are saved back only after every test passes.</p>
+<p>To carry the history over exactly, the raw tables were copied out of Databricks once.</p>
+<h2>Checking it</h2>
+<p>Before switching, I built everything on DuckDB from that copy and compared it with the last output from Databricks. All nine tables the app reads were identical, down to the values and data types, and the simulator backtest gave the same results. The first daily run on the new setup then loaded the launches missed while Databricks was down, and the launch count matched the source exactly.</p>
+<h2>What stays the same</h2>
+<p>For anyone using the app, nothing changes. The data still refreshes every day, the same tests run before anything is published, and Ask AZIMUTH is checked against the new data each time. Databricks is still where the project was designed and modeled, and the Databricks version of the pipeline is kept and can still be run by hand.</p>
+<p>The lesson I take from it: a free tier is fine for building, but anything that has to run unattended needs a platform that will reliably be there.</p>
