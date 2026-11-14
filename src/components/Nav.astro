@@ -11,10 +11,11 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html
     <div class="links" id="nav-links">
       {nav.map((n) => <a href={n.href}>{n.label}</a>)}
       <a href="/#contact" class="btn btn-light btn-sm">Contact</a>
-      <button class="theme-btn" type="button" aria-label="Dark mode" aria-pressed="false" title="Toggle dark mode">
-        <svg class="moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      <button class="theme-btn" type="button" aria-label="Theme: automatic. Switch to light." title="Theme: automatic">
+        <svg class="auto" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
         <svg class="sun" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
-        <span class="theme-text">Dark mode</span>
+        <svg class="moon" aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        <span class="theme-text">Theme: Auto</span>
       </button>
     </div>
   </nav>
@@ -31,14 +32,12 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html
   .links .btn-sm { color: var(--ink); }
   .theme-btn, .menu-btn { width: 38px; height: 38px; border-radius: 999px; border: 1px solid var(--btn-border); background: var(--tile); color: var(--ink); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; }
   .menu-btn { display: none; }
-  .sun { display: none; }
+  .sun, .moon { display: none; }
   .theme-text { display: none; font-size: 15px; font-weight: 500; margin-left: 8px; }
-  :global(:root[data-theme='dark']) .sun { display: block; }
-  :global(:root[data-theme='dark']) .moon { display: none; }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .sun { display: block; }
-    :global(:root:not([data-theme='light'])) .moon { display: none; }
-  }
+  :global(:root[data-theme='light']) .sun { display: block; }
+  :global(:root[data-theme='light']) .auto { display: none; }
+  :global(:root[data-theme='dark']) .moon { display: block; }
+  :global(:root[data-theme='dark']) .auto { display: none; }
   @media (max-width: 860px) {
     .menu-btn { display: inline-flex; }
     .links { display: none; position: absolute; left: 0; right: 0; top: 72px; flex-direction: column; align-items: stretch; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 16px 16px; }
@@ -53,16 +52,26 @@ const isHome = Astro.url.pathname === '/' || Astro.url.pathname === '/index.html
 <script>
   const root = document.documentElement;
   const themeBtn = document.querySelector('.theme-btn');
-  const isDark = () => root.getAttribute('data-theme') === 'dark' || (!root.getAttribute('data-theme') && matchMedia('(prefers-color-scheme: dark)').matches);
+  // Three states: auto (follows the system), light, dark. Auto is the default and stores nothing.
+  const mq = matchMedia('(prefers-color-scheme: dark)');
+  const getMode = () => { const m = root.getAttribute('data-theme'); return m === 'light' || m === 'dark' ? m : 'auto'; };
+  const isDark = () => getMode() === 'dark' || (getMode() === 'auto' && mq.matches);
+  const labels: Record<string, string> = { auto: 'Auto', light: 'Light', dark: 'Dark' };
+  const order: Record<string, string> = { auto: 'light', light: 'dark', dark: 'auto' };
   const syncTheme = () => {
-    themeBtn?.setAttribute('aria-pressed', isDark() ? 'true' : 'false');
+    const mode = getMode();
+    const text = themeBtn?.querySelector('.theme-text');
+    if (text) text.textContent = `Theme: ${labels[mode]}`;
+    themeBtn?.setAttribute('aria-label', `Theme: ${labels[mode].toLowerCase()}${mode === 'auto' ? ' (follows your system)' : ''}. Switch to ${labels[order[mode]].toLowerCase()}.`);
+    themeBtn?.setAttribute('title', `Theme: ${labels[mode]}`);
     document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => { m.content = isDark() ? '#0B0D12' : '#F4F5F7'; });
   };
   syncTheme();
+  mq.addEventListener('change', syncTheme);
   themeBtn?.addEventListener('click', () => {
-    const next = isDark() ? 'light' : 'dark';
-    root.setAttribute('data-theme', next);
-    try { localStorage.setItem('theme', next); } catch {}
+    const next = order[getMode()];
+    if (next === 'auto') { root.removeAttribute('data-theme'); try { localStorage.removeItem('theme'); } catch {} }
+    else { root.setAttribute('data-theme', next); try { localStorage.setItem('theme', next); } catch {} }
     syncTheme();
   });
   const menuBtn = document.querySelector('.menu-btn');
